@@ -89,7 +89,7 @@ export class DeterministicConsolidationService
     return this.factory.create_object({
       registry_entry: entry,
       project_id: request.project_id,
-      status: "applied",
+      status: "proposed",
       scenario_id: this.scenario_id,
       creation_source: "runtime_derivation",
       derivation_mode: "promoted",

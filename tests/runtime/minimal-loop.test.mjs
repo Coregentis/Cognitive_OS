@@ -15,6 +15,13 @@ test("fresh-intent executes a neutral minimal in-memory path", async () => {
   assert.equal(result.status, "executed");
   assert.ok(result.created_objects.length > 0);
   assert.equal(result.ordered_step_outcomes?.length, 7);
+  assert.ok(result.event_timeline?.length);
+  assert.equal(result.event_timeline?.[0]?.sequence, 1);
+  assert.ok(
+    result.event_timeline?.every(
+      (entry, index) => entry.sequence === index + 1
+    )
+  );
   assert.deepEqual(
     result.ordered_step_outcomes?.map((outcome) => outcome.step),
     ["form", "place", "activate", "confirm", "trace", "reconcile", "consolidate"]
@@ -41,6 +48,22 @@ test("fresh-intent executes a neutral minimal in-memory path", async () => {
   assert.ok(result.store_snapshot.evidence_object_ids.length >= 2);
   assert.ok(result.created_object_ids_by_type?.intent?.length);
   assert.ok(result.created_object_ids_by_type?.["trace-evidence"]?.length);
+  assert.ok(result.status_transitions?.length);
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "intent" &&
+        transition.from_status === "formed" &&
+        transition.to_status === "active"
+    )
+  );
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "activation-signal" &&
+        transition.to_status === "completed"
+    )
+  );
 
   assert.ok(result.policy_snapshots?.length);
   assert.equal(result.policy_snapshots?.[0]?.confirm_required, false);
@@ -49,6 +72,7 @@ test("fresh-intent executes a neutral minimal in-memory path", async () => {
   assert.ok(result.evidence_summary?.trace_evidence_ids.length);
   assert.ok(result.evidence_summary?.decision_record_ids.length);
   assert.ok(result.truth_consultation);
+  assert.ok(result.export_preparation);
   assert.ok(result.truth_consultation.registry_object_types.includes("intent"));
   assert.ok(result.truth_consultation.binding_object_types.includes("intent"));
   assert.ok(result.truth_consultation.export_rule_object_types.includes("intent"));
@@ -57,6 +81,10 @@ test("fresh-intent executes a neutral minimal in-memory path", async () => {
       result.truth_consultation.registry_object_types.includes(record.object_type)
     )
   );
+  assert.ok(result.export_preparation.protocol_relevant_object_ids.length >= 1);
+  assert.equal(result.export_preparation.shallow_reconstructable_object_ids.length, 1);
+  assert.ok(result.export_preparation.non_exportable_object_ids.length >= 1);
+  assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
   assert.ok(
     result.created_objects.every(
@@ -75,6 +103,13 @@ test("requirement-change-midflow executes a neutral change-aware path", async ()
   assert.equal(result.status, "executed");
   assert.ok(result.created_objects.length > 0);
   assert.equal(result.ordered_step_outcomes?.length, 7);
+  assert.ok(result.event_timeline?.length);
+  assert.equal(result.event_timeline?.[0]?.sequence, 1);
+  assert.ok(
+    result.event_timeline?.every(
+      (entry, index) => entry.sequence === index + 1
+    )
+  );
   assert.deepEqual(
     result.ordered_step_outcomes?.map((outcome) => outcome.step),
     ["form", "place", "activate", "confirm", "trace", "reconcile", "consolidate"]
@@ -101,6 +136,31 @@ test("requirement-change-midflow executes a neutral change-aware path", async ()
   assert.ok(result.created_object_ids_by_type?.["delta-intent"]?.length);
   assert.ok(result.created_object_ids_by_type?.["drift-record"]?.length);
   assert.ok(result.created_object_ids_by_type?.["conflict-case"]?.length);
+  assert.ok(result.status_transitions?.length);
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "delta-intent" &&
+        transition.from_status === "proposed" &&
+        transition.to_status === "accepted"
+    )
+  );
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "confirm-gate" &&
+        transition.from_status === "pending" &&
+        transition.to_status === "approved"
+    )
+  );
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "conflict-case" &&
+        transition.from_status === "open" &&
+        transition.to_status === "classified"
+    )
+  );
 
   assert.ok(result.policy_snapshots?.length);
   assert.equal(result.policy_snapshots?.[0]?.confirm_required, true);
@@ -115,6 +175,7 @@ test("requirement-change-midflow executes a neutral change-aware path", async ()
   assert.ok(result.evidence_summary?.trace_evidence_ids.length);
   assert.ok(result.evidence_summary?.decision_record_ids.length);
   assert.ok(result.truth_consultation);
+  assert.ok(result.export_preparation);
   assert.ok(result.truth_consultation.registry_object_types.includes("delta-intent"));
   assert.ok(result.truth_consultation.registry_object_types.includes("conflict-case"));
   assert.ok(result.truth_consultation.binding_object_types.includes("delta-intent"));
@@ -125,10 +186,43 @@ test("requirement-change-midflow executes a neutral change-aware path", async ()
       result.truth_consultation.registry_object_types.includes(record.object_type)
     )
   );
+  assert.ok(result.export_preparation.protocol_relevant_object_ids.length >= 2);
+  assert.ok(result.export_preparation.shallow_reconstructable_object_ids.length >= 2);
+  assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
   assert.ok(
     result.created_objects.every(
       (record) => !String(record.object_type).toLowerCase().includes("pilot")
     )
+  );
+});
+
+test("repeated execution of the same fixture remains deterministic", async () => {
+  const first = await execute_scenario_file(
+    repoRoot,
+    "./tests/fixtures/min-loop/fresh-intent/scenario.json"
+  );
+  const second = await execute_scenario_file(
+    repoRoot,
+    "./tests/fixtures/min-loop/fresh-intent/scenario.json"
+  );
+
+  assert.deepEqual(first.created_object_ids_by_type, second.created_object_ids_by_type);
+  assert.deepEqual(first.store_snapshot, second.store_snapshot);
+  assert.deepEqual(first.confirm_summary, second.confirm_summary);
+  assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(
+    first.event_timeline?.map((entry) => ({
+      step: entry.step,
+      event_kind: entry.event_kind,
+      related_object_ids: entry.related_object_ids,
+      status_transition: entry.status_transition,
+    })),
+    second.event_timeline?.map((entry) => ({
+      step: entry.step,
+      event_kind: entry.event_kind,
+      related_object_ids: entry.related_object_ids,
+      status_transition: entry.status_transition,
+    }))
   );
 });

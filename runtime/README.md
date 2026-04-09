@@ -36,11 +36,14 @@ The execution result is now more inspectable and audit-oriented, including:
 
 - ordered step outcomes
 - created object ids grouped by type
+- explicit status transitions
+- neutral event timeline
 - store snapshot by layer
 - confirm summary
 - evidence summary
 - reconcile summary
 - frozen-truth consultation summary
+- export-preparation summary derived from frozen binding and export truth
 
 ## What This Baseline Does Not Claim
 

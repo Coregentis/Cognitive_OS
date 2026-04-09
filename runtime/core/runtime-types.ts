@@ -206,6 +206,28 @@ export interface RuntimeReconciliationSnapshot {
   notes: string[];
 }
 
+export interface RuntimeStatusTransition {
+  object_id: string;
+  object_type: CoregentisObjectType;
+  from_status: string;
+  to_status: string;
+}
+
+export interface RuntimeEventTimelineEntry {
+  sequence: number;
+  step: MinimalLoopStep;
+  event_kind:
+    | "object_created"
+    | "status_transition"
+    | "policy_evaluated"
+    | "confirm_resolution"
+    | "reconcile_assessed"
+    | "export_prepared";
+  related_object_ids: string[];
+  status_transition?: RuntimeStatusTransition;
+  notes: string[];
+}
+
 export interface RuntimeStepOutcome {
   step: MinimalLoopStep;
   status: "executed" | "skipped";
@@ -242,6 +264,14 @@ export interface RuntimeTruthConsultationSummary {
   notes: string[];
 }
 
+export interface RuntimeExportPreparationSummary {
+  protocol_relevant_object_ids: string[];
+  shallow_reconstructable_object_ids: string[];
+  non_exportable_object_ids: string[];
+  export_restricted_object_ids: string[];
+  notes: string[];
+}
+
 export interface MinimalLoopRunResult {
   scenario_id: string;
   status: "scaffold_only" | "executed";
@@ -249,6 +279,8 @@ export interface MinimalLoopRunResult {
   touched_object_types: CoregentisObjectType[];
   created_objects: RuntimeObjectRecord[];
   created_object_ids_by_type?: CreatedObjectIdsByType;
+  status_transitions?: RuntimeStatusTransition[];
+  event_timeline?: RuntimeEventTimelineEntry[];
   ordered_step_outcomes?: RuntimeStepOutcome[];
   store_snapshot?: RuntimeStoreSnapshot;
   policy_snapshots?: RuntimePolicySnapshot[];
@@ -256,5 +288,6 @@ export interface MinimalLoopRunResult {
   evidence_summary?: RuntimeEvidenceSummary;
   reconciliation?: RuntimeReconciliationSnapshot;
   truth_consultation?: RuntimeTruthConsultationSummary;
+  export_preparation?: RuntimeExportPreparationSummary;
   notes: string[];
 }

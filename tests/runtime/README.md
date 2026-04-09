@@ -17,12 +17,15 @@ Later tests should verify:
 - minimal in-memory execution for neutral scenarios
 - working / episodic / semantic / evidence distinction
 - ordered step outcomes and grouped object ids
+- explicit object status transitions
+- ordered event timeline
 - confirm / evidence / reconcile summaries
+- export-preparation summaries derived from frozen binding/export truth
 - explicit frozen-truth consultation
 - progression toward the minimal cognitive loop
 
 ## What Is Not Here Yet
 
-- executable runtime tests
+- full runtime completion tests
 - product tests
 - TracePilot tests

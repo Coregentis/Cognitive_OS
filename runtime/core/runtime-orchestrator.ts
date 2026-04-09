@@ -16,10 +16,15 @@ import type {
   MinimalLoopRunResult,
   MinimalLoopStep,
   RegistryEntryRecord,
+  RuntimeConfirmSummary,
+  RuntimeEventTimelineEntry,
+  RuntimeEvidenceSummary,
+  RuntimeExportPreparationSummary,
   RuntimeObjectRecord,
   RuntimeObjectStore,
   RuntimePolicySnapshot,
   RuntimeReconciliationSnapshot,
+  RuntimeStatusTransition,
   RuntimeStepOutcome,
   RuntimeStoreSnapshot,
   RuntimeTruthConsultationSummary,
@@ -101,7 +106,10 @@ export class MinimalRuntimeOrchestratorSkeleton
   }
 
   private store_runtime_object(record: RuntimeObjectRecord): void {
-    if (record.object_type === "trace-evidence" || record.object_type === "decision-record") {
+    if (
+      record.object_type === "trace-evidence" ||
+      record.object_type === "decision-record"
+    ) {
       this.deps.evidence_store.put(record);
       return;
     }
@@ -158,11 +166,9 @@ export class MinimalRuntimeOrchestratorSkeleton
         steps: shared_steps,
         target_object_types,
         notes: [
-          "Skeleton-only requirement-change plan.",
-          "Delta Intent is explicitly targeted for the change path.",
-          "This scenario is expected to relate to an existing intent, episode, and semantic-fact context through prior_object_refs.",
-          "This scenario reserves later drift-record and conflict-case creation points without implementing reconcile behavior.",
-          "No runtime behavior is executed in this phase.",
+          "Requirement-change plan uses delta-intent rather than intent.",
+          "This scenario is expected to relate to existing intent, episode, and semantic-fact context via prior_object_refs.",
+          "This scenario reserves explicit drift-record and conflict-case output in the execution baseline.",
         ],
       };
     }
@@ -183,22 +189,18 @@ export class MinimalRuntimeOrchestratorSkeleton
     this.assert_registered_target_object_types(target_object_types);
 
     return {
-        scenario_id: input.scenario_id,
-        steps: shared_steps,
-        target_object_types,
-        notes: [
-          "Skeleton-only fresh-intent plan.",
-          "This scenario prepares initial intake, intent formation, placement, bounded activation, confirm, trace, and consolidation scaffolding.",
-          "No runtime behavior is executed in this phase.",
-          "Registry and binding services are expected to gate later execution behavior.",
+      scenario_id: input.scenario_id,
+      steps: shared_steps,
+      target_object_types,
+      notes: [
+        "Fresh-intent plan uses the simpler non-drifted path.",
+        "This scenario prepares intake, intent formation, placement, bounded activation, trace, and consolidation output.",
       ],
     };
   }
 
   dry_run_minimal_loop(input: MinimalLoopInput): MinimalLoopRunResult {
     const plan = this.plan_minimal_loop(input);
-    void this.deps;
-
     return {
       scenario_id: input.scenario_id,
       status: "scaffold_only",
@@ -207,7 +209,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       created_objects: [],
       notes: [
         "Dry-run produced by runtime skeleton only.",
-        "No Form, Place, Activate, Confirm, Trace, Reconcile, or Consolidate logic has been implemented yet.",
+        "No Form, Place, Activate, Confirm, Trace, Reconcile, or Consolidate behavior has been executed in this mode.",
       ],
     };
   }
@@ -215,12 +217,17 @@ export class MinimalRuntimeOrchestratorSkeleton
   execute_minimal_loop(input: MinimalLoopInput): MinimalLoopRunResult {
     const plan = this.plan_minimal_loop(input);
     const created_objects: RuntimeObjectRecord[] = [];
-    const policy_snapshots: RuntimePolicySnapshot[] = [];
-    const ordered_step_outcomes: RuntimeStepOutcome[] = [];
+    const object_map = new Map<string, RuntimeObjectRecord>();
+    const creation_order: string[] = [];
     const created_object_ids_by_type: CreatedObjectIdsByType = {};
+    const ordered_step_outcomes: RuntimeStepOutcome[] = [];
+    const status_transitions: RuntimeStatusTransition[] = [];
+    const event_timeline: RuntimeEventTimelineEntry[] = [];
+    const policy_snapshots: RuntimePolicySnapshot[] = [];
     const consulted_registry = new Set<CoregentisObjectType>();
     const consulted_binding = new Set<CoregentisObjectType>();
     const consulted_export = new Set<CoregentisObjectType>();
+    let event_sequence = 1;
     let reconciliation: RuntimeReconciliationSnapshot = {
       can_continue: true,
       notes: ["Reconcile step not triggered."],
@@ -249,6 +256,24 @@ export class MinimalRuntimeOrchestratorSkeleton
       consulted_export.add(object_type);
     };
 
+    const push_event = (
+      step: MinimalLoopStep,
+      event_kind: RuntimeEventTimelineEntry["event_kind"],
+      related_object_ids: string[],
+      notes: string[],
+      status_transition?: RuntimeStatusTransition
+    ): void => {
+      event_timeline.push({
+        sequence: event_sequence,
+        step,
+        event_kind,
+        related_object_ids,
+        status_transition,
+        notes,
+      });
+      event_sequence += 1;
+    };
+
     const record = (object: RuntimeObjectRecord): RuntimeObjectRecord => {
       this.deps.registry_service.assert_registered(object.object_type);
       consult_registry(object.object_type);
@@ -264,11 +289,43 @@ export class MinimalRuntimeOrchestratorSkeleton
       }
 
       consult_export_rule(object.object_type);
-      created_objects.push(object);
+
+      if (!object_map.has(object.object_id)) {
+        creation_order.push(object.object_id);
+      }
+
+      object_map.set(object.object_id, object);
       created_object_ids_by_type[object.object_type] ??= [];
-      created_object_ids_by_type[object.object_type].push(object.object_id);
+      if (!created_object_ids_by_type[object.object_type]?.includes(object.object_id)) {
+        created_object_ids_by_type[object.object_type].push(object.object_id);
+      }
+
       this.store_runtime_object(object);
       return object;
+    };
+
+    const transition_status = (
+      step: MinimalLoopStep,
+      object: RuntimeObjectRecord,
+      to_status: string,
+      notes: string[]
+    ): RuntimeObjectRecord => {
+      const updated: RuntimeObjectRecord = {
+        ...object,
+        status: to_status,
+      };
+
+      const transition: RuntimeStatusTransition = {
+        object_id: object.object_id,
+        object_type: object.object_type,
+        from_status: object.status,
+        to_status,
+      };
+
+      status_transitions.push(transition);
+      record(updated);
+      push_event(step, "status_transition", [object.object_id], notes, transition);
+      return updated;
     };
 
     const push_step_outcome = (
@@ -280,15 +337,9 @@ export class MinimalRuntimeOrchestratorSkeleton
       extra_binding: CoregentisObjectType[] = [],
       extra_export: CoregentisObjectType[] = []
     ): void => {
-      for (const object_type of extra_registry) {
-        consulted_registry.add(object_type);
-      }
-      for (const object_type of extra_binding) {
-        consulted_binding.add(object_type);
-      }
-      for (const object_type of extra_export) {
-        consulted_export.add(object_type);
-      }
+      for (const object_type of extra_registry) consulted_registry.add(object_type);
+      for (const object_type of extra_binding) consulted_binding.add(object_type);
+      for (const object_type of extra_export) consulted_export.add(object_type);
 
       ordered_step_outcomes.push({
         step,
@@ -296,10 +347,7 @@ export class MinimalRuntimeOrchestratorSkeleton
         created_object_ids: objects.map((object) => object.object_id),
         created_object_types: objects.map((object) => object.object_type),
         consulted_registry_object_types: [
-          ...new Set([
-            ...objects.map((object) => object.object_type),
-            ...extra_registry,
-          ]),
+          ...new Set([...objects.map((object) => object.object_type), ...extra_registry]),
         ],
         consulted_binding_object_types: [...new Set(extra_binding)],
         consulted_export_object_types: [...new Set(extra_export)],
@@ -324,9 +372,19 @@ export class MinimalRuntimeOrchestratorSkeleton
       consult_registry("intent");
       consult_binding("intent");
     }
+
     const formed_objects = this.deps.form_service.plan_form_step(input);
     const external_input = record(formed_objects[0]!);
-    const entry_object = record(formed_objects[1]!);
+    let entry_object = record(formed_objects[1]!);
+    push_event("form", "object_created", [external_input.object_id, entry_object.object_id], [
+      "External input record and governed entry object created.",
+    ]);
+    entry_object = transition_status(
+      "form",
+      entry_object,
+      input.scenario_id === "requirement-change-midflow" ? "accepted" : "active",
+      ["Entry object advanced to its first active execution state."]
+    );
     push_step_outcome(
       "form",
       [external_input, entry_object],
@@ -345,7 +403,6 @@ export class MinimalRuntimeOrchestratorSkeleton
         source_object: entry_object,
       })
     );
-
     const episode = record(
       this.deps.memory_service.open_episode({
         project_id: input.project_id,
@@ -360,6 +417,9 @@ export class MinimalRuntimeOrchestratorSkeleton
             : "Fresh Intent Episode",
       })
     );
+    push_event("place", "object_created", [working_state.object_id, episode.object_id], [
+      "Working-state and episode records created.",
+    ]);
     const place_objects: RuntimeObjectRecord[] = [working_state, episode];
 
     let semantic_fact: RuntimeObjectRecord | undefined;
@@ -371,8 +431,12 @@ export class MinimalRuntimeOrchestratorSkeleton
           source_object: entry_object,
         })
       );
+      push_event("place", "object_created", [semantic_fact.object_id], [
+        "Semantic fact created for the requirement-change path.",
+      ]);
       place_objects.push(semantic_fact);
     }
+
     push_step_outcome(
       "place",
       place_objects,
@@ -385,7 +449,7 @@ export class MinimalRuntimeOrchestratorSkeleton
 
     consult_registry("activation-signal");
     consult_registry("action-unit");
-    const activation_signal = record(
+    let activation_signal = record(
       this.deps.activation_service.create_activation_signal({
         project_id: input.project_id,
         trigger_object_id: entry_object.object_id,
@@ -395,8 +459,14 @@ export class MinimalRuntimeOrchestratorSkeleton
           input.scenario_id === "requirement-change-midflow" ? "high" : "normal",
       })
     );
+    push_event("activate", "object_created", [activation_signal.object_id], [
+      "Activation signal created.",
+    ]);
+    activation_signal = transition_status("activate", activation_signal, "active", [
+      "Activation signal moved into active state.",
+    ]);
 
-    const action_unit = record(
+    let action_unit = record(
       this.deps.activation_service.create_action_unit({
         project_id: input.project_id,
         activation_signal_id: activation_signal.object_id,
@@ -414,6 +484,12 @@ export class MinimalRuntimeOrchestratorSkeleton
             : [working_state.object_id, episode.object_id],
       })
     );
+    push_event("activate", "object_created", [action_unit.object_id], [
+      "Action unit created.",
+    ]);
+    action_unit = transition_status("activate", action_unit, "in_progress", [
+      "Action unit moved into in-progress state.",
+    ]);
     push_step_outcome(
       "activate",
       [activation_signal, action_unit],
@@ -430,6 +506,9 @@ export class MinimalRuntimeOrchestratorSkeleton
       registry_entry: this.get_registry_entry(action_unit.object_type),
     });
     policy_snapshots.push(policy_result);
+    push_event("confirm", "policy_evaluated", [action_unit.object_id], [
+      ...policy_result.notes,
+    ]);
 
     let confirm_gate: RuntimeObjectRecord | undefined;
     if (policy_result.confirm_required) {
@@ -441,11 +520,28 @@ export class MinimalRuntimeOrchestratorSkeleton
         confirm_kind: "review",
         requested_by_ref: "runtime-policy-service",
       });
-      confirm_gate = this.deps.confirm_service.resolve_confirm_gate({
+      record(confirm_gate);
+      push_event("confirm", "object_created", [confirm_gate.object_id], [
+        "Confirm gate created.",
+      ]);
+      const resolved_confirm_gate = this.deps.confirm_service.resolve_confirm_gate({
         confirm_gate,
         resolution_status: "approved",
       });
+      confirm_gate = transition_status(
+        "confirm",
+        confirm_gate,
+        String(resolved_confirm_gate.status),
+        ["Confirm gate status advanced to approved."]
+      );
+      confirm_gate = {
+        ...confirm_gate,
+        governance: resolved_confirm_gate.governance,
+      };
       record(confirm_gate);
+      push_event("confirm", "confirm_resolution", [confirm_gate.object_id], [
+        "Confirm gate resolved in the minimal execution baseline.",
+      ]);
       push_step_outcome(
         "confirm",
         [confirm_gate],
@@ -485,13 +581,13 @@ export class MinimalRuntimeOrchestratorSkeleton
         subject_object_refs: trace_subjects,
       })
     );
-
+    push_event("trace", "object_created", [trace_evidence.object_id], [
+      "Trace evidence created.",
+    ]);
     const decision_record = record(
       this.deps.trace_service.create_decision_record({
         project_id: input.project_id,
-        decision_type: policy_result.confirm_required
-          ? "approval"
-          : "activation",
+        decision_type: policy_result.confirm_required ? "approval" : "activation",
         decision_summary:
           input.scenario_id === "requirement-change-midflow"
             ? "change path decision recorded"
@@ -500,6 +596,15 @@ export class MinimalRuntimeOrchestratorSkeleton
         subject_object_refs: [action_unit.object_id],
       })
     );
+    push_event("trace", "object_created", [decision_record.object_id], [
+      "Decision record created.",
+    ]);
+    activation_signal = transition_status("trace", activation_signal, "completed", [
+      "Activation signal completed after trace emission.",
+    ]);
+    action_unit = transition_status("trace", action_unit, "completed", [
+      "Action unit completed after trace emission.",
+    ]);
     push_step_outcome(
       "trace",
       [trace_evidence, decision_record],
@@ -513,7 +618,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     if (input.scenario_id === "requirement-change-midflow") {
       consult_registry("drift-record");
       consult_registry("conflict-case");
-      const drift_record = record(
+      let drift_record = record(
         this.deps.reconcile_service.create_drift_record({
           project_id: input.project_id,
           drift_kind: "intent_drift",
@@ -523,8 +628,11 @@ export class MinimalRuntimeOrchestratorSkeleton
           baseline_object_refs: input.prior_object_refs ?? [],
         })
       );
+      push_event("reconcile", "object_created", [drift_record.object_id], [
+        "Drift record created.",
+      ]);
 
-      const conflict_case = record(
+      let conflict_case = record(
         this.deps.reconcile_service.create_conflict_case({
           project_id: input.project_id,
           conflict_kind: "plan_conflict",
@@ -535,6 +643,16 @@ export class MinimalRuntimeOrchestratorSkeleton
           proposed_resolution: "branch",
         })
       );
+      push_event("reconcile", "object_created", [conflict_case.object_id], [
+        "Conflict case created.",
+      ]);
+
+      drift_record = transition_status("reconcile", drift_record, "reviewed", [
+        "Drift record reviewed for the change path.",
+      ]);
+      conflict_case = transition_status("reconcile", conflict_case, "classified", [
+        "Conflict case classified for the change path.",
+      ]);
 
       reconciliation = this.deps.reconcile_service.assess_reconciliation([
         drift_record,
@@ -545,6 +663,12 @@ export class MinimalRuntimeOrchestratorSkeleton
         drift_record_ids: [drift_record.object_id],
         conflict_case_ids: [conflict_case.object_id],
       };
+      push_event(
+        "reconcile",
+        "reconcile_assessed",
+        [drift_record.object_id, conflict_case.object_id],
+        [...reconciliation.notes]
+      );
       push_step_outcome(
         "reconcile",
         [drift_record, conflict_case],
@@ -568,7 +692,7 @@ export class MinimalRuntimeOrchestratorSkeleton
 
     consult_registry("learning-candidate");
     consult_registry("memory-promotion-record");
-    const learning_candidate = record(
+    let learning_candidate = record(
       this.deps.consolidation_service.create_learning_candidate({
         project_id: input.project_id,
         candidate_kind:
@@ -583,8 +707,17 @@ export class MinimalRuntimeOrchestratorSkeleton
         source_evidence_refs: [trace_evidence.object_id, decision_record.object_id],
       })
     );
+    push_event("consolidate", "object_created", [learning_candidate.object_id], [
+      "Learning candidate created.",
+    ]);
+    learning_candidate = transition_status(
+      "consolidate",
+      learning_candidate,
+      "scored",
+      ["Learning candidate scored for deterministic inspection."]
+    );
 
-    const promotion_record = record(
+    let promotion_record = record(
       this.deps.consolidation_service.create_memory_promotion_record({
         project_id: input.project_id,
         source_memory_layer: "working_memory",
@@ -600,6 +733,15 @@ export class MinimalRuntimeOrchestratorSkeleton
         approved_by_ref: "runtime-consolidation-service",
       })
     );
+    push_event("consolidate", "object_created", [promotion_record.object_id], [
+      "Memory promotion record created.",
+    ]);
+    promotion_record = transition_status(
+      "consolidate",
+      promotion_record,
+      "applied",
+      ["Memory promotion record applied for deterministic inspection."]
+    );
     push_step_outcome(
       "consolidate",
       [learning_candidate, promotion_record],
@@ -610,11 +752,13 @@ export class MinimalRuntimeOrchestratorSkeleton
       ["learning-candidate", "memory-promotion-record"]
     );
 
-    const evidence_summary = {
-      trace_evidence_ids: created_objects
+    const evidenceSummary: RuntimeEvidenceSummary = {
+      trace_evidence_ids: creation_order
+        .map((id) => object_map.get(id)!)
         .filter((record) => record.object_type === "trace-evidence")
         .map((record) => record.object_id),
-      decision_record_ids: created_objects
+      decision_record_ids: creation_order
+        .map((id) => object_map.get(id)!)
         .filter((record) => record.object_type === "decision-record")
         .map((record) => record.object_id),
       notes: [
@@ -622,7 +766,54 @@ export class MinimalRuntimeOrchestratorSkeleton
       ],
     };
 
-    const confirm_summary = {
+    const exportPreparation: RuntimeExportPreparationSummary = {
+      protocol_relevant_object_ids: creation_order
+        .map((id) => object_map.get(id)!)
+        .filter((record) => {
+          const binding = this.deps.binding_service.get_binding(record.object_type);
+          return Boolean(binding?.mplp_object);
+        })
+        .map((record) => record.object_id),
+      shallow_reconstructable_object_ids: creation_order
+        .map((id) => object_map.get(id)!)
+        .filter((record) => {
+          const binding = this.deps.binding_service.get_binding(record.object_type);
+          return (
+            binding?.binding_class === "shallow_reconstructable_runtime_bound"
+          );
+        })
+        .map((record) => record.object_id),
+      non_exportable_object_ids: creation_order
+        .map((id) => object_map.get(id)!)
+        .filter((record) => {
+          const export_rule = this.deps.binding_service.get_export_rule(
+            record.object_type
+          );
+          return export_rule?.export_class === "runtime_private_non_exportable";
+        })
+        .map((record) => record.object_id),
+      export_restricted_object_ids: creation_order
+        .map((id) => object_map.get(id)!)
+        .filter((record) => {
+          const export_rule = this.deps.binding_service.get_export_rule(
+            record.object_type
+          );
+          return (
+            export_rule?.export_class === "protocol_adjacent_export_restricted" ||
+            export_rule?.export_class === "internal_derived_only"
+          );
+        })
+        .map((record) => record.object_id),
+      notes: [
+        "Export-preparation summary is derived from frozen binding and export truth only.",
+        "No final MPLP artifact materialization is performed in this phase.",
+      ],
+    };
+    push_event("trace", "export_prepared", [
+      ...exportPreparation.protocol_relevant_object_ids,
+    ], [...exportPreparation.notes]);
+
+    const confirmSummary: RuntimeConfirmSummary = {
       confirm_required: policy_result.confirm_required,
       confirm_gate_id: confirm_gate?.object_id,
       confirm_status: confirm_gate?.status,
@@ -630,7 +821,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       notes: policy_result.notes,
     };
 
-    const truth_consultation: RuntimeTruthConsultationSummary = {
+    const truthConsultation: RuntimeTruthConsultationSummary = {
       registry_object_types: [...consulted_registry],
       binding_object_types: [...consulted_binding],
       export_rule_object_types: [...consulted_export],
@@ -641,24 +832,29 @@ export class MinimalRuntimeOrchestratorSkeleton
       ],
     };
 
+    const finalCreatedObjects = creation_order.map((id) => object_map.get(id)!);
+
     return {
       scenario_id: input.scenario_id,
       status: "executed",
       planned_steps: plan.steps,
-      touched_object_types: [...new Set(created_objects.map((r) => r.object_type))],
-      created_objects,
+      touched_object_types: [...new Set(finalCreatedObjects.map((record) => record.object_type))],
+      created_objects: finalCreatedObjects,
       created_object_ids_by_type,
+      status_transitions,
+      event_timeline,
       ordered_step_outcomes,
       store_snapshot: this.build_store_snapshot(input.project_id),
       policy_snapshots,
-      confirm_summary,
-      evidence_summary,
+      confirm_summary: confirmSummary,
+      evidence_summary: evidenceSummary,
       reconciliation,
-      truth_consultation,
+      truth_consultation: truthConsultation,
+      export_preparation: exportPreparation,
       notes: [
         "Minimal execution baseline ran in-memory only.",
         "Behavior remains deterministic and fixture-driven.",
-        `Created ${created_objects.length} runtime objects.`,
+        `Created ${creation_order.length} runtime objects.`,
         `Learning candidate recorded: ${learning_candidate.object_id}.`,
       ],
     };
