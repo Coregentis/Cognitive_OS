@@ -15,12 +15,14 @@ The target loop is:
   - plan output
   - dry-run output
   - first-pass in-memory execution output
+- can optionally attach a minimal protocol export bundle after an executed run
 
 ## What This Harness Does Not Do Yet
 
-- execute the loop
+- implement loop behavior itself
 - implement full runtime services
 - implement AEL, VSL, PSG, or drift runtime behavior
 - emit product-facing or TracePilot-facing DTOs
+- claim full MPLP artifact completeness
 
 It remains a minimal mother-runtime harness only, not a product-facing runtime surface.

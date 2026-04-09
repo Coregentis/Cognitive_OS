@@ -25,6 +25,7 @@ import { InMemoryWorkingStore } from "../in-memory/working-store.ts";
 import { InMemoryEpisodicStore } from "../in-memory/episodic-store.ts";
 import { InMemorySemanticStore } from "../in-memory/semantic-store.ts";
 import { InMemoryEvidenceStore } from "../in-memory/evidence-store.ts";
+import { FrozenProtocolExportService } from "../export/protocol-export.ts";
 
 export type MinimalLoopScenarioName =
   | "fresh-intent"
@@ -38,11 +39,20 @@ export interface MinimalLoopScenario {
   prior_object_refs?: string[];
 }
 
+export interface MinimalLoopExecutionOptions {
+  include_protocol_export?: boolean;
+}
+
 export class MinimalLoopHarness {
   private readonly orchestrator: RuntimeOrchestrator;
+  private readonly protocol_export_service?: FrozenProtocolExportService;
 
-  constructor(orchestrator: RuntimeOrchestrator) {
+  constructor(
+    orchestrator: RuntimeOrchestrator,
+    protocol_export_service?: FrozenProtocolExportService
+  ) {
     this.orchestrator = orchestrator;
+    this.protocol_export_service = protocol_export_service;
   }
 
   static create_default(
@@ -51,6 +61,10 @@ export class MinimalLoopHarness {
   ): MinimalLoopHarness {
     const registry_service = FrozenRegistryService.from_repo_root(repo_root);
     const binding_service = FrozenBindingService.from_repo_root(repo_root);
+    const protocol_export_service = FrozenProtocolExportService.from_repo_root(
+      repo_root,
+      binding_service
+    );
     const factory = new DeterministicExecutionFactory(scenario_id);
     const working_store = new InMemoryWorkingStore();
     const episodic_store = new InMemoryEpisodicStore();
@@ -105,7 +119,7 @@ export class MinimalLoopHarness {
       evidence_store,
     });
 
-    return new MinimalLoopHarness(orchestrator);
+    return new MinimalLoopHarness(orchestrator, protocol_export_service);
   }
 
   async load_scenario(
@@ -123,14 +137,34 @@ export class MinimalLoopHarness {
     return this.orchestrator.dry_run_minimal_loop(input);
   }
 
-  execute_scenario(input: MinimalLoopInput): MinimalLoopRunResult {
-    return this.orchestrator.execute_minimal_loop(input);
+  execute_scenario(
+    input: MinimalLoopInput,
+    options: MinimalLoopExecutionOptions = {}
+  ): MinimalLoopRunResult {
+    const result = this.orchestrator.execute_minimal_loop(input);
+
+    if (
+      options.include_protocol_export &&
+      result.status === "executed" &&
+      this.protocol_export_service
+    ) {
+      return {
+        ...result,
+        protocol_export: this.protocol_export_service.export_run({
+          project_id: input.project_id,
+          run_result: result,
+        }),
+      };
+    }
+
+    return result;
   }
 }
 
 export async function execute_scenario_file(
   repo_root: string,
-  scenario_path: string
+  scenario_path: string,
+  options: MinimalLoopExecutionOptions = {}
 ): Promise<MinimalLoopRunResult> {
   const scenario_file = resolve(scenario_path);
   const raw = await readFile(scenario_file, "utf8");
@@ -145,5 +179,5 @@ export async function execute_scenario_file(
     project_id: scenario.project_id,
     raw_input: scenario.raw_input,
     prior_object_refs: scenario.prior_object_refs,
-  });
+  }, options);
 }

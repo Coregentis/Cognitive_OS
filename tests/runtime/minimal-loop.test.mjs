@@ -5,10 +5,31 @@ import { execute_scenario_file } from "../../runtime/harness/minimal-loop-harnes
 
 const repoRoot = process.cwd();
 
+function collectObjectKeys(value, target = new Set()) {
+  if (!value || typeof value !== "object") {
+    return target;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectObjectKeys(item, target);
+    }
+    return target;
+  }
+
+  for (const [key, nested] of Object.entries(value)) {
+    target.add(key);
+    collectObjectKeys(nested, target);
+  }
+
+  return target;
+}
+
 test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () => {
   const result = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/fresh-intent/scenario.json"
+    "./tests/fixtures/min-loop/fresh-intent/scenario.json",
+    { include_protocol_export: true }
   );
 
   assert.equal(result.scenario_id, "fresh-intent");
@@ -86,6 +107,96 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.ok(result.export_preparation.non_exportable_object_ids.length >= 1);
   assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
+  assert.ok(result.protocol_export);
+  assert.equal(
+    result.protocol_export.export_summary.exported_artifact_counts_by_type.trace,
+    1
+  );
+  assert.equal(
+    result.protocol_export.export_summary.exported_artifact_counts_by_type.confirm,
+    0
+  );
+  assert.equal(result.protocol_export.exported_artifacts_by_type.trace.length, 1);
+  assert.equal(result.protocol_export.exported_artifacts_by_type.confirm.length, 0);
+  assert.equal(
+    result.protocol_export.omitted_artifacts_by_type.confirm[0]?.omission_code,
+    "confirm_semantics_not_present"
+  );
+  assert.equal(
+    result.protocol_export.omitted_artifacts_by_type.context[0]?.omission_code,
+    "artifact_family_not_reconstructable"
+  );
+  assert.equal(
+    result.protocol_export.omitted_artifacts_by_type.plan[0]?.omission_code,
+    "artifact_family_not_reconstructable"
+  );
+  assert.equal(
+    result.protocol_export.export_validation_summary.validation_mode,
+    "locked_schema_truth_minimal"
+  );
+  assert.equal(
+    result.protocol_export.export_validation_summary.validated_artifact_count,
+    1
+  );
+  assert.ok(
+    result.protocol_export.export_validation_summary.artifact_results.every(
+      (record) => record.valid
+    )
+  );
+  assert.equal(
+    result.protocol_export.export_truth_summary.import_lock_id,
+    "cgos-mplp-import-lock-v0.1"
+  );
+  assert.equal(
+    result.protocol_export.export_truth_summary.protocol_version,
+    "1.0.0"
+  );
+  assert.equal(
+    result.protocol_export.export_truth_summary.schema_bundle_version,
+    "2.0.0"
+  );
+  assert.match(
+    result.protocol_export.export_truth_summary.locked_schema_paths.trace,
+    /mplp-trace\.schema\.json$/
+  );
+  assert.match(
+    result.protocol_export.export_truth_summary.locked_schema_paths.confirm,
+    /mplp-confirm\.schema\.json$/
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.trace[0]?.artifact,
+    {
+      meta: {
+        protocol_version: "1.0.0",
+        schema_version: "2.0.0",
+      },
+      trace_id: "00000000-0000-4000-8000-000000000007",
+      context_id: "00000000-0000-4000-8000-000000000001",
+      root_span: {
+        trace_id: "00000000-0000-4000-8000-000000000007",
+        span_id: "00000000-0000-4000-8000-000000000006",
+        context_id: "00000000-0000-4000-8000-000000000001",
+        attributes: {
+          scenario_id: "fresh-intent",
+          evidence_kind: "execution",
+          source_object_ids: ["00000000-0000-4000-8000-000000000006"],
+          step_count: 7,
+        },
+      },
+      status: "completed",
+      started_at: "2026-01-01T00:00:06.000Z",
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_summary.exported_runtime_object_ids,
+    ["00000000-0000-4000-8000-000000000007"]
+  );
+  assert.ok(
+    !Array.from(collectObjectKeys(result.protocol_export)).some((key) =>
+      /pilot|projection|dto/u.test(key)
+    )
+  );
+
   assert.ok(
     result.created_objects.every(
       (record) => !String(record.object_type).toLowerCase().includes("tracepilot")
@@ -96,7 +207,8 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
 test("[e2e] requirement-change-midflow executes a neutral change-aware path", async () => {
   const result = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
+    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json",
+    { include_protocol_export: true }
   );
 
   assert.equal(result.scenario_id, "requirement-change-midflow");
@@ -190,6 +302,111 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.ok(result.export_preparation.shallow_reconstructable_object_ids.length >= 2);
   assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
+  assert.ok(result.protocol_export);
+  assert.equal(
+    result.protocol_export.export_summary.exported_artifact_counts_by_type.trace,
+    1
+  );
+  assert.equal(
+    result.protocol_export.export_summary.exported_artifact_counts_by_type.confirm,
+    1
+  );
+  assert.equal(result.protocol_export.exported_artifacts_by_type.confirm.length, 1);
+  assert.equal(result.protocol_export.exported_artifacts_by_type.trace.length, 1);
+  assert.equal(
+    result.protocol_export.omitted_artifacts_by_type.context[0]?.omission_code,
+    "artifact_family_not_reconstructable"
+  );
+  assert.equal(
+    result.protocol_export.omitted_artifacts_by_type.plan[0]?.omission_code,
+    "artifact_family_not_reconstructable"
+  );
+  assert.equal(result.protocol_export.omitted_artifacts_by_type.confirm.length, 0);
+  assert.equal(
+    result.protocol_export.export_validation_summary.validated_artifact_count,
+    2
+  );
+  assert.ok(
+    result.protocol_export.export_validation_summary.artifact_results.every(
+      (record) => record.valid
+    )
+  );
+  assert.ok(
+    result.protocol_export.export_truth_summary.binding_object_types_consulted.includes(
+      "confirm-gate"
+    )
+  );
+  assert.ok(
+    result.protocol_export.export_truth_summary.binding_object_types_consulted.includes(
+      "trace-evidence"
+    )
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.confirm[0]?.artifact,
+    {
+      meta: {
+        protocol_version: "1.0.0",
+        schema_version: "2.0.0",
+      },
+      confirm_id: "00000000-0000-4000-8000-000000000008",
+      target_type: "other",
+      target_id: "00000000-0000-4000-8000-000000000007",
+      status: "approved",
+      requested_by_role: "runtime-policy-service",
+      requested_at: "2026-01-02T00:00:08.000Z",
+      reason: "review",
+      decisions: [
+        {
+          decision_id: "00000000-0000-4000-8000-000000000010",
+          status: "approved",
+          decided_by_role: "runtime-policy-service",
+          decided_at: "2026-01-02T00:00:10.000Z",
+          reason: "change path decision recorded",
+        },
+      ],
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.trace[0]?.artifact,
+    {
+      meta: {
+        protocol_version: "1.0.0",
+        schema_version: "2.0.0",
+      },
+      trace_id: "00000000-0000-4000-8000-000000000009",
+      context_id: "00000000-0000-4000-8000-000000000001",
+      root_span: {
+        trace_id: "00000000-0000-4000-8000-000000000009",
+        span_id: "00000000-0000-4000-8000-000000000007",
+        context_id: "00000000-0000-4000-8000-000000000001",
+        attributes: {
+          scenario_id: "requirement-change-midflow",
+          evidence_kind: "execution",
+          source_object_ids: [
+            "00000000-0000-4000-8000-000000000007",
+            "00000000-0000-4000-8000-000000000008",
+          ],
+          step_count: 7,
+          confirm_gate_id: "00000000-0000-4000-8000-000000000008",
+        },
+      },
+      status: "completed",
+      started_at: "2026-01-02T00:00:07.000Z",
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_summary.exported_runtime_object_ids,
+    [
+      "00000000-0000-4000-8000-000000000008",
+      "00000000-0000-4000-8000-000000000009",
+    ]
+  );
+  assert.ok(
+    !Array.from(collectObjectKeys(result.protocol_export)).some((key) =>
+      /pilot|projection|dto/u.test(key)
+    )
+  );
+
   assert.ok(
     result.created_objects.every(
       (record) => !String(record.object_type).toLowerCase().includes("pilot")
@@ -200,17 +417,20 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
 test("[determinism] repeated execution of fresh-intent remains deterministic", async () => {
   const first = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/fresh-intent/scenario.json"
+    "./tests/fixtures/min-loop/fresh-intent/scenario.json",
+    { include_protocol_export: true }
   );
   const second = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/fresh-intent/scenario.json"
+    "./tests/fixtures/min-loop/fresh-intent/scenario.json",
+    { include_protocol_export: true }
   );
 
   assert.deepEqual(first.created_object_ids_by_type, second.created_object_ids_by_type);
   assert.deepEqual(first.store_snapshot, second.store_snapshot);
   assert.deepEqual(first.confirm_summary, second.confirm_summary);
   assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(first.protocol_export, second.protocol_export);
   assert.deepEqual(
     first.event_timeline?.map((entry) => ({
       step: entry.step,
@@ -230,11 +450,13 @@ test("[determinism] repeated execution of fresh-intent remains deterministic", a
 test("[determinism] repeated execution of requirement-change-midflow remains deterministic", async () => {
   const first = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
+    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json",
+    { include_protocol_export: true }
   );
   const second = await execute_scenario_file(
     repoRoot,
-    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
+    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json",
+    { include_protocol_export: true }
   );
 
   assert.deepEqual(first.created_object_ids_by_type, second.created_object_ids_by_type);
@@ -242,6 +464,7 @@ test("[determinism] repeated execution of requirement-change-midflow remains det
   assert.deepEqual(first.confirm_summary, second.confirm_summary);
   assert.deepEqual(first.reconciliation, second.reconciliation);
   assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(first.protocol_export, second.protocol_export);
   assert.deepEqual(
     first.event_timeline?.map((entry) => ({
       step: entry.step,

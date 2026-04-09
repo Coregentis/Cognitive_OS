@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type {
@@ -30,6 +31,17 @@ interface ExportRulesDocument {
   export_rules: ExportRuleRecord[];
 }
 
+export interface ImportLockDocument {
+  lock_id: string;
+  protocol_version: string;
+  schema_bundle_version: string;
+  source_reference_type: string;
+  source_reference_value: string;
+  required_protocol_artifacts: {
+    module_schemas: string[];
+  };
+}
+
 function load_yaml_document<T>(path: string): T {
   const ruby = [
     "require 'yaml'",
@@ -43,6 +55,10 @@ function load_yaml_document<T>(path: string): T {
   });
 
   return JSON.parse(output) as T;
+}
+
+export function load_json_document<T>(path: string): T {
+  return JSON.parse(readFileSync(path, "utf8")) as T;
 }
 
 export function load_registry_document(
@@ -74,5 +90,13 @@ export function load_export_rules_document(
 ): ExportRulesDocument {
   return load_yaml_document<ExportRulesDocument>(
     join(repo_root, "bindings", "coregentis-export-rules.v0.yaml")
+  );
+}
+
+export function load_import_lock_document(
+  repo_root: string
+): ImportLockDocument {
+  return load_yaml_document<ImportLockDocument>(
+    join(repo_root, "imports", "mplp-lock.yaml")
   );
 }

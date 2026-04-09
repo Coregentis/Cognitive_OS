@@ -29,6 +29,9 @@ Current tests verify:
 - ordered event timeline
 - confirm / evidence / reconcile summaries
 - export-preparation summaries derived from frozen binding/export truth
+- optional protocol export bundle generation for executed runs
+- truthful omission reporting for unsupported protocol families
+- locked-schema validation of supported trace / confirm exports
 - explicit frozen-truth consultation
 - progression toward the minimal cognitive loop
 

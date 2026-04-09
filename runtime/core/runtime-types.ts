@@ -91,6 +91,12 @@ export type MinimalLoopStep =
   | "reconcile"
   | "consolidate";
 
+export type ProtocolArtifactType =
+  | "context"
+  | "plan"
+  | "confirm"
+  | "trace";
+
 export interface RuntimeProtocolBindingRef {
   binding_class: "protocol_native" | "runtime_bound";
   protocol_object_type?: string;
@@ -273,6 +279,95 @@ export interface RuntimeExportPreparationSummary {
   notes: string[];
 }
 
+export interface ProtocolSchemaValidationError {
+  path: string;
+  message: string;
+}
+
+export interface ProtocolExportedArtifactRecord {
+  artifact_type: ProtocolArtifactType;
+  source_object_id: string;
+  source_object_type: CoregentisObjectType;
+  schema_path: string;
+  schema_id: string;
+  artifact: Record<string, unknown>;
+  notes: string[];
+}
+
+export interface ProtocolExportOmissionRecord {
+  artifact_type: ProtocolArtifactType;
+  source_object_type?: CoregentisObjectType;
+  source_object_ids: string[];
+  omission_code:
+    | "artifact_family_not_reconstructable"
+    | "confirm_semantics_not_present"
+    | "frozen_truth_blocks_export"
+    | "validation_failed";
+  reasons: string[];
+}
+
+export interface ProtocolArtifactValidationRecord {
+  artifact_type: ProtocolArtifactType;
+  source_object_id: string;
+  schema_path: string;
+  valid: boolean;
+  error_count: number;
+  errors: ProtocolSchemaValidationError[];
+  notes: string[];
+}
+
+export interface RuntimeProtocolExportSummary {
+  exported_artifact_counts_by_type: Record<ProtocolArtifactType, number>;
+  omitted_artifact_counts_by_type: Record<ProtocolArtifactType, number>;
+  protocol_relevant_runtime_object_ids: string[];
+  exported_runtime_object_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeProtocolExportValidationSummary {
+  validation_mode: "locked_schema_truth_minimal";
+  validated_artifact_count: number;
+  valid_artifact_count: number;
+  invalid_artifact_count: number;
+  artifact_results: ProtocolArtifactValidationRecord[];
+  notes: string[];
+}
+
+export interface RuntimeProtocolExportTruthSummary {
+  import_lock_id: string;
+  protocol_version: string;
+  schema_bundle_version: string;
+  source_reference_type: string;
+  source_reference_value: string;
+  locked_schema_paths: Record<ProtocolArtifactType, string>;
+  binding_object_types_consulted: CoregentisObjectType[];
+  export_rule_object_types_consulted: CoregentisObjectType[];
+  notes: string[];
+}
+
+export interface RuntimeProtocolExportBundle {
+  export_metadata: {
+    bundle_version: "0.1.0";
+    scenario_id: string;
+    project_id: string;
+    export_scope: "minimal_mplp_reconstruction";
+    deterministic_anchor_timestamp: string;
+    created_object_count: number;
+  };
+  export_summary: RuntimeProtocolExportSummary;
+  exported_artifacts_by_type: Record<
+    ProtocolArtifactType,
+    ProtocolExportedArtifactRecord[]
+  >;
+  omitted_artifacts_by_type: Record<
+    ProtocolArtifactType,
+    ProtocolExportOmissionRecord[]
+  >;
+  export_validation_summary: RuntimeProtocolExportValidationSummary;
+  export_truth_summary: RuntimeProtocolExportTruthSummary;
+  notes: string[];
+}
+
 export interface MinimalLoopRunResult {
   scenario_id: string;
   status: "scaffold_only" | "executed";
@@ -290,5 +385,6 @@ export interface MinimalLoopRunResult {
   reconciliation?: RuntimeReconciliationSnapshot;
   truth_consultation?: RuntimeTruthConsultationSummary;
   export_preparation?: RuntimeExportPreparationSummary;
+  protocol_export?: RuntimeProtocolExportBundle;
   notes: string[];
 }

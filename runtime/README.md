@@ -16,6 +16,8 @@ The baseline is still intentionally minimal:
 
 - `core/`
   - runtime service interfaces and first-pass implementations
+- `export/`
+  - minimal MPLP export and reconstruction path for the current execution baseline
 - `in-memory/`
   - temporary in-memory stores
 - `harness/`
@@ -44,6 +46,11 @@ The execution result is now more inspectable and audit-oriented, including:
 - reconcile summary
 - frozen-truth consultation summary
 - export-preparation summary derived from frozen binding and export truth
+- optional protocol export bundle with:
+  - exported artifacts by protocol family
+  - explicit omission reporting for unsupported families
+  - locked-schema validation summary
+  - frozen-truth export summary
 
 ## Current Gate-Oriented Verification Commands
 
@@ -90,5 +97,7 @@ This is not:
 - full policy engine
 - full confirm workflow
 - full trace export
+- full MPLP artifact export completeness
+- full MPLP interoperability guarantee
 - full reconcile engine
 - any product or TracePilot runtime
