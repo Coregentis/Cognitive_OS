@@ -1,21 +1,14 @@
 # Cognitive_OS
 
-## What This Repository Is
+## Repository Identity
 
 `Cognitive_OS` is the neutral Coregentis mother-runtime foundation repository.
 
-It exists to hold:
-
-- mother-runtime governance baselines
-- schema, registry, and binding truth
-- runtime skeleton and harness scaffolds
-- mother-runtime tests and fixtures
-
-It is not a product repository.
+Its role is to hold the governed implementation foundation for Coregentis as a runtime and governance substrate, not as an application or product surface.
 
 ## What Belongs Here
 
-Allowed repository truth surfaces:
+This repository is the home for the mother-runtime foundation layers:
 
 - `governance/`
 - `imports/`
@@ -25,40 +18,44 @@ Allowed repository truth surfaces:
 - `runtime/`
 - `tests/`
 
-These are the active foundation surfaces for the `v0.1` mother-runtime baseline stream.
+These surfaces together define the active `v0.1` foundation baseline stream.
 
 ## What Does Not Belong Here
 
-Out of scope for this repository:
+This repository is not the place for product-specific or application-specific implementation.
+
+Out of scope by default:
 
 - product repositories
 - projection repositories
 - TracePilot implementation
 - PublishPilot implementation
 - GrowthPilot implementation
-- any future Pilot-branded application repository
+- future Pilot-branded application repositories
 - product UI surfaces
-- product DTOs or application-specific workflow surfaces
+- product DTOs
+- application-specific workflow surfaces
 
-Application-specific projection and product development belongs in separate repositories.
+Application-specific projection and product development must live in separate repositories.
 
 ## Authority Order
 
-This repository preserves:
+This repository preserves the following order:
 
 `MPLP Protocol Constitution -> Coregentis Cognitive OS -> Product Projections -> TracePilot`
 
-Implication:
+This means:
 
-- MPLP remains upstream protocol constitution
-- this repository remains the mother-runtime foundation layer
-- product projections come later and elsewhere
+- MPLP remains the upstream protocol constitution
+- `Cognitive_OS` remains the mother-runtime foundation layer
+- product projections remain downstream
+- TracePilot remains downstream of product-projection rules rather than part of this repository’s active authority surface
 
 ## Repository Neutrality
 
-This repository is intentionally neutral with respect to specific product repos.
+This repository is intentionally neutral with respect to any specific product repo.
 
-It may retain general product-projection theory where that theory remains application-neutral.
+It may retain generic product-projection theory where that theory is application-neutral and necessary to preserve the Coregentis architecture boundary.
 It must not expose product-specific implementation surfaces as repository authority.
 
 ## Public Visibility Caution
