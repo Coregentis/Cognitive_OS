@@ -54,13 +54,16 @@ The execution result is now more inspectable and audit-oriented, including:
 
 ## Current Gate-Oriented Verification Commands
 
+The canonical repository-visible command surface is the `package.json` runtime scripts.
+The direct Node commands below are equivalent direct invocations only.
+
 Canonical runtime test command:
 
 ```bash
 npm run test:runtime
 ```
 
-Equivalent direct command:
+Equivalent direct command only:
 
 ```bash
 node --test tests/runtime/*.test.mjs
@@ -72,7 +75,7 @@ Canonical runtime coverage command:
 npm run coverage:runtime
 ```
 
-Equivalent direct command:
+Equivalent direct command only:
 
 ```bash
 rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
