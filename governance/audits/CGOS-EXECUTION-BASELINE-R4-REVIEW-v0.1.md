@@ -6,16 +6,35 @@ This note records the R4 testing, coverage, and failure-path hardening pass for 
 
 ## What Coverage Tooling / Command Was Added
 
-Coverage command used:
+Canonical runtime coverage command:
+
+```bash
+npm run coverage:runtime
+```
+
+Equivalent direct command:
 
 ```bash
 rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+```
+
+Canonical runtime test command:
+
+```bash
+npm run test:runtime
+```
+
+Equivalent direct command:
+
+```bash
+node --test tests/runtime/*.test.mjs
 ```
 
 Coverage output location:
 
 - `.coverage-runtime/`
 - stdout coverage summary from Node's built-in test runner
+- runtime scripts now defined in `package.json`
 
 ## Current Measured Coverage Evidence
 

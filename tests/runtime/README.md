@@ -34,13 +34,25 @@ Current tests verify:
 
 ## Test Commands
 
-Runtime test command:
+Canonical runtime test command:
+
+```bash
+npm run test:runtime
+```
+
+Equivalent direct command:
 
 ```bash
 node --test tests/runtime/*.test.mjs
 ```
 
-Coverage command:
+Canonical runtime coverage command:
+
+```bash
+npm run coverage:runtime
+```
+
+Equivalent direct command:
 
 ```bash
 rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
@@ -50,6 +62,10 @@ Coverage output location:
 
 - `.coverage-runtime/`
 - stdout coverage summary from the Node test runner
+
+Node requirement for these commands:
+
+- `Node >= 25.0.0`
 
 ## What Is Not Here Yet
 

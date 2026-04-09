@@ -47,13 +47,25 @@ The execution result is now more inspectable and audit-oriented, including:
 
 ## Current Gate-Oriented Verification Commands
 
-Runtime test command:
+Canonical runtime test command:
+
+```bash
+npm run test:runtime
+```
+
+Equivalent direct command:
 
 ```bash
 node --test tests/runtime/*.test.mjs
 ```
 
-Coverage command:
+Canonical runtime coverage command:
+
+```bash
+npm run coverage:runtime
+```
+
+Equivalent direct command:
 
 ```bash
 rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
@@ -62,6 +74,10 @@ rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experiment
 Coverage output location:
 
 - `.coverage-runtime/`
+
+Node requirement for these commands:
+
+- `Node >= 25.0.0`
 
 ## What This Baseline Does Not Claim
 

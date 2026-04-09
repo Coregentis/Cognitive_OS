@@ -1,0 +1,13 @@
+{
+  "name": "cognitive_os",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=25.0.0"
+  },
+  "scripts": {
+    "test:runtime": "node --test tests/runtime/*.test.mjs",
+    "coverage:runtime": "rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'"
+  }
+}
