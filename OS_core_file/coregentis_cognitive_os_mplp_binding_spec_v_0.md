@@ -87,7 +87,7 @@ If Coregentis discovers a broadly useful runtime abstraction, it may be proposed
 
 ## 4.6 Product Isolation
 
-TracePilot and future product surfaces must not redefine protocol semantics through UX shortcuts or product-specific assumptions.
+Product projections and future product surfaces must not redefine protocol semantics through UX shortcuts or product-specific assumptions.
 
 ---
 
@@ -161,7 +161,7 @@ Objects that exist only for product surfaces or user interaction layers.
 
 Examples:
 
-- TracePilot task cards
+- developer task cards
 - UI review panels
 - product-facing memory widgets
 - domain-specific workflow controls
@@ -595,7 +595,7 @@ This document should be followed by the following detailed artifacts.
 3. **Protocol vs Runtime vs Product Labeling Rules**
 4. **Export Compatibility Ruleset**
 5. **RFC Promotion Criteria and Workflow**
-6. **TracePilot Binding Profile**
+6. **Developer Projection Binding Profile**
 
 ---
 
@@ -607,7 +607,7 @@ The following questions remain open for the next stage.
 - Which current Coregentis-private objects are likely RFC candidates for future MPLP promotion?
 - What is the minimal exportable protocol artifact bundle for Coregentis-generated results?
 - Which product projection shortcuts are most likely to create binding ambiguity and should be forbidden early?
-- What is the first frozen compatibility profile for TracePilot?
+- What is the first frozen compatibility profile for a future first developer-facing projection?
 
 ---
 
@@ -621,4 +621,3 @@ All downstream runtime, platform, and product work must preserve the following o
 
 Binding is the bridge across these layers.
 It is not permission to collapse them.
-

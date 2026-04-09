@@ -647,7 +647,7 @@ The following downstream specs are expected:
 5. **Conflict Governance Runtime Spec**
 6. **Consolidation & Learning Runtime Spec**
 7. **Cognitive Policy Profiles Spec**
-8. **TracePilot Runtime Profile Spec**
+8. **Developer Projection Runtime Profile Spec**
 
 ---
 
@@ -660,7 +660,7 @@ The following questions remain open for downstream work:
 - What is the first frozen promotion rule set?
 - What is the first frozen conflict taxonomy for runtime use?
 - Which policy classes are mandatory in the first implementation?
-- What is the first frozen TracePilot runtime profile?
+- What is the first frozen developer projection runtime profile?
 
 ---
 
@@ -673,4 +673,3 @@ All downstream implementation, runtime, profile, and product work must preserve 
 **Cognitive Object Model → Temporal Semantics → Memory Constitution → Activation Constitution → Conflict Constitution → Consolidation Constitution → Policy Constitution → Minimal Cognitive Loop**
 
 No implementation shortcut may bypass this constitutional order without explicit architectural revision.
-

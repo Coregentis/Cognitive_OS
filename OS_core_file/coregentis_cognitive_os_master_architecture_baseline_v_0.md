@@ -11,7 +11,7 @@
   - MPLP Four-Layer Architecture
   - MPLP Core Modules and Lifecycle Guarantees
 - **Related Product Projections**:
-  - TracePilot
+  - Future Developer-Facing Projections
   - Future Enterprise Runtime Surfaces
   - Future Domain-Specific Cognitive Systems
 - **Trace Tags**:
@@ -36,7 +36,7 @@ This document is intentionally written at the **mother-architecture level**. It 
 
 ## 2.1 Canonical Definition
 
-**MPLP is the open protocol constitution for multi-agent lifecycle semantics. Coregentis Cognitive OS is the organization-grade cognitive operating system and governance runtime built on MPLP. TracePilot and future vertical systems are product projections built on top of Coregentis Cognitive OS.**
+**MPLP is the open protocol constitution for multi-agent lifecycle semantics. Coregentis Cognitive OS is the organization-grade cognitive operating system and governance runtime built on MPLP. Future developer-facing and domain-specific systems are product projections built on top of Coregentis Cognitive OS.**
 
 ## 2.2 Short Definition
 
@@ -132,7 +132,7 @@ Coregentis does **not** redefine MPLP core semantics.
 
 ### Product Projections
 
-TracePilot and future vertical systems are **product projections**, not mother architecture definitions.
+Future developer-facing and vertical systems are **product projections**, not mother architecture definitions.
 
 They must not redefine either MPLP or Coregentis mother runtime semantics.
 
@@ -140,7 +140,7 @@ They must not redefine either MPLP or Coregentis mother runtime semantics.
 
 - **MPLP** = protocol constitution / semantic ISA
 - **Coregentis Cognitive OS** = operating system / governance runtime
-- **TracePilot and vertical systems** = applications / workspaces / product surfaces
+- **Future product projections and vertical systems** = applications / workspaces / product surfaces
 
 ## 4.4 Non-Negotiable Rule
 
@@ -401,9 +401,9 @@ This layer is what makes Coregentis an organization-grade Cognitive OS rather th
 
 Layer 4 contains product surfaces built on top of Coregentis Cognitive OS.
 
-## 11.1 TracePilot
+## 11.1 Developer-Facing Projection Class
 
-TracePilot is the first developer-facing and single-project product projection.
+A future developer-facing and single-project-first system may be projected from this mother runtime.
 
 ### Intended focus
 
@@ -489,17 +489,17 @@ A future vertical system must **not** fork the Coregentis mother architecture by
 
 ---
 
-# 14. TracePilot Relationship Rule
+# 14. First Projection Relationship Rule
 
 ## 14.1 Rule
 
-TracePilot is not an unrelated standalone product.
+A future first projection is not an unrelated standalone product.
 
-It is the **first market-facing projection** of Coregentis Cognitive OS.
+It is a downstream market-facing projection of Coregentis Cognitive OS.
 
 ## 14.2 Constraint
 
-TracePilot must not redefine Coregentis mother runtime semantics in order to optimize short-term product convenience.
+No first projection may redefine Coregentis mother runtime semantics in order to optimize short-term product convenience.
 
 ---
 
@@ -574,7 +574,7 @@ Suggested downstream documents:
 1. **Coregentis Cognitive OS — Runtime Constitution Spec**
 2. **Coregentis Cognitive OS — MPLP Binding Spec**
 3. **Coregentis Cognitive OS — Product Projection Baseline**
-4. **TracePilot — Product Projection Baseline**
+4. **First Developer-Facing Projection Baseline**
 5. **Coregentis Cognitive OS — Minimal Cognitive Loop MVP Definition**
 6. **Coregentis Cognitive OS — Domain Pack Architecture Spec**
 
@@ -588,7 +588,7 @@ The following questions remain for next-stage architecture work.
 - Which Coregentis capabilities are candidates for future MPLP RFC standardization?
 - What is the exact first-class object taxonomy for v0.1?
 - What are the default temporal semantics and retention policies?
-- What is the first frozen policy profile for TracePilot?
+- What is the first frozen policy profile for a future first developer-facing projection?
 - What is the first frozen organization runtime profile for Coregentis?
 
 ---
@@ -602,4 +602,3 @@ All downstream product, runtime, and implementation work must preserve the follo
 **MPLP Protocol Constitution → Coregentis Cognitive OS → Product Projections**
 
 No downstream surface may reverse this architectural authority order.
-

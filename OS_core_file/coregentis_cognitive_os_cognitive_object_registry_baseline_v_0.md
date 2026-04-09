@@ -695,7 +695,7 @@ The following downstream documents are recommended.
 2. **Object Relationship Ruleset v0.1**
 3. **Memory Layer Placement Ruleset v0.1**
 4. **Object Promotion & Demotion Ruleset v0.1**
-5. **TracePilot Projection Object Profile v0.1**
+5. **Developer Projection Object Profile v0.1**
 6. **Runtime Object API Naming Rules v0.1**
 
 ---
@@ -721,4 +721,3 @@ All downstream runtime, projection, and implementation work must preserve the fo
 **Semantically important system behavior must be grounded in registered cognitive objects with explicit authority, layer, temporal, mutation, and lineage semantics.**
 
 No runtime subsystem or product surface may bypass this requirement through ad hoc object invention.
-

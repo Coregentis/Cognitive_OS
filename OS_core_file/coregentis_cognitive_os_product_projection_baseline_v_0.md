@@ -13,7 +13,7 @@
   - Coregentis Cognitive OS — Runtime Constitution Spec v0.1
 - **Trace Tags**:
   - `coregentis/product-projection`
-  - `tracepilot/projection`
+  - `developer-projection`
   - `runtime-surface-boundary`
   - `product-governance`
 
@@ -29,7 +29,7 @@ This document defines:
 
 - what a product projection is
 - how product projections relate to Coregentis Cognitive OS
-- how TracePilot should be positioned as the first projection
+- how a future first developer-facing projection should be positioned
 - how future enterprise and domain projections should be governed
 - what must remain fixed across all projections
 
@@ -67,7 +67,7 @@ If product projection is not formalized, future work will produce one or more of
 
 1. product-specific UX behaviors being mistaken for runtime law
 2. projection-specific shortcuts mutating the mother architecture
-3. TracePilot convenience logic contaminating future enterprise and domain systems
+3. first-projection convenience logic contaminating future enterprise and domain systems
 4. future vertical systems incorrectly forking the mother runtime
 5. pricing/package decisions silently changing runtime boundaries
 
@@ -81,9 +81,9 @@ Therefore, Product Projection must be treated as a first-class baseline concept.
 
 Coregentis Cognitive OS is the **mother runtime and governance substrate**.
 
-## 4.2 TracePilot Role
+## 4.2 Developer Projection Role
 
-TracePilot is the **first developer-facing, single-project-oriented product projection** of Coregentis Cognitive OS.
+A future first developer-facing, single-project-oriented system should be treated as a product projection of Coregentis Cognitive OS rather than as a separate architecture.
 
 ## 4.3 Enterprise Role
 
@@ -133,7 +133,7 @@ Focus:
 - traceability and rollback for engineering work
 
 Primary example:
-- TracePilot
+- future developer-facing projection repository
 
 ## 6.2 Class B — Organizational Projection
 
@@ -242,23 +242,23 @@ Examples:
 
 ---
 
-# 8. TracePilot Baseline Position
+# 8. Developer Projection Baseline Position
 
 ## 8.1 Canonical Position
 
-TracePilot is the **first market-facing product projection** of Coregentis Cognitive OS.
+A first developer-facing market-facing system should be treated as a product projection of Coregentis Cognitive OS.
 
 ## 8.2 Projection Class
 
-TracePilot is classified as a **Developer Projection**.
+The first developer-facing projection is classified as a **Developer Projection**.
 
 ## 8.3 Projection Focus
 
-TracePilot exists to make long-horizon development work with AI systems more continuous, correctable, governed, and resilient.
+A first developer-facing projection may exist to make long-horizon development work with AI systems more continuous, correctable, governed, and resilient.
 
 ## 8.4 Core Experience Intention
 
-TracePilot should expose user-facing value such as:
+A first developer-facing projection should expose user-facing value such as:
 
 - remembering the right project truth
 - handling requirement changes without collapse
@@ -268,9 +268,9 @@ TracePilot should expose user-facing value such as:
 
 ## 8.5 Constraint
 
-TracePilot must not be treated as the mother definition of Coregentis.
+No specific developer-facing projection must be treated as the mother definition of Coregentis.
 
-It is the first projection, not the constitution.
+It remains a projection, not the constitution.
 
 ---
 
@@ -293,7 +293,7 @@ Enterprise projections should emphasize:
 
 ## 9.3 Projection Rule
 
-Enterprise projections may expose more governance and organization runtime capabilities than TracePilot, but they remain projections—not constitutional runtime definitions.
+Enterprise projections may expose more governance and organization runtime capabilities than a future developer-facing projection, but they remain projections—not constitutional runtime definitions.
 
 ---
 
@@ -462,7 +462,7 @@ Each projection profile should declare:
 
 ## 15.3 Profile Examples
 
-### TracePilot Profile Example
+### Developer Projection Profile Example
 - developer-focused
 - single-project-first
 - builder-oriented runtime defaults
@@ -508,7 +508,7 @@ Industry adaptation should prefer domain packs and projection layers before arch
 
 The following risks must be monitored.
 
-## 17.1 TracePilot-Defines-Everything Risk
+## 17.1 First-Projection-Defines-Everything Risk
 
 The first successful projection may incorrectly become the implicit definition of the whole system.
 
@@ -540,7 +540,7 @@ This document does not define:
 - commercial packaging matrix
 - exact feature gating for each release
 - user onboarding flows
-- exact TracePilot MVP scope
+- exact first developer-facing product MVP scope
 
 These belong to downstream product and versioning documents.
 
@@ -550,7 +550,7 @@ These belong to downstream product and versioning documents.
 
 The following downstream documents are recommended.
 
-1. **TracePilot — Product Projection Baseline v0.1**
+1. **First Developer-Facing Projection Baseline v0.1**
 2. **Coregentis Enterprise Projection Baseline v0.1**
 3. **Coregentis Domain Projection Architecture Spec v0.1**
 4. **Projection Profile Ruleset v0.1**
@@ -563,7 +563,7 @@ The following downstream documents are recommended.
 
 The following questions remain open:
 
-- What is the first frozen TracePilot projection profile?
+- What is the first frozen developer projection profile?
 - What projection-visible runtime concepts must remain exposed versus hidden?
 - What is the minimum enterprise projection surface for the first organization-grade release?
 - Which domain pack structure should be standardized first?
@@ -584,4 +584,3 @@ The fixed authority order remains:
 **MPLP Protocol Constitution → Coregentis Runtime Constitution → Product Projection Baseline → Product-Specific UX and Packaging**
 
 No projection may reverse this order.
-
