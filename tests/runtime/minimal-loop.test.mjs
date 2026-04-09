@@ -226,3 +226,34 @@ test("repeated execution of the same fixture remains deterministic", async () =>
     }))
   );
 });
+
+test("repeated execution of requirement-change-midflow remains deterministic", async () => {
+  const first = await execute_scenario_file(
+    repoRoot,
+    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
+  );
+  const second = await execute_scenario_file(
+    repoRoot,
+    "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
+  );
+
+  assert.deepEqual(first.created_object_ids_by_type, second.created_object_ids_by_type);
+  assert.deepEqual(first.store_snapshot, second.store_snapshot);
+  assert.deepEqual(first.confirm_summary, second.confirm_summary);
+  assert.deepEqual(first.reconciliation, second.reconciliation);
+  assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(
+    first.event_timeline?.map((entry) => ({
+      step: entry.step,
+      event_kind: entry.event_kind,
+      related_object_ids: entry.related_object_ids,
+      status_transition: entry.status_transition,
+    })),
+    second.event_timeline?.map((entry) => ({
+      step: entry.step,
+      event_kind: entry.event_kind,
+      related_object_ids: entry.related_object_ids,
+      status_transition: entry.status_transition,
+    }))
+  );
+});

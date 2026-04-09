@@ -220,6 +220,7 @@ export interface RuntimeEventTimelineEntry {
     | "object_created"
     | "status_transition"
     | "policy_evaluated"
+    | "stage_skipped"
     | "confirm_resolution"
     | "reconcile_assessed"
     | "export_prepared";

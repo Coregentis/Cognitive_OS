@@ -552,6 +552,9 @@ export class MinimalRuntimeOrchestratorSkeleton
         ["confirm-gate"]
       );
     } else {
+      push_event("confirm", "stage_skipped", [], [
+        "Confirm stage skipped in the fresh-intent path.",
+      ]);
       push_step_outcome(
         "confirm",
         [],
@@ -679,6 +682,9 @@ export class MinimalRuntimeOrchestratorSkeleton
         ["drift-record", "conflict-case"]
       );
     } else {
+      push_event("reconcile", "stage_skipped", [], [
+        "Reconcile stage skipped in the fresh-intent path.",
+      ]);
       push_step_outcome(
         "reconcile",
         [],
