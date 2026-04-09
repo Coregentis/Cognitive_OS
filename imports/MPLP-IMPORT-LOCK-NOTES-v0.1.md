@@ -8,10 +8,16 @@ The lock freezes the exact MPLP upstream reference and the exact MPLP asset clas
 
 The locked upstream reference is:
 
-- source repo: `https://github.com/Coregentis/mplp_prerelease.git`
+- source repo: `https://github.com/Coregentis/MPLP-Protocol.git`
 - local repo path: `/Users/jasonwang/Documents/AI_Dev/V1.0_release`
 - source reference type: `git-commit-sha`
 - source reference value: `8df1f0a4151d74b02b03f3807380ea33d5fadad6`
+
+R6b verification confirmed that:
+
+- the local checkout commit equals `8df1f0a4151d74b02b03f3807380ea33d5fadad6`
+- the public `Coregentis/MPLP-Protocol` repository exposes the same commit at `HEAD` / `main`
+- the actual imported schema files used by Cognitive_OS are content-aligned with the public repository at that locked reference
 
 The locked import surface includes:
 
@@ -86,7 +92,7 @@ Coregentis must bind against MPLP protocol truth first, not against convenience 
 
 The lock uses a commit SHA instead of a tag because:
 
-- the local MPLP repository exposes a valid HEAD commit SHA
+- the aligned public MPLP source exposes a valid commit SHA at the locked reference
 - `git describe --tags --exact-match HEAD` does not return an exact matching tag for that commit
 
 Because the phase requirement prefers commit SHA when available, the lock uses the commit SHA as the authoritative source reference and marks the tag as unavailable.
