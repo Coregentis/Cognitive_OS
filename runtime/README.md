@@ -45,6 +45,24 @@ The execution result is now more inspectable and audit-oriented, including:
 - frozen-truth consultation summary
 - export-preparation summary derived from frozen binding and export truth
 
+## Current Gate-Oriented Verification Commands
+
+Runtime test command:
+
+```bash
+node --test tests/runtime/*.test.mjs
+```
+
+Coverage command:
+
+```bash
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+```
+
+Coverage output location:
+
+- `.coverage-runtime/`
+
 ## What This Baseline Does Not Claim
 
 This is not:

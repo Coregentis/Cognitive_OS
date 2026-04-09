@@ -5,7 +5,7 @@ import { execute_scenario_file } from "../../runtime/harness/minimal-loop-harnes
 
 const repoRoot = process.cwd();
 
-test("fresh-intent executes a neutral minimal in-memory path", async () => {
+test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () => {
   const result = await execute_scenario_file(
     repoRoot,
     "./tests/fixtures/min-loop/fresh-intent/scenario.json"
@@ -93,7 +93,7 @@ test("fresh-intent executes a neutral minimal in-memory path", async () => {
   );
 });
 
-test("requirement-change-midflow executes a neutral change-aware path", async () => {
+test("[e2e] requirement-change-midflow executes a neutral change-aware path", async () => {
   const result = await execute_scenario_file(
     repoRoot,
     "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"
@@ -197,7 +197,7 @@ test("requirement-change-midflow executes a neutral change-aware path", async ()
   );
 });
 
-test("repeated execution of the same fixture remains deterministic", async () => {
+test("[determinism] repeated execution of fresh-intent remains deterministic", async () => {
   const first = await execute_scenario_file(
     repoRoot,
     "./tests/fixtures/min-loop/fresh-intent/scenario.json"
@@ -227,7 +227,7 @@ test("repeated execution of the same fixture remains deterministic", async () =>
   );
 });
 
-test("repeated execution of requirement-change-midflow remains deterministic", async () => {
+test("[determinism] repeated execution of requirement-change-midflow remains deterministic", async () => {
   const first = await execute_scenario_file(
     repoRoot,
     "./tests/fixtures/min-loop/requirement-change-midflow/scenario.json"

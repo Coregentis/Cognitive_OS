@@ -9,7 +9,15 @@ This directory now exists to hold neutral mother-runtime tests for that baseline
 
 ## Later Intended Coverage
 
-Later tests should verify:
+Current test buckets:
+
+- `minimal-loop.test.mjs`
+  - main-flow / E2E / golden-path coverage
+  - repeated-run determinism coverage
+- `failure-paths.test.mjs`
+  - edge / failure-path coverage
+
+Current tests verify:
 
 - service boundary wiring
 - registry and binding usage
@@ -23,6 +31,25 @@ Later tests should verify:
 - export-preparation summaries derived from frozen binding/export truth
 - explicit frozen-truth consultation
 - progression toward the minimal cognitive loop
+
+## Test Commands
+
+Runtime test command:
+
+```bash
+node --test tests/runtime/*.test.mjs
+```
+
+Coverage command:
+
+```bash
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+```
+
+Coverage output location:
+
+- `.coverage-runtime/`
+- stdout coverage summary from the Node test runner
 
 ## What Is Not Here Yet
 
