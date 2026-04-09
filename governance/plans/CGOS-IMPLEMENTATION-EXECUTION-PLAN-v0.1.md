@@ -559,7 +559,7 @@ The following must exist first:
 6. drift/conflict object path
 7. trace/evidence path
 8. runnable minimal cognitive loop harness
-9. exportable MPLP Context/Plan/Confirm/Trace reconstruction path
+9. bounded MPLP Confirm/Trace export path with explicit Context/Plan omission and reconstruction only where currently supported
 
 Without those, TracePilot runtime/profile work will be inventing mother-runtime semantics.
 
