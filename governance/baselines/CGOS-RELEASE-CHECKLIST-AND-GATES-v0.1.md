@@ -45,6 +45,7 @@ Required governance artifacts before claiming `v0.1.0`:
 - `governance/baselines/CGOS-VERSIONING-AND-RELEASE-BASELINE-v0.1.md`
 - `governance/baselines/CGOS-GIT-TRUTH-CHAIN-AND-BRANCHING-BASELINE-v0.1.md`
 - `governance/baselines/CGOS-RELEASE-CHECKLIST-AND-GATES-v0.1.md`
+- `governance/baselines/CGOS-TESTING-AND-COVERAGE-GATES-v0.1.md`
 - `governance/baselines/CGOS-PUBLIC-REPO-VISIBILITY-AND-IP-BOUNDARY-NOTE-v0.1.md`
 - `governance/records/CGOS-REPO-BASELINE-SEAL-v0.1.md`
 - `CHANGELOG.md`
@@ -56,6 +57,7 @@ Required review/audit artifacts before claiming `v0.1.0`:
 - registry freeze review notes
 - binding freeze review notes
 - runtime-skeleton review note
+- testing and coverage gate review note
 
 ## 4. FAIL Conditions
 
@@ -69,6 +71,7 @@ Required review/audit artifacts before claiming `v0.1.0`:
 - seal record is missing
 - required review records are missing
 - release is claimed from local-only filesystem truth
+- testing / coverage gate requirements for execution sealing are not satisfied where applicable
 
 ## 5. Planned Release vs Actual Release
 
