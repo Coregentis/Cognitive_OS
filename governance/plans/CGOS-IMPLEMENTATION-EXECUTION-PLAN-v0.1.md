@@ -311,7 +311,7 @@ The architecture explicitly states that the minimal cognitive loop must anchor e
 
 - a CLI or test harness that executes the minimal loop
 - emitted Coregentis objects across memory/evidence/governance layers
-- exportable MPLP Context/Plan/Confirm/Trace projections
+- export-preparation output plus bounded MPLP Confirm/Trace export with explicit omission of unsupported Context/Plan families
 - end-to-end tests for fresh intent and delta intent change handling
 
 #### What explicitly waits
