@@ -6,7 +6,7 @@ This note records the third execution-baseline hardening pass for `Cognitive_OS`
 
 ## What State-Transition Discipline Was Added
 
-The runtime now exposes explicit status progression for the key object families already in play.
+The runtime now exposes explicit, testable status progression for the key object families already in play.
 
 Examples:
 
@@ -47,7 +47,7 @@ It records:
 - optional status transition payload
 - notes
 
-This is enough for run reconstruction and test auditability without claiming a full event bus or protocol event export.
+This is enough for per-run reconstruction and test auditability without claiming a full event bus or protocol event export.
 
 ## How Confirm / Reconcile Semantics Were Strengthened
 
@@ -56,17 +56,18 @@ The two scenarios now differ semantically, not only by object presence.
 ### `fresh-intent`
 
 - remains the simpler path
-- confirm is skipped
-- reconcile is skipped
+- confirm is explicitly skipped
+- reconcile is explicitly skipped
 - no artificial drift/conflict noise is injected
 
 ### `requirement-change-midflow`
 
 - uses `delta-intent`
 - requires confirm under the minimal policy pass
-- emits `confirm-gate`
+- advances `confirm-gate` through a visible status transition
 - emits `drift-record`
 - emits `conflict-case`
+- advances reconcile artifacts through visible status transitions
 - emits reconcile summary tied to those artifacts
 
 ## How Export-Preparation Summaries Are Now Derived From Frozen Truth
