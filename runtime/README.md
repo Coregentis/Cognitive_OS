@@ -10,6 +10,7 @@ The baseline is still intentionally minimal:
 - deterministic
 - fixture-driven
 - neutral
+- frozen-truth-disciplined
 
 ## Included Layers
 
@@ -30,6 +31,16 @@ It can execute the two neutral mother-runtime fixtures:
 through the minimal loop:
 
 `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate`
+
+The execution result is now more inspectable and audit-oriented, including:
+
+- ordered step outcomes
+- created object ids grouped by type
+- store snapshot by layer
+- confirm summary
+- evidence summary
+- reconcile summary
+- frozen-truth consultation summary
 
 ## What This Baseline Does Not Claim
 

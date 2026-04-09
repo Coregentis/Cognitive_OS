@@ -65,7 +65,18 @@ export class DeterministicExecutionFactory {
     const cognition_time = this.next_timestamp();
     const object_id = this.next_id();
 
+    if (
+      params.protocol_binding &&
+      params.registry_entry.protocol_binding_ref_policy !==
+        "optional_shallow_runtime_bound"
+    ) {
+      throw new Error(
+        `Protocol binding is not permitted by frozen registry policy for ${params.registry_entry.object_type}`
+      );
+    }
+
     const record: RuntimeObjectRecord = {
+      schema_version: "0.1.0",
       object_id,
       object_type: params.registry_entry.object_type,
       authority_class: params.registry_entry.authority_class,
@@ -85,6 +96,7 @@ export class DeterministicExecutionFactory {
       lineage: {
         creation_source: params.creation_source,
         derivation_mode: params.derivation_mode,
+        source_artifact_refs: [`fixture:${this.scenario_id}`],
         ...params.lineage_overrides,
       },
       governance: {

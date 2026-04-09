@@ -201,6 +201,44 @@ export interface RuntimePolicySnapshot {
 
 export interface RuntimeReconciliationSnapshot {
   can_continue: boolean;
+  drift_record_ids?: string[];
+  conflict_case_ids?: string[];
+  notes: string[];
+}
+
+export interface RuntimeStepOutcome {
+  step: MinimalLoopStep;
+  status: "executed" | "skipped";
+  created_object_ids: string[];
+  created_object_types: CoregentisObjectType[];
+  consulted_registry_object_types: CoregentisObjectType[];
+  consulted_binding_object_types: CoregentisObjectType[];
+  consulted_export_object_types: CoregentisObjectType[];
+  notes: string[];
+}
+
+export type CreatedObjectIdsByType = Partial<
+  Record<CoregentisObjectType, string[]>
+>;
+
+export interface RuntimeConfirmSummary {
+  confirm_required: boolean;
+  confirm_gate_id?: string;
+  confirm_status?: string;
+  matched_rule_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeEvidenceSummary {
+  trace_evidence_ids: string[];
+  decision_record_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeTruthConsultationSummary {
+  registry_object_types: CoregentisObjectType[];
+  binding_object_types: CoregentisObjectType[];
+  export_rule_object_types: CoregentisObjectType[];
   notes: string[];
 }
 
@@ -210,8 +248,13 @@ export interface MinimalLoopRunResult {
   planned_steps: MinimalLoopStep[];
   touched_object_types: CoregentisObjectType[];
   created_objects: RuntimeObjectRecord[];
+  created_object_ids_by_type?: CreatedObjectIdsByType;
+  ordered_step_outcomes?: RuntimeStepOutcome[];
   store_snapshot?: RuntimeStoreSnapshot;
   policy_snapshots?: RuntimePolicySnapshot[];
+  confirm_summary?: RuntimeConfirmSummary;
+  evidence_summary?: RuntimeEvidenceSummary;
   reconciliation?: RuntimeReconciliationSnapshot;
+  truth_consultation?: RuntimeTruthConsultationSummary;
   notes: string[];
 }
