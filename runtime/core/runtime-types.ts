@@ -115,6 +115,14 @@ export interface RuntimeObjectRecord {
   [key: string]: unknown;
 }
 
+export interface RuntimeObjectStore {
+  put(record: RuntimeObjectRecord): void;
+  get(object_id: string): RuntimeObjectRecord | undefined;
+  list_by_project(project_id?: string): RuntimeObjectRecord[];
+  clear(): void;
+  snapshot_ids(project_id?: string): string[];
+}
+
 export interface RegistryEntryRecord {
   object_type: CoregentisObjectType;
   schema_ref: string;
@@ -177,10 +185,33 @@ export interface MinimalLoopPlan {
   notes: string[];
 }
 
+export interface RuntimeStoreSnapshot {
+  working_object_ids: string[];
+  episodic_object_ids: string[];
+  semantic_object_ids: string[];
+  evidence_object_ids: string[];
+}
+
+export interface RuntimePolicySnapshot {
+  matched_rule_ids: string[];
+  confirm_required: boolean;
+  suppressed: boolean;
+  notes: string[];
+}
+
+export interface RuntimeReconciliationSnapshot {
+  can_continue: boolean;
+  notes: string[];
+}
+
 export interface MinimalLoopRunResult {
   scenario_id: string;
-  status: "scaffold_only";
+  status: "scaffold_only" | "executed";
   planned_steps: MinimalLoopStep[];
   touched_object_types: CoregentisObjectType[];
+  created_objects: RuntimeObjectRecord[];
+  store_snapshot?: RuntimeStoreSnapshot;
+  policy_snapshots?: RuntimePolicySnapshot[];
+  reconciliation?: RuntimeReconciliationSnapshot;
   notes: string[];
 }

@@ -24,4 +24,8 @@ export class InMemoryWorkingStore {
   clear(): void {
     this.records.clear();
   }
+
+  snapshot_ids(project_id?: string): string[] {
+    return this.list_by_project(project_id).map((record) => record.object_id);
+  }
 }

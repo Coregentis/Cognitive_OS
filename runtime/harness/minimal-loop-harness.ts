@@ -1,11 +1,30 @@
 import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 
-import type { RuntimeOrchestrator } from "../core/runtime-orchestrator";
+import {
+  MinimalRuntimeOrchestratorSkeleton,
+  type RuntimeOrchestrator,
+} from "../core/runtime-orchestrator.ts";
 import type {
   MinimalLoopInput,
   MinimalLoopPlan,
   MinimalLoopRunResult,
 } from "../core/runtime-types";
+import { FrozenRegistryService } from "../core/registry-service.ts";
+import { FrozenBindingService } from "../core/binding-service.ts";
+import { DeterministicFormService } from "../core/form-service.ts";
+import { DeterministicMemoryService } from "../core/memory-service.ts";
+import { DeterministicActivationService } from "../core/activation-service.ts";
+import { MinimalPolicyService } from "../core/policy-service.ts";
+import { DeterministicConfirmService } from "../core/confirm-service.ts";
+import { DeterministicTraceService } from "../core/trace-service.ts";
+import { DeterministicReconcileService } from "../core/reconcile-service.ts";
+import { DeterministicConsolidationService } from "../core/consolidation-service.ts";
+import { DeterministicExecutionFactory } from "../core/execution-support.ts";
+import { InMemoryWorkingStore } from "../in-memory/working-store.ts";
+import { InMemoryEpisodicStore } from "../in-memory/episodic-store.ts";
+import { InMemorySemanticStore } from "../in-memory/semantic-store.ts";
+import { InMemoryEvidenceStore } from "../in-memory/evidence-store.ts";
 
 export type MinimalLoopScenarioName =
   | "fresh-intent"
@@ -20,7 +39,74 @@ export interface MinimalLoopScenario {
 }
 
 export class MinimalLoopHarness {
-  constructor(private readonly orchestrator: RuntimeOrchestrator) {}
+  private readonly orchestrator: RuntimeOrchestrator;
+
+  constructor(orchestrator: RuntimeOrchestrator) {
+    this.orchestrator = orchestrator;
+  }
+
+  static create_default(
+    repo_root: string,
+    scenario_id: string
+  ): MinimalLoopHarness {
+    const registry_service = FrozenRegistryService.from_repo_root(repo_root);
+    const binding_service = FrozenBindingService.from_repo_root(repo_root);
+    const factory = new DeterministicExecutionFactory(scenario_id);
+    const working_store = new InMemoryWorkingStore();
+    const episodic_store = new InMemoryEpisodicStore();
+    const semantic_store = new InMemorySemanticStore();
+    const evidence_store = new InMemoryEvidenceStore();
+
+    const orchestrator = new MinimalRuntimeOrchestratorSkeleton({
+      registry_service,
+      binding_service,
+      form_service: new DeterministicFormService({
+        registry_service,
+        binding_service,
+        factory,
+        scenario_id,
+      }),
+      memory_service: new DeterministicMemoryService({
+        registry_service,
+        factory,
+        scenario_id,
+      }),
+      activation_service: new DeterministicActivationService({
+        registry_service,
+        factory,
+        scenario_id,
+      }),
+      policy_service: new MinimalPolicyService(),
+      confirm_service: new DeterministicConfirmService({
+        registry_service,
+        binding_service,
+        factory,
+        scenario_id,
+      }),
+      trace_service: new DeterministicTraceService({
+        registry_service,
+        binding_service,
+        factory,
+        scenario_id,
+      }),
+      reconcile_service: new DeterministicReconcileService({
+        registry_service,
+        factory,
+        scenario_id,
+      }),
+      consolidation_service: new DeterministicConsolidationService({
+        registry_service,
+        factory,
+        scenario_id,
+      }),
+      working_store,
+      episodic_store,
+      semantic_store,
+      evidence_store,
+    });
+
+    return new MinimalLoopHarness(orchestrator);
+  }
 
   async load_scenario(
     scenario_path: string
@@ -36,4 +122,28 @@ export class MinimalLoopHarness {
   dry_run_scenario(input: MinimalLoopInput): MinimalLoopRunResult {
     return this.orchestrator.dry_run_minimal_loop(input);
   }
+
+  execute_scenario(input: MinimalLoopInput): MinimalLoopRunResult {
+    return this.orchestrator.execute_minimal_loop(input);
+  }
+}
+
+export async function execute_scenario_file(
+  repo_root: string,
+  scenario_path: string
+): Promise<MinimalLoopRunResult> {
+  const scenario_file = resolve(scenario_path);
+  const raw = await readFile(scenario_file, "utf8");
+  const scenario = JSON.parse(raw) as MinimalLoopScenario;
+  const harness = MinimalLoopHarness.create_default(
+    repo_root,
+    scenario.scenario_id
+  );
+
+  return harness.execute_scenario({
+    scenario_id: scenario.scenario_id,
+    project_id: scenario.project_id,
+    raw_input: scenario.raw_input,
+    prior_object_refs: scenario.prior_object_refs,
+  });
 }

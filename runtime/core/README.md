@@ -2,10 +2,16 @@
 
 ## Purpose
 
-This directory defines the first runtime-skeleton interface layer for Coregentis.
+This directory defines the first runtime core layer for the `v0.1` execution baseline.
 
 It does not implement the full runtime.
-It defines the service boundaries the later mother-runtime implementation will need in order to run the minimal cognitive loop:
+It now contains:
+
+- service interfaces
+- first-pass in-memory service implementations
+- orchestrator execution scaffolding
+
+All of that remains limited to the minimal cognitive loop:
 
 `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate`
 
@@ -39,7 +45,7 @@ It defines the service boundaries the later mother-runtime implementation will n
 
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 
-This phase is interface-first by design.
+This phase is still skeleton-first and baseline-first by design.
 
 It does not implement:
 
@@ -56,7 +62,7 @@ The purpose is narrower:
 
 - stabilize runtime service boundaries
 - align those boundaries with frozen schemas, registry, and binding artifacts
-- prepare the next phase without skipping directly into behavior
+- provide one deterministic in-memory execution baseline without skipping directly into full runtime realization
 
 ## Relation To Later AEL / VSL / PSG Realization
 

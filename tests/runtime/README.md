@@ -4,8 +4,8 @@
 
 This directory is reserved for later runtime-skeleton and minimal-loop tests.
 
-At this phase, runtime behavior is intentionally not implemented.
-Therefore this directory contains only the placeholder documentation needed to mark the test boundary.
+At this phase, only the first in-memory execution baseline is implemented.
+This directory now exists to hold neutral mother-runtime tests for that baseline.
 
 ## Later Intended Coverage
 
@@ -14,7 +14,8 @@ Later tests should verify:
 - service boundary wiring
 - registry and binding usage
 - minimal loop dry-run planning
-- scaffolded store interaction
+- minimal in-memory execution for neutral scenarios
+- working / episodic / semantic / evidence distinction
 - progression toward the minimal cognitive loop
 
 ## What Is Not Here Yet

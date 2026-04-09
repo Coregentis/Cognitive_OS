@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This directory provides minimal in-memory scaffolds for the later minimal loop harness.
+This directory provides minimal in-memory scaffolds for the first executable minimal loop baseline.
 
 These stores are:
 
