@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/temporal-record.schema.json",
+  "title": "Coregentis Temporal Record",
+  "description": "Cross-cutting temporal semantics record for Coregentis runtime objects.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "temporal_class": {
+      "type": "string",
+      "enum": [
+        "ephemeral",
+        "session_bounded",
+        "replayable",
+        "promotable",
+        "durable",
+        "expirable",
+        "archival"
+      ],
+      "description": "Temporal behavior class drawn from the Coregentis object registry baseline."
+    },
+    "cognition_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the runtime incorporated or reasoned over the object."
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the source event occurred outside or before runtime incorporation."
+    },
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Start of the object's validity window, if applicable."
+    },
+    "valid_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of the object's validity window, if applicable."
+    },
+    "replay_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of replay eligibility horizon, if applicable."
+    },
+    "rollback_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of rollback eligibility horizon, if applicable."
+    },
+    "drift_horizon_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of active drift horizon, if applicable."
+    },
+    "retention_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of retention horizon, if applicable."
+    },
+    "consolidation_after": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Earliest consolidation time, if applicable."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional temporal notes for later object-specific interpretation."
+    }
+  },
+  "required": [
+    "temporal_class",
+    "cognition_time"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

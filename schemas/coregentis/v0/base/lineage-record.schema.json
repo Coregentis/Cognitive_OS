@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/lineage-record.schema.json",
+  "title": "Coregentis Lineage Record",
+  "description": "Cross-cutting lineage record for Coregentis runtime objects. Preserves source and derivation semantics before object-specific schemas are introduced.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "creation_source": {
+      "type": "string",
+      "enum": [
+        "user_entry",
+        "agent_action",
+        "tool_result",
+        "runtime_derivation",
+        "protocol_import"
+      ],
+      "description": "Creation source class defined by the Coregentis object registry baseline."
+    },
+    "derivation_mode": {
+      "type": "string",
+      "enum": [
+        "origin",
+        "imported",
+        "derived",
+        "promoted",
+        "replayed"
+      ],
+      "description": "How this object relates to prior objects or artifacts."
+    },
+    "parent_object_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Immediate parent or governing predecessor object, if applicable."
+    },
+    "source_object_ids": {
+      "type": "array",
+      "description": "Source Coregentis object identifiers that contributed to this object.",
+      "items": {
+        "$ref": "#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
+    "source_event_ids": {
+      "type": "array",
+      "description": "Source event identifiers associated with this object's creation or update.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "source_artifact_refs": {
+      "type": "array",
+      "description": "External or protocol artifact references preserved for reconstructability.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "promoted_from_object_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Source object identifier for governed promotion, if applicable."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional lineage notes."
+    }
+  },
+  "required": [
+    "creation_source",
+    "derivation_mode"
+  ],
+  "$defs": {
+    "coregentis_identifier": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

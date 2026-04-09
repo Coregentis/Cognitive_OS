@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/cognitive-object-envelope.schema.json",
+  "title": "Coregentis Cognitive Object Envelope",
+  "description": "Base envelope for first-class Coregentis runtime objects. This schema defines the minimum cross-cutting structure required before any object-specific fields are added.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "#/$defs/semver",
+      "description": "Optional schema stream version carried by this object instance. Detailed schema-governance interpretation is defined outside the base envelope."
+    },
+    "object_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Stable Coregentis object identifier."
+    },
+    "object_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "description": "Canonical Coregentis object type in kebab-case."
+    },
+    "authority_class": {
+      "type": "string",
+      "enum": [
+        "protocol_native",
+        "runtime_bound",
+        "coregentis_private_runtime",
+        "product_projected",
+        "derived_ephemeral"
+      ],
+      "description": "Authority class required by the Coregentis object registry and binding law."
+    },
+    "primary_layer": {
+      "type": "string",
+      "enum": [
+        "mplp_protocol_constitution",
+        "cognitive_constitution_layer",
+        "cognitive_runtime_core",
+        "organization_runtime_layer",
+        "product_projection_layer"
+      ],
+      "description": "Primary architectural layer affiliation for the object."
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Object-local lifecycle or runtime status. Concrete object schemas may narrow this."
+    },
+    "protocol_binding_ref": {
+      "type": "object",
+      "description": "Optional protocol binding reference for protocol-native or runtime-bound objects. This does not define binding law by itself; it only preserves reconstructable linkage.",
+      "additionalProperties": false,
+      "properties": {
+        "binding_class": {
+          "type": "string",
+          "enum": [
+            "protocol_native",
+            "runtime_bound"
+          ]
+        },
+        "protocol_object_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol_object_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reconstructable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "binding_class",
+        "reconstructable"
+      ]
+    },
+    "temporal": {
+      "$ref": "temporal-record.schema.json",
+      "description": "Temporal positioning and horizon semantics for the object."
+    },
+    "mutation": {
+      "$ref": "mutation-record.schema.json",
+      "description": "Mutation semantics for the object."
+    },
+    "lineage": {
+      "$ref": "lineage-record.schema.json",
+      "description": "Source and derivation lineage for the object."
+    },
+    "governance": {
+      "$ref": "governance-record.schema.json",
+      "description": "Governance references and control-state for the object."
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance"
+  ],
+  "$defs": {
+    "coregentis_identifier": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "description": "UUID v4 identifier aligned with imported MPLP identifier conventions."
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version string."
+    }
+  },
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/objects/action-unit.schema.json",
+  "title": "Coregentis Action Unit",
+  "description": "First-class Coregentis bounded execution object. This is a Coregentis-private runtime object used as the executable counterpart to an activation signal.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "action-unit"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "cognitive_runtime_core"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "activation_signal_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "action_kind": {
+      "type": "string",
+      "enum": [
+        "evaluate",
+        "execute",
+        "recall",
+        "reconcile",
+        "confirm",
+        "consolidate"
+      ]
+    },
+    "action_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_object_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "activation_signal_id",
+    "action_kind",
+    "action_summary"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1",
+    "object_family": "action"
+  }
+}

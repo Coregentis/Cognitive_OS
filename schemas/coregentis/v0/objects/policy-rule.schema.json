@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/objects/policy-rule.schema.json",
+  "title": "Coregentis Policy Rule",
+  "description": "First-class Coregentis governance object representing explicit runtime policy law. This is a Coregentis-private object even when later projected into profile defaults.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "policy-rule"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "cognitive_constitution_layer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "suspended",
+        "retired"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "execution",
+        "memory",
+        "promotion",
+        "conflict",
+        "learning",
+        "retention",
+        "authority"
+      ]
+    },
+    "policy_scope_level": {
+      "type": "string",
+      "enum": [
+        "global_runtime",
+        "project",
+        "role",
+        "session",
+        "object"
+      ]
+    },
+    "rule_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rule_statement": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "policy_type",
+    "policy_scope_level",
+    "rule_name",
+    "rule_statement"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1",
+    "object_family": "governance"
+  }
+}

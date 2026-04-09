@@ -1,0 +1,63 @@
+version_stream: "v0"
+export_rules_id: "coregentis-export-rules-v0"
+status: "draft"
+phase: "binding-draft"
+authority_statement: "These rules classify which Coregentis objects may leave the runtime as protocol-compliant artifacts, which may only contribute indirectly, and which must remain internal."
+
+export_rules:
+  - export_class: "protocol_compliant_export"
+    eligible_object_types:
+      - "confirm-gate"
+      - "trace-evidence"
+    export_conditions:
+      - "object is runtime-bound and protocol-relevant"
+      - "protocol_binding_ref is present or equivalent lineage is sufficient to reconstruct protocol-required fields"
+      - "runtime-private fields are excluded from the emitted artifact"
+    non_exportable_reasons: []
+    reconstruction_expectation: "shallow_reconstructable"
+    notes: "v0 permits only narrow protocol artifact reconstruction for confirm and trace surfaces."
+
+  - export_class: "protocol_adjacent_export_restricted"
+    eligible_object_types:
+      - "intent"
+      - "delta-intent"
+    export_conditions:
+      - "only indirect summaries, references, or later event-level projections may be emitted"
+      - "no direct export as a canonical MPLP top-level object is allowed in v0"
+    non_exportable_reasons:
+      - "no direct MPLP top-level object equivalence is claimed"
+      - "Coregentis runtime semantics exceed protocol-adjacent signal semantics"
+    reconstruction_expectation: "partial_only"
+    notes: "Protocol-relevant meaning may be recoverable, but direct canonical export remains restricted in v0."
+
+  - export_class: "runtime_private_non_exportable"
+    eligible_object_types:
+      - "project"
+      - "external-input-record"
+      - "working-state-node"
+      - "episode"
+      - "activation-signal"
+      - "action-unit"
+      - "policy-rule"
+      - "decision-record"
+      - "drift-record"
+      - "conflict-case"
+      - "memory-promotion-record"
+    export_conditions: []
+    non_exportable_reasons:
+      - "object is defined as Coregentis-private runtime law or internal runtime record"
+      - "direct export would leak non-protocol semantics"
+    reconstruction_expectation: "not_applicable"
+    notes: "These objects may support export construction indirectly, but are not direct export surfaces."
+
+  - export_class: "internal_derived_only"
+    eligible_object_types:
+      - "semantic-fact"
+      - "learning-candidate"
+    export_conditions:
+      - "may contribute only to later derived or summarized exports under explicit governance"
+    non_exportable_reasons:
+      - "object is an internal retained or runtime-derived structure"
+      - "direct export would overstate Coregentis-private semantics as protocol truth"
+    reconstruction_expectation: "indirect_only"
+    notes: "These objects may inform future protocol-adjacent output, but are not directly exportable in v0."

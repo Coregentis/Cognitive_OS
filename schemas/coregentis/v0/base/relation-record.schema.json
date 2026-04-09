@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/relation-record.schema.json",
+  "title": "Coregentis Relation Record",
+  "description": "Base relationship record for Coregentis runtime objects. This schema preserves explicit relationship semantics before object-specific constraints are added.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "relation_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Stable relation identifier."
+    },
+    "relation_type": {
+      "type": "string",
+      "enum": [
+        "references",
+        "contains",
+        "derived_from",
+        "promoted_from",
+        "conflicts_with",
+        "governs",
+        "evidences"
+      ],
+      "description": "Relationship type drawn from the Coregentis object registry baseline."
+    },
+    "source_object_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Source object identifier."
+    },
+    "target_object_id": {
+      "$ref": "#/$defs/coregentis_identifier",
+      "description": "Target object identifier."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "resolved",
+        "superseded",
+        "archived"
+      ],
+      "description": "Current status of the relation record."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Relation creation time."
+    },
+    "evidence_refs": {
+      "type": "array",
+      "description": "Evidence references supporting this relation.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional relation notes."
+    }
+  },
+  "required": [
+    "relation_id",
+    "relation_type",
+    "source_object_id",
+    "target_object_id"
+  ],
+  "$defs": {
+    "coregentis_identifier": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  },
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

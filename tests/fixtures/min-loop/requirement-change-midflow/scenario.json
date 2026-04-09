@@ -1,0 +1,13 @@
+{
+  "scenario_id": "requirement-change-midflow",
+  "description": "Mother-runtime change-handling scaffold scenario.",
+  "project_id": "00000000-0000-4000-8000-000000000001",
+  "raw_input": {
+    "input_kind": "text",
+    "summary": "Apply a requirement change against an existing intent and prepare the reconcile-aware loop path."
+  },
+  "prior_object_refs": [
+    "00000000-0000-4000-8000-000000000101",
+    "00000000-0000-4000-8000-000000000102"
+  ]
+}

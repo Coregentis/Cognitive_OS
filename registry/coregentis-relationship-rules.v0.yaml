@@ -1,0 +1,109 @@
+version_stream: "v0"
+relationship_rules_id: "coregentis-relationship-rules-v0"
+status: "draft"
+phase: "registry-draft"
+authority_statement: "These rules define the baseline relationship vocabulary for the frozen v0 Coregentis object layer. They do not implement projection-specific or full MPLP binding semantics."
+
+relationship_rules:
+  - relationship_type: "references"
+    allowed_source_families:
+      - "organization"
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    allowed_target_families:
+      - "organization"
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    description: "A lightweight non-owning relation from one object to another."
+    notes: "Default cross-family relation. Acceptable across the full v0 object layer."
+
+  - relationship_type: "contains"
+    allowed_source_families:
+      - "organization"
+      - "memory"
+    allowed_target_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    description: "A structural containment relation where the source holds or groups the target."
+    notes: "Used sparingly in v0. Useful for project- or episode-level structural grouping."
+
+  - relationship_type: "derived_from"
+    allowed_source_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    allowed_target_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+    description: "The source object was derived from the target object."
+    notes: "Supports lineage without implying promotion or containment."
+
+  - relationship_type: "promoted_from"
+    allowed_source_families:
+      - "memory"
+      - "learning"
+    allowed_target_families:
+      - "memory"
+      - "learning"
+    description: "The source object came into its stronger state through governed promotion from the target."
+    notes: "Critical for layered-memory governance and later consolidation flows."
+
+  - relationship_type: "conflicts_with"
+    allowed_source_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+    allowed_target_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+    description: "The source object is in typed conflict with the target object."
+    notes: "Used by drift/conflict handling. Does not itself resolve the conflict."
+
+  - relationship_type: "governs"
+    allowed_source_families:
+      - "governance"
+    allowed_target_families:
+      - "organization"
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    description: "The source governance object defines control or rule effect over the target."
+    notes: "Primary relation for policy and confirm surfaces in v0."
+
+  - relationship_type: "evidences"
+    allowed_source_families:
+      - "evidence"
+      - "governance"
+    allowed_target_families:
+      - "entry"
+      - "memory"
+      - "action"
+      - "governance"
+      - "evidence"
+      - "learning"
+    description: "The source object provides supporting evidence for the target."
+    notes: "Deliberately excludes projection vocabulary in v0 and remains narrower than a generic justification relation."

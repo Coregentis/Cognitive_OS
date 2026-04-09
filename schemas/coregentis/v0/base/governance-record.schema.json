@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/governance-record.schema.json",
+  "title": "Coregentis Governance Record",
+  "description": "Cross-cutting governance record for Coregentis runtime objects. Carries inspectable references to policy, confirm, authority, and control-state without implementing policy logic itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "governance_scope": {
+      "type": "string",
+      "enum": [
+        "global_runtime",
+        "tenant",
+        "organization",
+        "project",
+        "role",
+        "session",
+        "object"
+      ],
+      "description": "Primary governance scope over which this object's controls apply."
+    },
+    "locked": {
+      "type": "boolean",
+      "description": "Whether the object is currently governance-locked."
+    },
+    "review_required": {
+      "type": "boolean",
+      "description": "Whether a governance review is explicitly required before progression."
+    },
+    "approval_state": {
+      "type": "string",
+      "enum": [
+        "not_required",
+        "pending",
+        "approved",
+        "rejected",
+        "escalated",
+        "bypassed"
+      ],
+      "description": "Current approval/control state associated with this object."
+    },
+    "policy_refs": {
+      "type": "array",
+      "description": "Policy object identifiers or external policy references associated with this object.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "authority_refs": {
+      "type": "array",
+      "description": "Authority-binding references associated with this object.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "confirm_refs": {
+      "type": "array",
+      "description": "Confirm-gate or approval references associated with this object.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional governance notes."
+    }
+  },
+  "required": [
+    "governance_scope"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

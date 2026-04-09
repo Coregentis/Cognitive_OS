@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/objects/memory-promotion-record.schema.json",
+  "title": "Coregentis Memory Promotion Record",
+  "description": "First-class Coregentis memory and governance object recording a governed promotion across memory layers. This is a Coregentis-private runtime object.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "memory-promotion-record"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "cognitive_runtime_core"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "applied",
+        "rejected"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "source_memory_layer": {
+      "type": "string",
+      "enum": [
+        "working_memory",
+        "episodic_memory"
+      ]
+    },
+    "target_memory_layer": {
+      "type": "string",
+      "enum": [
+        "episodic_memory",
+        "semantic_memory"
+      ]
+    },
+    "source_object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "promotion_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "source_memory_layer",
+    "target_memory_layer",
+    "source_object_id",
+    "promotion_reason"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1",
+    "object_family": "memory"
+  }
+}

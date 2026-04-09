@@ -1,0 +1,10 @@
+{
+  "scenario_id": "fresh-intent",
+  "description": "Mother-runtime fresh intent scaffold scenario.",
+  "project_id": "00000000-0000-4000-8000-000000000001",
+  "raw_input": {
+    "input_kind": "text",
+    "summary": "Create a governed intent from fresh project input and prepare the minimal loop path."
+  },
+  "prior_object_refs": []
+}

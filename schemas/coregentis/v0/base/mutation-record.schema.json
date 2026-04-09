@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/base/mutation-record.schema.json",
+  "title": "Coregentis Mutation Record",
+  "description": "Cross-cutting mutation semantics record for Coregentis runtime objects.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "mutation_class": {
+      "type": "string",
+      "enum": [
+        "immutable_after_creation",
+        "append_only",
+        "stateful_mutable",
+        "promotion_based",
+        "policy_mutable",
+        "derivation_only"
+      ],
+      "description": "Mutation behavior class drawn from the Coregentis object registry baseline."
+    },
+    "current_revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonic revision counter for the object."
+    },
+    "last_mutated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Last mutation time, if any mutation beyond creation has occurred."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional mutation notes."
+    }
+  },
+  "required": [
+    "mutation_class"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "base-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/objects/trace-evidence.schema.json",
+  "title": "Coregentis Trace Evidence",
+  "description": "First-class Coregentis evidence object representing runtime evidence with protocol-relevant traceability. This is a runtime-bound object that preserves shallow reconstructability to MPLP trace semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "trace-evidence"
+    },
+    "authority_class": {
+      "const": "runtime_bound"
+    },
+    "primary_layer": {
+      "const": "cognitive_runtime_core"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "captured",
+        "linked",
+        "archived"
+      ]
+    },
+    "protocol_binding_ref": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/protocol_binding_ref"
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "evidence_kind": {
+      "type": "string",
+      "enum": [
+        "execution",
+        "decision_basis",
+        "state_transition",
+        "import",
+        "conflict",
+        "promotion"
+      ]
+    },
+    "evidence_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject_object_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "evidence_kind",
+    "evidence_summary",
+    "subject_object_refs"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-foundation",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SCHEMA-GOVERNANCE-BASELINE-v0.1",
+    "object_family": "evidence"
+  }
+}
