@@ -108,6 +108,8 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
   assert.ok(result.protocol_export);
+  assert.equal(result.protocol_export.export_manifest.bundle_status, "complete_with_omissions");
+  assert.deepEqual(result.protocol_export.export_errors, []);
   assert.equal(
     result.protocol_export.export_summary.exported_artifact_counts_by_type.trace,
     1
@@ -121,6 +123,29 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.equal(
     result.protocol_export.omitted_artifacts_by_type.confirm[0]?.omission_code,
     "confirm_semantics_not_present"
+  );
+  assert.deepEqual(
+    result.protocol_export.omitted_artifacts_by_type.context[0]?.reason_codes,
+    [
+      "no_direct_context_binding",
+      "context_required_fields_not_reconstructable",
+      "project_scope_not_exportable_as_context",
+    ]
+  );
+  assert.deepEqual(
+    result.protocol_export.omitted_artifacts_by_type.plan[0]?.reason_codes,
+    [
+      "no_direct_plan_binding",
+      "internal_runtime_plan_not_canonical_plan",
+      "plan_required_fields_not_reconstructable",
+    ]
+  );
+  assert.deepEqual(
+    result.protocol_export.omitted_artifacts_by_type.confirm[0]?.reason_codes,
+    [
+      "no_confirm_gate_runtime_object",
+      "scenario_confirm_not_required",
+    ]
   );
   assert.equal(
     result.protocol_export.omitted_artifacts_by_type.context[0]?.omission_code,
@@ -138,10 +163,36 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
     result.protocol_export.export_validation_summary.validated_artifact_count,
     1
   );
+  assert.equal(
+    result.protocol_export.export_validation_summary.artifact_results[0]?.disposition,
+    "validated_and_passed"
+  );
   assert.ok(
     result.protocol_export.export_validation_summary.artifact_results.every(
       (record) => record.valid
     )
+  );
+  assert.deepEqual(
+    result.protocol_export.export_manifest.exported_artifact_ids_by_type,
+    {
+      context: [],
+      plan: [],
+      confirm: [],
+      trace: ["00000000-0000-4000-8000-000000000007"],
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_manifest.runtime_source_object_refs_by_artifact_id,
+    {
+      "00000000-0000-4000-8000-000000000007": [
+        "00000000-0000-4000-8000-000000000006",
+      ],
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_validation_summary.family_disposition_by_type.trace
+      ?.validated_and_passed_source_object_ids,
+    ["00000000-0000-4000-8000-000000000007"]
   );
   assert.equal(
     result.protocol_export.export_truth_summary.import_lock_id,
@@ -186,6 +237,11 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
       status: "completed",
       started_at: "2026-01-01T00:00:06.000Z",
     }
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.trace[0]
+      ?.source_runtime_object_refs,
+    ["00000000-0000-4000-8000-000000000006"]
   );
   assert.deepEqual(
     result.protocol_export.export_summary.exported_runtime_object_ids,
@@ -303,6 +359,8 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.ok(result.export_preparation.export_restricted_object_ids.length >= 1);
 
   assert.ok(result.protocol_export);
+  assert.equal(result.protocol_export.export_manifest.bundle_status, "complete_with_omissions");
+  assert.deepEqual(result.protocol_export.export_errors, []);
   assert.equal(
     result.protocol_export.export_summary.exported_artifact_counts_by_type.trace,
     1
@@ -317,6 +375,22 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
     result.protocol_export.omitted_artifacts_by_type.context[0]?.omission_code,
     "artifact_family_not_reconstructable"
   );
+  assert.deepEqual(
+    result.protocol_export.omitted_artifacts_by_type.context[0]?.reason_codes,
+    [
+      "no_direct_context_binding",
+      "context_required_fields_not_reconstructable",
+      "project_scope_not_exportable_as_context",
+    ]
+  );
+  assert.deepEqual(
+    result.protocol_export.omitted_artifacts_by_type.plan[0]?.reason_codes,
+    [
+      "no_direct_plan_binding",
+      "internal_runtime_plan_not_canonical_plan",
+      "plan_required_fields_not_reconstructable",
+    ]
+  );
   assert.equal(
     result.protocol_export.omitted_artifacts_by_type.plan[0]?.omission_code,
     "artifact_family_not_reconstructable"
@@ -325,6 +399,11 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.equal(
     result.protocol_export.export_validation_summary.validated_artifact_count,
     2
+  );
+  assert.ok(
+    result.protocol_export.export_validation_summary.artifact_results.every(
+      (record) => record.disposition === "validated_and_passed"
+    )
   );
   assert.ok(
     result.protocol_export.export_validation_summary.artifact_results.every(
@@ -340,6 +419,38 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
     result.protocol_export.export_truth_summary.binding_object_types_consulted.includes(
       "trace-evidence"
     )
+  );
+  assert.deepEqual(
+    result.protocol_export.export_manifest.exported_artifact_ids_by_type,
+    {
+      context: [],
+      plan: [],
+      confirm: ["00000000-0000-4000-8000-000000000008"],
+      trace: ["00000000-0000-4000-8000-000000000009"],
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_manifest.runtime_source_object_refs_by_artifact_id,
+    {
+      "00000000-0000-4000-8000-000000000008": [
+        "00000000-0000-4000-8000-000000000007",
+        "00000000-0000-4000-8000-000000000010",
+      ],
+      "00000000-0000-4000-8000-000000000009": [
+        "00000000-0000-4000-8000-000000000007",
+        "00000000-0000-4000-8000-000000000008",
+      ],
+    }
+  );
+  assert.deepEqual(
+    result.protocol_export.export_validation_summary.family_disposition_by_type.confirm
+      ?.validated_and_passed_source_object_ids,
+    ["00000000-0000-4000-8000-000000000008"]
+  );
+  assert.deepEqual(
+    result.protocol_export.export_validation_summary.family_disposition_by_type.trace
+      ?.validated_and_passed_source_object_ids,
+    ["00000000-0000-4000-8000-000000000009"]
   );
   assert.deepEqual(
     result.protocol_export.exported_artifacts_by_type.confirm[0]?.artifact,
@@ -365,6 +476,14 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
         },
       ],
     }
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.confirm[0]
+      ?.source_runtime_object_refs,
+    [
+      "00000000-0000-4000-8000-000000000007",
+      "00000000-0000-4000-8000-000000000010",
+    ]
   );
   assert.deepEqual(
     result.protocol_export.exported_artifacts_by_type.trace[0]?.artifact,
@@ -393,6 +512,14 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
       status: "completed",
       started_at: "2026-01-02T00:00:07.000Z",
     }
+  );
+  assert.deepEqual(
+    result.protocol_export.exported_artifacts_by_type.trace[0]
+      ?.source_runtime_object_refs,
+    [
+      "00000000-0000-4000-8000-000000000007",
+      "00000000-0000-4000-8000-000000000008",
+    ]
   );
   assert.deepEqual(
     result.protocol_export.export_summary.exported_runtime_object_ids,
@@ -430,6 +557,24 @@ test("[determinism] repeated execution of fresh-intent remains deterministic", a
   assert.deepEqual(first.store_snapshot, second.store_snapshot);
   assert.deepEqual(first.confirm_summary, second.confirm_summary);
   assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(first.protocol_export?.export_metadata, second.protocol_export?.export_metadata);
+  assert.deepEqual(first.protocol_export?.export_manifest, second.protocol_export?.export_manifest);
+  assert.deepEqual(
+    first.protocol_export?.exported_artifacts_by_type,
+    second.protocol_export?.exported_artifacts_by_type
+  );
+  assert.deepEqual(
+    first.protocol_export?.omitted_artifacts_by_type,
+    second.protocol_export?.omitted_artifacts_by_type
+  );
+  assert.deepEqual(
+    first.protocol_export?.export_validation_summary,
+    second.protocol_export?.export_validation_summary
+  );
+  assert.deepEqual(
+    first.protocol_export?.export_truth_summary,
+    second.protocol_export?.export_truth_summary
+  );
   assert.deepEqual(first.protocol_export, second.protocol_export);
   assert.deepEqual(
     first.event_timeline?.map((entry) => ({
@@ -464,6 +609,24 @@ test("[determinism] repeated execution of requirement-change-midflow remains det
   assert.deepEqual(first.confirm_summary, second.confirm_summary);
   assert.deepEqual(first.reconciliation, second.reconciliation);
   assert.deepEqual(first.export_preparation, second.export_preparation);
+  assert.deepEqual(first.protocol_export?.export_metadata, second.protocol_export?.export_metadata);
+  assert.deepEqual(first.protocol_export?.export_manifest, second.protocol_export?.export_manifest);
+  assert.deepEqual(
+    first.protocol_export?.exported_artifacts_by_type,
+    second.protocol_export?.exported_artifacts_by_type
+  );
+  assert.deepEqual(
+    first.protocol_export?.omitted_artifacts_by_type,
+    second.protocol_export?.omitted_artifacts_by_type
+  );
+  assert.deepEqual(
+    first.protocol_export?.export_validation_summary,
+    second.protocol_export?.export_validation_summary
+  );
+  assert.deepEqual(
+    first.protocol_export?.export_truth_summary,
+    second.protocol_export?.export_truth_summary
+  );
   assert.deepEqual(first.protocol_export, second.protocol_export);
   assert.deepEqual(
     first.event_timeline?.map((entry) => ({

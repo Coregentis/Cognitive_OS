@@ -47,9 +47,11 @@ The execution result is now more inspectable and audit-oriented, including:
 - frozen-truth consultation summary
 - export-preparation summary derived from frozen binding and export truth
 - optional protocol export bundle with:
+  - export manifest / audit surface
   - exported artifacts by protocol family
   - explicit omission reporting for unsupported families
-  - locked-schema validation summary
+  - locked-schema validation summary with family-level disposition
+  - bounded export error reporting
   - frozen-truth export summary
 
 ## Current Gate-Oriented Verification Commands

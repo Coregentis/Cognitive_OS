@@ -97,6 +97,38 @@ export type ProtocolArtifactType =
   | "confirm"
   | "trace";
 
+export type ProtocolExportOmissionCode =
+  | "artifact_family_not_reconstructable"
+  | "confirm_semantics_not_present"
+  | "frozen_truth_blocks_export"
+  | "validation_failed";
+
+export type ProtocolExportReasonCode =
+  | "no_direct_context_binding"
+  | "context_required_fields_not_reconstructable"
+  | "project_scope_not_exportable_as_context"
+  | "no_direct_plan_binding"
+  | "internal_runtime_plan_not_canonical_plan"
+  | "plan_required_fields_not_reconstructable"
+  | "no_confirm_gate_runtime_object"
+  | "scenario_confirm_not_required"
+  | "missing_binding_truth"
+  | "missing_export_rule_truth"
+  | "missing_locked_schema_path"
+  | "protocol_export_not_allowed"
+  | "missing_expected_mplp_object"
+  | "schema_validation_failed";
+
+export type ProtocolExportErrorCode =
+  | "missing_required_binding_truth"
+  | "missing_required_export_rule_truth"
+  | "missing_locked_schema_truth"
+  | "artifact_validation_failed";
+
+export type ProtocolArtifactValidationDisposition =
+  | "validated_and_passed"
+  | "invalid";
+
 export interface RuntimeProtocolBindingRef {
   binding_class: "protocol_native" | "runtime_bound";
   protocol_object_type?: string;
@@ -286,8 +318,10 @@ export interface ProtocolSchemaValidationError {
 
 export interface ProtocolExportedArtifactRecord {
   artifact_type: ProtocolArtifactType;
+  artifact_id: string;
   source_object_id: string;
   source_object_type: CoregentisObjectType;
+  source_runtime_object_refs: string[];
   schema_path: string;
   schema_id: string;
   artifact: Record<string, unknown>;
@@ -298,21 +332,68 @@ export interface ProtocolExportOmissionRecord {
   artifact_type: ProtocolArtifactType;
   source_object_type?: CoregentisObjectType;
   source_object_ids: string[];
-  omission_code:
-    | "artifact_family_not_reconstructable"
-    | "confirm_semantics_not_present"
-    | "frozen_truth_blocks_export"
-    | "validation_failed";
+  omission_code: ProtocolExportOmissionCode;
+  reason_codes: ProtocolExportReasonCode[];
   reasons: string[];
 }
 
 export interface ProtocolArtifactValidationRecord {
   artifact_type: ProtocolArtifactType;
+  artifact_id: string;
   source_object_id: string;
+  source_runtime_object_refs: string[];
   schema_path: string;
+  schema_id: string;
+  disposition: ProtocolArtifactValidationDisposition;
   valid: boolean;
   error_count: number;
   errors: ProtocolSchemaValidationError[];
+  notes: string[];
+}
+
+export interface ProtocolExportErrorRecord {
+  artifact_type: ProtocolArtifactType;
+  source_object_id?: string;
+  source_object_type?: CoregentisObjectType;
+  error_code: ProtocolExportErrorCode;
+  reason_codes: ProtocolExportReasonCode[];
+  message: string;
+  notes: string[];
+}
+
+export interface RuntimeProtocolExportFamilyValidationSummary {
+  validated_and_passed_source_object_ids: string[];
+  omitted_by_truth_source_object_ids: string[];
+  blocked_by_export_truth_source_object_ids: string[];
+  invalid_source_object_ids: string[];
+  export_error_codes: ProtocolExportErrorCode[];
+}
+
+export interface RuntimeProtocolExportManifest {
+  manifest_version: "0.1.0";
+  bundle_status: "complete_with_omissions" | "complete_with_errors";
+  exported_artifact_ids_by_type: Record<ProtocolArtifactType, string[]>;
+  exported_source_object_ids_by_type: Record<ProtocolArtifactType, string[]>;
+  runtime_source_object_refs_by_artifact_id: Record<string, string[]>;
+  omitted_targets_by_type: Record<
+    ProtocolArtifactType,
+    Array<{
+      source_object_ids: string[];
+      omission_code: ProtocolExportOmissionCode;
+      reason_codes: ProtocolExportReasonCode[];
+    }>
+  >;
+  family_validation_disposition_by_type: Record<
+    ProtocolArtifactType,
+    RuntimeProtocolExportFamilyValidationSummary
+  >;
+  export_error_codes: ProtocolExportErrorCode[];
+  frozen_truth_sources_consulted: {
+    import_lock_id: string;
+    locked_schema_paths: Record<ProtocolArtifactType, string>;
+    binding_object_types_consulted: CoregentisObjectType[];
+    export_rule_object_types_consulted: CoregentisObjectType[];
+  };
   notes: string[];
 }
 
@@ -330,6 +411,10 @@ export interface RuntimeProtocolExportValidationSummary {
   valid_artifact_count: number;
   invalid_artifact_count: number;
   artifact_results: ProtocolArtifactValidationRecord[];
+  family_disposition_by_type: Record<
+    ProtocolArtifactType,
+    RuntimeProtocolExportFamilyValidationSummary
+  >;
   notes: string[];
 }
 
@@ -354,6 +439,7 @@ export interface RuntimeProtocolExportBundle {
     deterministic_anchor_timestamp: string;
     created_object_count: number;
   };
+  export_manifest: RuntimeProtocolExportManifest;
   export_summary: RuntimeProtocolExportSummary;
   exported_artifacts_by_type: Record<
     ProtocolArtifactType,
@@ -365,6 +451,7 @@ export interface RuntimeProtocolExportBundle {
   >;
   export_validation_summary: RuntimeProtocolExportValidationSummary;
   export_truth_summary: RuntimeProtocolExportTruthSummary;
+  export_errors: ProtocolExportErrorRecord[];
   notes: string[];
 }
 

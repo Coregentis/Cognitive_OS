@@ -32,6 +32,8 @@ Current tests verify:
 - optional protocol export bundle generation for executed runs
 - truthful omission reporting for unsupported protocol families
 - locked-schema validation of supported trace / confirm exports
+- export manifest / audit surface determinism
+- bounded export error reporting for missing truth and validation failure paths
 - explicit frozen-truth consultation
 - progression toward the minimal cognitive loop
 

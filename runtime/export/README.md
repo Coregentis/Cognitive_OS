@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This directory contains the minimal R5 MPLP export and reconstruction path for the neutral Coregentis mother-runtime baseline.
+This directory contains the R6-hardened minimal MPLP export and reconstruction path for the neutral Coregentis mother-runtime baseline.
 
 ## Current Scope
 
-R5 export remains intentionally narrow:
+The export layer remains intentionally narrow:
 
 - deterministic
 - frozen-truth-first
@@ -26,6 +26,16 @@ Current explicitly omitted families:
 
 These omissions are reported in the export bundle rather than silently invented.
 
+The bundle now includes:
+
+- export metadata
+- explicit export manifest / audit surface
+- exported artifacts grouped by family
+- omitted targets grouped by family with typed reason codes
+- per-artifact validation results
+- bounded export errors for missing truth or validation failures
+- frozen-truth source summary
+
 ## What This Layer Uses
 
 - frozen import lock under `imports/`
@@ -37,6 +47,7 @@ These omissions are reported in the export bundle rather than silently invented.
 
 - full MPLP export completeness
 - full MPLP interoperability
+- full generic validator platform
 - product contracts
 - product DTOs
 - TracePilot or projection logic
