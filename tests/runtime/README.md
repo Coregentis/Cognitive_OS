@@ -16,6 +16,14 @@ Current test buckets:
   - repeated-run determinism coverage
 - `failure-paths.test.mjs`
   - edge / failure-path coverage
+- `workforce-schema-registry.test.mjs`
+  - workforce schema compilation and registry / binding / export coverage
+- `workforce-lifecycle.test.mjs`
+  - worker lifecycle state machine and runtime service coverage
+- `workforce-state-persistence.test.mjs`
+  - in-memory and SQLite workforce persistence coverage
+- `workforce-execution-contract.test.mjs`
+  - execution contract-only boundary coverage
 
 Current tests verify:
 
@@ -36,6 +44,10 @@ Current tests verify:
 - bounded export error reporting for missing truth and validation failure paths
 - explicit frozen-truth consultation
 - progression toward the minimal cognitive loop
+- workforce schema presence and truth alignment
+- worker lifecycle legal and illegal transitions
+- workforce persistence round-trip across in-memory and SQLite adapters
+- execution bridge contracts without provider implementation leakage
 
 ## Test Commands
 
@@ -46,6 +58,12 @@ Canonical runtime test command:
 
 ```bash
 npm run test:runtime
+```
+
+Canonical targeted workforce test command:
+
+```bash
+npm run test:runtime:workforce
 ```
 
 Equivalent direct command only:
@@ -63,7 +81,7 @@ npm run coverage:runtime
 Equivalent direct command only:
 
 ```bash
-rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
 ```
 
 Coverage output location:
@@ -73,10 +91,11 @@ Coverage output location:
 
 Node requirement for these commands:
 
-- `Node >= 25.0.0`
+- `Node 22 LTS`
 
 ## What Is Not Here Yet
 
 - full runtime completion tests
 - product tests
 - TracePilot tests
+- provider integration tests

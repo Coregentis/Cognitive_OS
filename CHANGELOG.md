@@ -6,6 +6,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 - execution baseline R7 governance closure aligned
 - first executable mother-runtime baseline now present rather than schema/binding/skeleton-only
+- public remote verification surfaces aligned with the current P0-A mother-runtime baseline
 - neutral workforce schema family added under `schemas/coregentis/v0/workforce/`
 - runtime truth extended for workforce object registry, binding, and export classification
 - worker lifecycle runtime, workforce state persistence ports/adapters, and execution bridge contracts added
