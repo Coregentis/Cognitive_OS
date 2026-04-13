@@ -4,7 +4,8 @@
 
 This directory is reserved for later runtime-skeleton and minimal-loop tests.
 
-At this phase, only the first in-memory execution baseline is implemented.
+At this phase, the first deterministic execution baseline and the bounded
+workforce P0-A verification set are implemented.
 This directory now exists to hold neutral mother-runtime tests for that baseline.
 
 Public verification note:

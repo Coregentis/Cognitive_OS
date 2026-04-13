@@ -6,11 +6,11 @@ This directory now contains the first executable mother-runtime baseline for `Co
 
 The baseline is still intentionally minimal:
 
-- in-memory only
 - deterministic
 - fixture-driven
 - neutral
 - frozen-truth-disciplined
+- bounded to the minimal cognitive loop plus P0-A workforce persistence
 
 The workforce additions remain intentionally bounded:
 
