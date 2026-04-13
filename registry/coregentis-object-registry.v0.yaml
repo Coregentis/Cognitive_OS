@@ -2,7 +2,7 @@ version_stream: "v0"
 registry_id: "coregentis-object-registry-v0"
 status: "draft"
 phase: "registry-draft"
-authority_statement: "This registry classifies the frozen Coregentis v0 cognitive and workforce object schemas for downstream registry, binding, and runtime work. It does not itself define full MPLP binding semantics or runtime behavior."
+authority_statement: "This registry classifies the frozen Coregentis v0 cognitive and workforce object schemas for downstream registry, binding, and runtime work. It does not itself define full MPLP binding semantics or runtime behavior. The neutral workforce family is part of the public mother-runtime truth on main."
 source_schema_root: "/schemas/coregentis/v0/"
 object_count: 25
 
@@ -35,7 +35,7 @@ objects:
       - "contains"
       - "references"
       - "governs"
-    notes: "Draft registry interpretation: neutral organization-runtime grouping object for workers, objectives, and review rhythm. Projection naming remains downstream."
+    notes: "Draft registry interpretation: neutral organization-runtime grouping object for workers, objectives, and review rhythm. Projection naming remains downstream and the schema lives under the public workforce namespace."
 
   - object_type: "agent-worker"
     schema_ref: "/schemas/coregentis/v0/workforce/agent-worker.schema.json"

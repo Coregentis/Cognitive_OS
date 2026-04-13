@@ -18,8 +18,12 @@ The workforce additions remain intentionally bounded:
 - contract-first
 - no provider implementation
 - no full VSL / PSG / correction runtime
+- publicly visible on `main` as part of the P0-A mother-runtime baseline
 
 ## Included Layers
+
+- Public verification note:
+  - the active `main` runtime tree includes `core/`, `execution/`, `export/`, `harness/`, `in-memory/`, `lifecycle/`, and `state/`
 
 - `core/`
   - runtime service interfaces and first-pass implementations

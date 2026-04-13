@@ -7,6 +7,10 @@ This directory is reserved for later runtime-skeleton and minimal-loop tests.
 At this phase, only the first in-memory execution baseline is implemented.
 This directory now exists to hold neutral mother-runtime tests for that baseline.
 
+Public verification note:
+
+- the active `main` test tree includes the four `workforce-*.test.mjs` files listed below
+
 ## Later Intended Coverage
 
 Current test buckets:
