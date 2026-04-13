@@ -11,6 +11,7 @@ This directory now exists to hold neutral mother-runtime tests for that baseline
 Public verification note:
 
 - the active `main` test tree includes the four `workforce-*.test.mjs` files listed below
+- the active P0-B tree also includes the four `p0b-*.test.mjs` files listed below
 
 ## Later Intended Coverage
 
@@ -29,6 +30,14 @@ Current test buckets:
   - in-memory and SQLite workforce persistence coverage
 - `workforce-execution-contract.test.mjs`
   - execution contract-only boundary coverage
+- `p0b-action-dispatcher.test.mjs`
+  - bounded action dispatcher and orchestrator facade coverage
+- `p0b-objective-anchor.test.mjs`
+  - bounded objective anchor capture and comparison coverage
+- `p0b-correction-capture.test.mjs`
+  - bounded correction capture coverage
+- `p0b-preference-writeback.test.mjs`
+  - bounded preference write-back coverage
 
 Current tests verify:
 
@@ -53,6 +62,10 @@ Current tests verify:
 - worker lifecycle legal and illegal transitions
 - workforce persistence round-trip across in-memory and SQLite adapters
 - execution bridge contracts without provider implementation leakage
+- bounded action dispatch without provider logic
+- bounded objective anchor comparison without graph runtime
+- bounded correction capture without a full correction engine
+- bounded preference write-back without autonomous learning
 
 ## Test Commands
 
@@ -86,7 +99,7 @@ npm run coverage:runtime
 Equivalent direct command only:
 
 ```bash
-rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/learning/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
 ```
 
 Coverage output location:

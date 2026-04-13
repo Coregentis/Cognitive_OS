@@ -33,6 +33,8 @@ The workforce additions remain intentionally bounded:
   - workforce persistence ports and adapters
 - `execution/`
   - execution bridge contracts and event envelopes only
+- `learning/`
+  - bounded P0-B anchor, correction-capture, and preference write-back glue
 - `export/`
   - minimal MPLP export and reconstruction path for the current execution baseline
 - `in-memory/`
@@ -57,6 +59,13 @@ It can also host the first workforce P0-A foundation surfaces:
 - workforce state persistence ports
 - SQLite-backed workforce state persistence
 - execution request/result/event contracts without provider realization
+
+It now also exposes the bounded P0-B glue surfaces:
+
+- action dispatch over registered bounded handlers
+- objective anchor capture and bounded comparison
+- correction capture without autonomous learning
+- preference write-back without a full correction loop
 
 The execution result is now more inspectable and audit-oriented, including:
 
@@ -110,7 +119,7 @@ npm run coverage:runtime
 Equivalent direct command only:
 
 ```bash
-rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/learning/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
 ```
 
 Coverage output location:
@@ -129,6 +138,7 @@ This is not:
 - full AEL
 - full VSL
 - full PSG
+- full correction runtime
 - full workforce graph/runtime realization
 - provider-specific execution bridges
 - full policy engine

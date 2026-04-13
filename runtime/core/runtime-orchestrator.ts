@@ -9,6 +9,28 @@ import type { ReconcileService } from "./reconcile-service";
 import type { RegistryService } from "./registry-service";
 import type { TraceService } from "./trace-service";
 import type {
+  ActionDispatchOutcome,
+  ActionDispatcher,
+} from "../execution/action-dispatcher.ts";
+import type {
+  ExecutionRequestEnvelope,
+} from "../execution/execution-envelope.ts";
+import type {
+  CorrectionCaptureInput,
+  CorrectionCapturePort,
+  CorrectionCaptureRecord,
+} from "../learning/correction-capture.ts";
+import type {
+  ObjectiveAnchorComparison,
+  ObjectiveAnchorPort,
+  ObjectiveAnchorSnapshot,
+} from "../learning/objective-anchor.ts";
+import type {
+  PreferenceWritebackPort,
+  PreferenceWritebackRequest,
+  PreferenceWritebackResult,
+} from "../learning/preference-writeback.ts";
+import type {
   CreatedObjectIdsByType,
   CoregentisObjectType,
   MinimalLoopInput,
@@ -45,6 +67,10 @@ export interface RuntimeSkeletonDependencies {
   episodic_store: RuntimeObjectStore;
   semantic_store: RuntimeObjectStore;
   evidence_store: RuntimeObjectStore;
+  action_dispatcher?: ActionDispatcher;
+  objective_anchor?: ObjectiveAnchorPort;
+  correction_capture?: CorrectionCapturePort;
+  preference_writeback?: PreferenceWritebackPort;
 }
 
 export interface RuntimeOrchestrator {
@@ -58,6 +84,27 @@ export interface RuntimeOrchestrator {
   execute_minimal_loop(
     input: MinimalLoopInput
   ): Promise<MinimalLoopRunResult> | MinimalLoopRunResult;
+  dispatch_bounded_action(
+    request: ExecutionRequestEnvelope
+  ): Promise<ActionDispatchOutcome> | ActionDispatchOutcome;
+  anchor_objective(
+    objective_id: string
+  ): Promise<ObjectiveAnchorSnapshot> | ObjectiveAnchorSnapshot;
+  compare_objective_to_anchor(
+    objective_id: string
+  ):
+    | Promise<ObjectiveAnchorComparison>
+    | ObjectiveAnchorComparison;
+  capture_correction(
+    input: CorrectionCaptureInput
+  ):
+    | Promise<CorrectionCaptureRecord>
+    | CorrectionCaptureRecord;
+  writeback_preference(
+    request: PreferenceWritebackRequest
+  ):
+    | Promise<PreferenceWritebackResult>
+    | PreferenceWritebackResult;
 }
 
 export class MinimalRuntimeOrchestratorSkeleton
@@ -864,5 +911,65 @@ export class MinimalRuntimeOrchestratorSkeleton
         `Learning candidate recorded: ${learning_candidate.object_id}.`,
       ],
     };
+  }
+
+  dispatch_bounded_action(
+    request: ExecutionRequestEnvelope
+  ): Promise<ActionDispatchOutcome> | ActionDispatchOutcome {
+    if (!this.deps.action_dispatcher) {
+      throw new Error(
+        "Bounded P0-B action dispatcher is not configured."
+      );
+    }
+
+    return this.deps.action_dispatcher.dispatch(request);
+  }
+
+  anchor_objective(
+    objective_id: string
+  ): ObjectiveAnchorSnapshot {
+    if (!this.deps.objective_anchor) {
+      throw new Error(
+        "Bounded P0-B objective anchor is not configured."
+      );
+    }
+
+    return this.deps.objective_anchor.capture_anchor(objective_id);
+  }
+
+  compare_objective_to_anchor(
+    objective_id: string
+  ): ObjectiveAnchorComparison {
+    if (!this.deps.objective_anchor) {
+      throw new Error(
+        "Bounded P0-B objective anchor is not configured."
+      );
+    }
+
+    return this.deps.objective_anchor.compare_to_anchor(objective_id);
+  }
+
+  capture_correction(
+    input: CorrectionCaptureInput
+  ): CorrectionCaptureRecord {
+    if (!this.deps.correction_capture) {
+      throw new Error(
+        "Bounded P0-B correction capture is not configured."
+      );
+    }
+
+    return this.deps.correction_capture.capture(input);
+  }
+
+  writeback_preference(
+    request: PreferenceWritebackRequest
+  ): PreferenceWritebackResult {
+    if (!this.deps.preference_writeback) {
+      throw new Error(
+        "Bounded P0-B preference write-back is not configured."
+      );
+    }
+
+    return this.deps.preference_writeback.writeback(request);
   }
 }
