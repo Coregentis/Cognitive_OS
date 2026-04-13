@@ -2,9 +2,9 @@ version_stream: "v0"
 registry_id: "coregentis-object-registry-v0"
 status: "draft"
 phase: "registry-draft"
-authority_statement: "This registry classifies the frozen Coregentis v0 object schemas for downstream registry, binding, and runtime work. It does not itself define full MPLP binding semantics or runtime behavior."
-source_schema_root: "/schemas/coregentis/v0/objects/"
-object_count: 17
+authority_statement: "This registry classifies the frozen Coregentis v0 cognitive and workforce object schemas for downstream registry, binding, and runtime work. It does not itself define full MPLP binding semantics or runtime behavior."
+source_schema_root: "/schemas/coregentis/v0/"
+object_count: 25
 
 objects:
   - object_type: "project"
@@ -21,6 +21,123 @@ objects:
       - "references"
       - "governs"
     notes: "Draft registry interpretation: single-project-first scope anchor. Memory layer is null because this object is classified as scope rather than retained memory."
+
+  - object_type: "agent-group"
+    schema_ref: "/schemas/coregentis/v0/workforce/agent-group.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "organization"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "contains"
+      - "references"
+      - "governs"
+    notes: "Draft registry interpretation: neutral organization-runtime grouping object for workers, objectives, and review rhythm. Projection naming remains downstream."
+
+  - object_type: "agent-worker"
+    schema_ref: "/schemas/coregentis/v0/workforce/agent-worker.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "organization"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "contains"
+      - "references"
+    notes: "Draft registry interpretation: neutral worker object with explicit lifecycle state. Cross-family execution or graph realization remains deferred."
+
+  - object_type: "role-profile"
+    schema_ref: "/schemas/coregentis/v0/workforce/role-profile.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "organization"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "governs"
+    notes: "Draft registry interpretation: neutral responsibility and instruction template for later worker assignment."
+
+  - object_type: "objective"
+    schema_ref: "/schemas/coregentis/v0/workforce/objective.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "organization"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "contains"
+      - "references"
+      - "governs"
+    notes: "Draft registry interpretation: neutral longer-horizon objective anchor. It may host work items without becoming product vocabulary."
+
+  - object_type: "work-item"
+    schema_ref: "/schemas/coregentis/v0/workforce/work-item.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "action"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "derived_from"
+    notes: "Draft registry interpretation: durable organization-runtime work unit. It is action-shaped without claiming full AEL realization."
+
+  - object_type: "review-cycle"
+    schema_ref: "/schemas/coregentis/v0/workforce/review-cycle.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "governance"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "governs"
+      - "evidences"
+    notes: "Draft registry interpretation: cadence and review governance object for organization runtime continuity."
+
+  - object_type: "memory-profile"
+    schema_ref: "/schemas/coregentis/v0/workforce/memory-profile.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "memory"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: "semantic_memory"
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "promoted_from"
+      - "conflicts_with"
+    notes: "Draft registry interpretation: retained organization-runtime memory surface for worker, role, or objective scope."
+
+  - object_type: "preference-profile"
+    schema_ref: "/schemas/coregentis/v0/workforce/preference-profile.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "learning"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: "semantic_memory"
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "derived_from"
+      - "promoted_from"
+    notes: "Draft registry interpretation: learned preference surface for later downstream projection. Direct correction-loop realization remains deferred."
 
   - object_type: "external-input-record"
     schema_ref: "/schemas/coregentis/v0/objects/external-input-record.schema.json"

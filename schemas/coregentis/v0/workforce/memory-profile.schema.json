@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/workforce/memory-profile.schema.json",
+  "title": "Coregentis Memory Profile",
+  "description": "Neutral organization-runtime retained memory profile for an agent group, worker, role, or objective scope.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "memory-profile"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "organization_runtime_layer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "archived"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "scope_kind": {
+      "type": "string",
+      "enum": [
+        "agent_group",
+        "agent_worker",
+        "role_profile",
+        "objective"
+      ]
+    },
+    "scope_ref_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "memory_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retained_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "update_basis": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "runtime_capture",
+        "governed_promotion"
+      ]
+    },
+    "last_revised_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "scope_kind",
+    "scope_ref_id",
+    "memory_summary",
+    "update_basis",
+    "last_revised_at"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-workforce-p0a",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-IMPLEMENTATION-EXECUTION-PLAN-v0.1",
+    "object_family": "memory"
+  }
+}

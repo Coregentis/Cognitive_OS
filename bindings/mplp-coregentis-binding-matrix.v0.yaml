@@ -23,6 +23,86 @@ bindings:
     runtime_substrate_hint: "multi_substrate"
     runtime_substrate_note: "Likely to scope later PSG, VSL, and AEL realizations. Informational only."
 
+  - coregentis_object: "agent-group"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Agent Group."
+    export_rule: "Agent Group is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Neutral organization-runtime grouping object. Projection naming remains downstream."
+    runtime_substrate_hint: "vsl"
+    runtime_substrate_note: "Likely durable organization state with later coordination hooks. Informational only."
+
+  - coregentis_object: "agent-worker"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Agent Worker."
+    export_rule: "Agent Worker is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Lifecycle-bearing worker records remain Coregentis-private runtime law."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable lifecycle state and later execution coordination. Informational only."
+
+  - coregentis_object: "role-profile"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Role Profile."
+    export_rule: "Role Profile is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Role templates remain internal runtime guidance rather than protocol truth."
+    runtime_substrate_hint: "vsl"
+    runtime_substrate_note: "Likely durable organization configuration. Informational only."
+
+  - coregentis_object: "objective"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Objective."
+    export_rule: "Objective is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Longer-horizon organization objectives remain runtime-private by default."
+    runtime_substrate_hint: "vsl"
+    runtime_substrate_note: "Likely durable objective state with later graph references. Informational only."
+
+  - coregentis_object: "work-item"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Work Item."
+    export_rule: "Work Item is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Bounded organization work units remain internal and do not imply full AEL realization."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable task state and later execution surfaces. Informational only."
+
+  - coregentis_object: "review-cycle"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Review Cycle."
+    export_rule: "Review Cycle is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Review cadence remains internal organization governance."
+    runtime_substrate_hint: "vsl"
+    runtime_substrate_note: "Likely durable cadence state with later evidence references. Informational only."
+
+  - coregentis_object: "memory-profile"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Memory Profile."
+    export_rule: "Memory Profile is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Retained organization memory remains Coregentis-private."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely durable retained state with later graph-linked recall. Informational only."
+
+  - coregentis_object: "preference-profile"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Preference Profile."
+    export_rule: "Preference Profile is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Learned preference surfaces remain internal runtime guidance, not protocol law."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable profile state and later learning or correction bridges. Informational only."
+
   - coregentis_object: "external-input-record"
     mplp_object: null
     binding_class: "runtime_private_only"

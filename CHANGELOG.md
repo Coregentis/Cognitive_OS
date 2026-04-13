@@ -6,6 +6,10 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 - execution baseline R7 governance closure aligned
 - first executable mother-runtime baseline now present rather than schema/binding/skeleton-only
+- neutral workforce schema family added under `schemas/coregentis/v0/workforce/`
+- runtime truth extended for workforce object registry, binding, and export classification
+- worker lifecycle runtime, workforce state persistence ports/adapters, and execution bridge contracts added
+- runtime baseline aligned to `Node 22 LTS`
 - deterministic neutral fixture support present for:
   - `fresh-intent`
   - `requirement-change-midflow`

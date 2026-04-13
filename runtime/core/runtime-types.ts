@@ -1,5 +1,13 @@
 export type CoregentisObjectType =
   | "project"
+  | "agent-group"
+  | "agent-worker"
+  | "role-profile"
+  | "objective"
+  | "work-item"
+  | "review-cycle"
+  | "memory-profile"
+  | "preference-profile"
   | "external-input-record"
   | "intent"
   | "delta-intent"

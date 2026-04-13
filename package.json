@@ -4,10 +4,16 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": ">=25.0.0"
+    "node": ">=22.0.0 <23"
   },
   "scripts": {
     "test:runtime": "node --test tests/runtime/*.test.mjs",
-    "coverage:runtime": "rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'"
+    "test:runtime:workforce": "node --test tests/runtime/workforce-*.test.mjs",
+    "coverage:runtime": "rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'"
+  },
+  "dependencies": {
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "better-sqlite3": "^12.9.0"
   }
 }

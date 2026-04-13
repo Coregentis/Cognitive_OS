@@ -12,10 +12,23 @@ The baseline is still intentionally minimal:
 - neutral
 - frozen-truth-disciplined
 
+The workforce additions remain intentionally bounded:
+
+- neutral organization-runtime only
+- contract-first
+- no provider implementation
+- no full VSL / PSG / correction runtime
+
 ## Included Layers
 
 - `core/`
   - runtime service interfaces and first-pass implementations
+- `lifecycle/`
+  - neutral worker lifecycle state machine and runtime service
+- `state/`
+  - workforce persistence ports and adapters
+- `execution/`
+  - execution bridge contracts and event envelopes only
 - `export/`
   - minimal MPLP export and reconstruction path for the current execution baseline
 - `in-memory/`
@@ -33,6 +46,13 @@ It can execute the two neutral mother-runtime fixtures:
 through the minimal loop:
 
 `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate`
+
+It can also host the first workforce P0-A foundation surfaces:
+
+- worker lifecycle state transitions
+- workforce state persistence ports
+- SQLite-backed workforce state persistence
+- execution request/result/event contracts without provider realization
 
 The execution result is now more inspectable and audit-oriented, including:
 
@@ -65,6 +85,12 @@ Canonical runtime test command:
 npm run test:runtime
 ```
 
+Canonical targeted workforce test command:
+
+```bash
+npm run test:runtime:workforce
+```
+
 Equivalent direct command only:
 
 ```bash
@@ -80,7 +106,7 @@ npm run coverage:runtime
 Equivalent direct command only:
 
 ```bash
-rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
+rm -rf .coverage-runtime && NODE_V8_COVERAGE=.coverage-runtime node --experimental-test-coverage --test tests/runtime/*.test.mjs --test-coverage-include='runtime/core/**/*.ts' --test-coverage-include='runtime/lifecycle/**/*.ts' --test-coverage-include='runtime/state/**/*.ts' --test-coverage-include='runtime/execution/**/*.ts' --test-coverage-include='runtime/harness/**/*.ts' --test-coverage-include='runtime/in-memory/**/*.ts' --test-coverage-include='runtime/export/**/*.ts' --test-coverage-include='tests/runtime/*.mjs'
 ```
 
 Coverage output location:
@@ -89,7 +115,7 @@ Coverage output location:
 
 Node requirement for these commands:
 
-- `Node >= 25.0.0`
+- `Node 22 LTS`
 
 ## What This Baseline Does Not Claim
 
@@ -99,6 +125,8 @@ This is not:
 - full AEL
 - full VSL
 - full PSG
+- full workforce graph/runtime realization
+- provider-specific execution bridges
 - full policy engine
 - full confirm workflow
 - full trace export
