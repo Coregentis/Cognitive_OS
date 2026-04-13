@@ -67,6 +67,9 @@ It now also exposes the bounded P0-B glue surfaces:
 - correction capture without autonomous learning
 - preference write-back without a full correction loop
 
+Projection handoff readiness is now documented separately under `governance/`
+to keep downstream integration guidance outside the executable runtime files.
+
 The execution result is now more inspectable and audit-oriented, including:
 
 - ordered step outcomes
