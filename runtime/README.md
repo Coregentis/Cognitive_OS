@@ -23,7 +23,7 @@ The workforce additions remain intentionally bounded:
 ## Included Layers
 
 - Public verification note:
-  - the active `main` runtime tree includes `core/`, `execution/`, `export/`, `harness/`, `in-memory/`, `lifecycle/`, and `state/`
+  - the active `main` runtime tree includes `core/`, `execution/`, `export/`, `harness/`, `in-memory/`, `lifecycle/`, `learning/`, and `state/`
 
 - `core/`
   - runtime service interfaces and first-pass implementations
