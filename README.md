@@ -20,6 +20,26 @@ This repository is the home for the mother-runtime foundation layers:
 
 These surfaces together define the active `v0.1` foundation baseline stream.
 
+## Current v0.4 Downstream Intake Note
+
+SoloCrew has now frozen `v0.4-multi-cell-foundation` downstream.
+
+That creates a bounded mother-runtime intake need around:
+
+- lawful multi-cell coexistence
+- cell summary projection
+- the minimum management object family
+- later role/model/tool/constraint policy preconditions
+
+This repository responds to that pressure by:
+
+- refreshing current foundation truth
+- classifying what remains product-layer only
+- freezing minimum runtime preconditions for later blocker waves
+
+This wave does not implement product behavior inside `Cognitive_OS`.
+It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.
+
 ## What Does Not Belong Here
 
 This repository is not the place for product-specific or application-specific implementation.

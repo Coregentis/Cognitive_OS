@@ -4,6 +4,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- performed a `v0.4` foundation reality refresh, added SoloCrew-driven runtime blocker intake and precondition docs, and did not claim full runtime expansion or product implementation
 - execution baseline R7 governance closure aligned
 - first executable mother-runtime baseline now present rather than schema/binding/skeleton-only
 - public remote verification surfaces aligned with the current P0-A mother-runtime baseline
