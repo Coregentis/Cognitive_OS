@@ -4,7 +4,7 @@ status: "draft"
 phase: "registry-draft"
 authority_statement: "This registry classifies the frozen Coregentis v0 cognitive and workforce object schemas for downstream registry, binding, and runtime work. It does not itself define full MPLP binding semantics or runtime behavior. The neutral workforce family is part of the public mother-runtime truth on main."
 source_schema_root: "/schemas/coregentis/v0/"
-object_count: 25
+object_count: 30
 
 objects:
   - object_type: "project"
@@ -138,6 +138,79 @@ objects:
       - "derived_from"
       - "promoted_from"
     notes: "Draft registry interpretation: learned preference surface for later downstream projection. Direct correction-loop realization remains deferred."
+
+  - object_type: "cell-runtime-scope"
+    schema_ref: "/schemas/coregentis/v0/workforce/cell-runtime-scope.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "organization"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "contains"
+      - "references"
+      - "governs"
+    notes: "Draft registry interpretation: bounded cell-scoped runtime container for lawful multi-scope coexistence. It remains internal runtime precondition truth rather than product portfolio law."
+
+  - object_type: "cell-summary-runtime-record"
+    schema_ref: "/schemas/coregentis/v0/workforce/cell-summary-runtime-record.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "governance"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "derived_from"
+      - "evidences"
+    notes: "Draft registry interpretation: runtime-private bounded summary record for one cell scope. It does not by itself become a product card or protocol export surface."
+
+  - object_type: "management-directive-record"
+    schema_ref: "/schemas/coregentis/v0/workforce/management-directive-record.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "governance"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "governs"
+    notes: "Draft registry interpretation: directive-like internal governance record for bounded scope steering. It is not MPLP envelope law and not a product command object."
+
+  - object_type: "delivery-return-record"
+    schema_ref: "/schemas/coregentis/v0/workforce/delivery-return-record.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "governance"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "evidences"
+    notes: "Draft registry interpretation: internal result-return record for bounded cell scope review posture. It remains runtime-private and below protocol export."
+
+  - object_type: "approval-request-record"
+    schema_ref: "/schemas/coregentis/v0/workforce/approval-request-record.schema.json"
+    authority_class: "coregentis_private_runtime"
+    functional_family: "governance"
+    primary_layer: "organization_runtime_layer"
+    memory_layer: null
+    temporal_class: "durable"
+    mutation_class: "stateful_mutable"
+    protocol_binding_ref_policy: "not_applicable"
+    allowed_relationships:
+      - "references"
+      - "governs"
+      - "evidences"
+    notes: "Draft registry interpretation: internal approval or escalation gate record for bounded cell scope governance. It is not protocol confirm law and not Secretary behavior."
 
   - object_type: "external-input-record"
     schema_ref: "/schemas/coregentis/v0/objects/external-input-record.schema.json"

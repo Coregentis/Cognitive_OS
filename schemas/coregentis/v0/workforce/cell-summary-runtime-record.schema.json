@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/workforce/cell-summary-runtime-record.schema.json",
+  "title": "Coregentis Cell Summary Runtime Record",
+  "description": "Runtime-private bounded summary record for one cell runtime scope. This record remains internal runtime truth and does not become product card law or protocol law by itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "cell-summary-runtime-record"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "organization_runtime_layer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "current",
+        "stale",
+        "archived"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "cell_runtime_scope_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "source_object_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
+    "summary_headline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary_delivery_posture": {
+      "type": "string",
+      "enum": [
+        "steady",
+        "attention",
+        "blocked"
+      ]
+    },
+    "active_work_item_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "blocked_work_item_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "continuity_hint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary_mode": {
+      "type": "string",
+      "enum": [
+        "bounded_runtime_private"
+      ]
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "cell_runtime_scope_id",
+    "summary_headline",
+    "summary_delivery_posture",
+    "active_work_item_count",
+    "blocked_work_item_count",
+    "continuity_hint",
+    "summary_mode"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-workforce-v0.4-preconditions",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-SUMMARY-PROJECTION-RUNTIME-SURFACE-v0.1",
+    "object_family": "governance"
+  }
+}

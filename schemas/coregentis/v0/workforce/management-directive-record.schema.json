@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.coregentis.dev/cgos/v0/workforce/management-directive-record.schema.json",
+  "title": "Coregentis Management Directive Record",
+  "description": "Runtime-private directive-like control record for one bounded cell runtime scope. This is not MPLP law and not a product command surface.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/schema_version"
+    },
+    "object_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/properties/object_id"
+    },
+    "object_type": {
+      "const": "management-directive-record"
+    },
+    "authority_class": {
+      "const": "coregentis_private_runtime"
+    },
+    "primary_layer": {
+      "const": "organization_runtime_layer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "superseded",
+        "closed"
+      ]
+    },
+    "temporal": {
+      "$ref": "../base/temporal-record.schema.json"
+    },
+    "mutation": {
+      "$ref": "../base/mutation-record.schema.json"
+    },
+    "lineage": {
+      "$ref": "../base/lineage-record.schema.json"
+    },
+    "governance": {
+      "$ref": "../base/governance-record.schema.json"
+    },
+    "project_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "cell_runtime_scope_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "target_objective_id": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "directive_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "directive_priority": {
+      "type": "string",
+      "enum": [
+        "focus_now",
+        "stabilize",
+        "review_first"
+      ]
+    },
+    "approval_posture": {
+      "type": "string",
+      "enum": [
+        "operator_required",
+        "bounded_autonomy",
+        "escalate_on_stop"
+      ]
+    },
+    "constraint_tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "object_id",
+    "object_type",
+    "authority_class",
+    "primary_layer",
+    "status",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "project_id",
+    "cell_runtime_scope_id",
+    "directive_summary",
+    "directive_priority",
+    "approval_posture"
+  ],
+  "x-coregentis-meta": {
+    "schema_role": "object-schema",
+    "phase": "mother-runtime-workforce-v0.4-preconditions",
+    "version_stream": "v0",
+    "authority_order_preserved": true,
+    "governing_doc": "CGOS-MANAGEMENT-OBJECT-FAMILY-DRAFT-v0.1",
+    "object_family": "governance"
+  }
+}

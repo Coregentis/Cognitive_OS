@@ -10,6 +10,7 @@ import {
   load_binding_matrix_document,
   load_export_rules_document,
   load_json_document,
+  load_registry_schema_document,
   load_registry_document,
   load_relationship_rules_document,
 } from "../../runtime/core/frozen-truth-loader.ts";
@@ -25,6 +26,11 @@ const workforceTypes = [
   "review-cycle",
   "memory-profile",
   "preference-profile",
+  "cell-runtime-scope",
+  "cell-summary-runtime-record",
+  "management-directive-record",
+  "delivery-return-record",
+  "approval-request-record",
 ];
 
 const baseSchemaPaths = [
@@ -35,16 +41,12 @@ const baseSchemaPaths = [
   "schemas/coregentis/v0/base/governance-record.schema.json",
 ];
 
-const workforceSchemaPaths = workforceTypes.map(
-  (objectType) =>
-    `schemas/coregentis/v0/workforce/${objectType}.schema.json`
-);
-
 function loadSchema(relativePath) {
   return load_json_document(join(repoRoot, relativePath));
 }
 
 test("[workforce] schema family compiles and stays product-neutral", () => {
+  const registryDocument = load_registry_document(repoRoot);
   const ajv = new Ajv({
     allErrors: true,
     strict: false,
@@ -56,21 +58,23 @@ test("[workforce] schema family compiles and stays product-neutral", () => {
     ajv.addSchema(loadSchema(relativePath));
   }
 
-  for (const relativePath of workforceSchemaPaths) {
-    const schema = loadSchema(relativePath);
+  for (const objectType of workforceTypes) {
+    const registryEntry = registryDocument.objects.find(
+      (entry) => entry.object_type === objectType
+    );
+
+    assert.ok(registryEntry, `registry missing schema ref for ${objectType}`);
+
+    const relativePath = registryEntry.schema_ref.replace(/^\//u, "");
+    const schema = load_registry_schema_document(repoRoot, registryEntry.schema_ref);
     const fileContents = readFileSync(join(repoRoot, relativePath), "utf8");
-    const expectedObjectType = relativePath
-      .split("/")
-      .at(-1)
-      ?.replace(".schema.json", "");
 
     assert.doesNotThrow(() => ajv.compile(schema), relativePath);
-    assert.ok(expectedObjectType);
     assert.match(
       fileContents,
-      new RegExp(`"const": "${expectedObjectType}"`, "u")
+      new RegExp(`"const": "${objectType}"`, "u")
     );
-    assert.ok(!/SoloCrew|CrewMember|Crew\b/u.test(fileContents));
+    assert.ok(!/SoloCrew|Secretary|Portfolio UI|CrewMember|Crew\b/u.test(fileContents));
   }
 });
 
@@ -99,7 +103,7 @@ test("[workforce] registry, binding, export, and runtime types cover all workfor
     )
   );
 
-  assert.equal(registryDocument.objects.length, 25);
+  assert.equal(registryDocument.objects.length, 30);
 
   for (const objectType of workforceTypes) {
     assert.ok(registryTypes.has(objectType), `registry missing ${objectType}`);
@@ -119,5 +123,61 @@ test("[workforce] registry, binding, export, and runtime types cover all workfor
         `${objectType} has unknown relationship ${relationshipType}`
       );
     }
+  }
+});
+
+test("[workforce] v0.4 runtime-private preconditions stay non-protocol and loadable from frozen truth", () => {
+  const registryDocument = load_registry_document(repoRoot);
+  const bindingDocument = load_binding_matrix_document(repoRoot);
+  const exportDocument = load_export_rules_document(repoRoot);
+  const ajv = new Ajv({
+    allErrors: true,
+    strict: false,
+    validateSchema: true,
+  });
+  addFormats(ajv);
+
+  for (const relativePath of baseSchemaPaths) {
+    ajv.addSchema(loadSchema(relativePath));
+  }
+
+  const v04RuntimePrivateTypes = [
+    "cell-runtime-scope",
+    "cell-summary-runtime-record",
+    "management-directive-record",
+    "delivery-return-record",
+    "approval-request-record",
+  ];
+
+  for (const objectType of v04RuntimePrivateTypes) {
+    const registryEntry = registryDocument.objects.find(
+      (entry) => entry.object_type === objectType
+    );
+    const bindingEntry = bindingDocument.bindings.find(
+      (entry) => entry.coregentis_object === objectType
+    );
+    const exportRule = exportDocument.export_rules.find((rule) =>
+      rule.eligible_object_types.includes(objectType)
+    );
+
+    assert.ok(registryEntry, `missing registry entry for ${objectType}`);
+    assert.ok(bindingEntry, `missing binding entry for ${objectType}`);
+    assert.ok(exportRule, `missing export rule for ${objectType}`);
+
+    assert.equal(registryEntry.authority_class, "coregentis_private_runtime");
+    assert.equal(registryEntry.protocol_binding_ref_policy, "not_applicable");
+    assert.equal(bindingEntry.binding_class, "runtime_private_only");
+    assert.equal(bindingEntry.mplp_object, null);
+    assert.equal(exportRule.export_class, "runtime_private_non_exportable");
+    assert.match(bindingEntry.export_rule, /not directly exportable/u);
+
+    const schema = load_registry_schema_document(
+      repoRoot,
+      registryEntry.schema_ref
+    );
+
+    assert.doesNotThrow(() => ajv.compile(schema), objectType);
+    assert.equal(schema.properties.authority_class.const, "coregentis_private_runtime");
+    assert.equal(schema.properties.object_type.const, objectType);
   }
 });

@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added the first machine-readable runtime-private `v0.4` workforce preconditions for bounded cell scope, summary, directive, delivery-return, and approval-request records
+- updated registry, binding, export, runtime-type, and frozen-truth loading surfaces for those runtime-private objects without claiming protocol law or full portfolio runtime behavior
 - performed a `v0.4` foundation reality refresh, added SoloCrew-driven runtime blocker intake and precondition docs, and did not claim full runtime expansion or product implementation
 - execution baseline R7 governance closure aligned
 - first executable mother-runtime baseline now present rather than schema/binding/skeleton-only

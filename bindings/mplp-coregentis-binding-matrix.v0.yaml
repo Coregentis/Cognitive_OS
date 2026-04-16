@@ -103,6 +103,56 @@ bindings:
     runtime_substrate_hint: "multi_substrate"
     runtime_substrate_note: "Likely spans durable profile state and later learning or correction bridges. Informational only."
 
+  - coregentis_object: "cell-runtime-scope"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Cell Runtime Scope."
+    export_rule: "Cell Runtime Scope is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Bounded multi-scope coexistence remains Coregentis-private runtime law rather than protocol law."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable organization state plus later evidence and coordination references. Informational only."
+
+  - coregentis_object: "cell-summary-runtime-record"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Cell Summary Runtime Record."
+    export_rule: "Cell Summary Runtime Record is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Bounded summary records remain internal runtime-precondition truth and do not become protocol summary law."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable state plus later summary derivation support. Informational only."
+
+  - coregentis_object: "management-directive-record"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Management Directive Record."
+    export_rule: "Management Directive Record is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Directive-like runtime preconditions remain private governance semantics, not MPLP envelope law."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable governance state and later policy coordination support. Informational only."
+
+  - coregentis_object: "delivery-return-record"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Delivery Return Record."
+    export_rule: "Delivery Return Record is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Result-return-like runtime records remain private runtime governance semantics, not protocol truth."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable result state and later evidence references. Informational only."
+
+  - coregentis_object: "approval-request-record"
+    mplp_object: null
+    binding_class: "runtime_private_only"
+    import_rule: "No MPLP object is imported as Approval Request Record."
+    export_rule: "Approval Request Record is not directly exportable as an MPLP artifact."
+    reconstruction_rule: "Not applicable."
+    compatibility_notes: "Approval and escalation gate records remain Coregentis-private runtime governance semantics."
+    runtime_substrate_hint: "multi_substrate"
+    runtime_substrate_note: "Likely spans durable governance state and later confirm-like coordination support. Informational only."
+
   - coregentis_object: "external-input-record"
     mplp_object: null
     binding_class: "runtime_private_only"

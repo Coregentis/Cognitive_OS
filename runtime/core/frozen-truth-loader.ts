@@ -61,6 +61,15 @@ export function load_json_document<T>(path: string): T {
   return JSON.parse(readFileSync(path, "utf8")) as T;
 }
 
+export function load_registry_schema_document<T>(
+  repo_root: string,
+  schema_ref: string
+): T {
+  return load_json_document<T>(
+    join(repo_root, schema_ref.replace(/^\/+/, ""))
+  );
+}
+
 export function load_registry_document(
   repo_root: string
 ): RegistryDocument {
