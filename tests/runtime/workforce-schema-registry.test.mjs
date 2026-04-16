@@ -10,12 +10,20 @@ import {
   load_binding_matrix_document,
   load_export_rules_document,
   load_json_document,
+  load_runtime_private_management_binding_entries,
+  load_runtime_private_management_registry_entries,
   load_registry_schema_document,
   load_registry_document,
   load_relationship_rules_document,
 } from "../../runtime/core/frozen-truth-loader.ts";
 
 const repoRoot = process.cwd();
+
+const runtimePrivateManagementTypes = [
+  "management-directive-record",
+  "delivery-return-record",
+  "approval-request-record",
+];
 
 const workforceTypes = [
   "agent-group",
@@ -179,5 +187,128 @@ test("[workforce] v0.4 runtime-private preconditions stay non-protocol and loada
     assert.doesNotThrow(() => ajv.compile(schema), objectType);
     assert.equal(schema.properties.authority_class.const, "coregentis_private_runtime");
     assert.equal(schema.properties.object_type.const, objectType);
+  }
+});
+
+test("[workforce] management-family trio shares normalized scope fields while retaining role-specific posture", () => {
+  const registryDocument = load_registry_document(repoRoot);
+  const exportDocument = load_export_rules_document(repoRoot);
+  const registryEntries = load_runtime_private_management_registry_entries(repoRoot);
+  const bindingEntries = load_runtime_private_management_binding_entries(repoRoot);
+  const ajv = new Ajv({
+    allErrors: true,
+    strict: false,
+    validateSchema: true,
+  });
+  addFormats(ajv);
+
+  for (const relativePath of baseSchemaPaths) {
+    ajv.addSchema(loadSchema(relativePath));
+  }
+
+  const expectedKinds = {
+    "management-directive-record": "directive",
+    "delivery-return-record": "delivery_return",
+    "approval-request-record": "approval_request",
+  };
+
+  const expectedStatusEnums = {
+    "management-directive-record": ["draft", "active", "superseded", "closed"],
+    "delivery-return-record": [
+      "in_progress",
+      "ready_for_review",
+      "blocked",
+      "returned",
+      "archived",
+    ],
+    "approval-request-record": [
+      "pending",
+      "resolved",
+      "withdrawn",
+      "archived",
+    ],
+  };
+
+  const roleSpecificFields = {
+    "management-directive-record": [
+      "directive_summary",
+      "directive_priority",
+      "approval_posture",
+    ],
+    "delivery-return-record": [
+      "completed_summary",
+      "blocked_summary",
+      "next_directive_needed",
+    ],
+    "approval-request-record": [
+      "request_kind",
+      "request_summary",
+      "requested_decision",
+    ],
+  };
+
+  assert.deepEqual(
+    registryEntries.map((entry) => entry.object_type).sort(),
+    [...runtimePrivateManagementTypes].sort()
+  );
+  assert.deepEqual(
+    bindingEntries.map((entry) => entry.coregentis_object).sort(),
+    [...runtimePrivateManagementTypes].sort()
+  );
+
+  for (const objectType of runtimePrivateManagementTypes) {
+    const registryEntry = registryDocument.objects.find(
+      (entry) => entry.object_type === objectType
+    );
+    const bindingEntry = bindingEntries.find(
+      (entry) => entry.coregentis_object === objectType
+    );
+    const exportRule = exportDocument.export_rules.find((rule) =>
+      rule.eligible_object_types.includes(objectType)
+    );
+
+    assert.ok(registryEntry, `missing registry entry for ${objectType}`);
+    assert.ok(bindingEntry, `missing binding entry for ${objectType}`);
+    assert.ok(exportRule, `missing export rule for ${objectType}`);
+
+    const schema = load_registry_schema_document(
+      repoRoot,
+      registryEntry.schema_ref
+    );
+
+    assert.doesNotThrow(() => ajv.compile(schema), objectType);
+    assert.equal(schema.properties.authority_class.const, "coregentis_private_runtime");
+    assert.equal(schema.properties.primary_layer.const, "organization_runtime_layer");
+    assert.ok(schema.properties.project_id, `${objectType} missing project_id`);
+    assert.ok(
+      schema.properties.cell_runtime_scope_id,
+      `${objectType} missing cell_runtime_scope_id`
+    );
+    assert.ok(schema.properties.objective_id, `${objectType} missing objective_id`);
+    assert.equal(
+      schema.properties.management_record_kind.const,
+      expectedKinds[objectType]
+    );
+    assert.ok(
+      schema.required.includes("management_record_kind"),
+      `${objectType} missing required management_record_kind`
+    );
+    assert.deepEqual(
+      schema.properties.status.enum,
+      expectedStatusEnums[objectType]
+    );
+
+    for (const fieldName of roleSpecificFields[objectType]) {
+      assert.ok(
+        schema.properties[fieldName],
+        `${objectType} missing role-specific field ${fieldName}`
+      );
+    }
+
+    assert.equal(registryEntry.authority_class, "coregentis_private_runtime");
+    assert.equal(bindingEntry.binding_class, "runtime_private_only");
+    assert.equal(exportRule.export_class, "runtime_private_non_exportable");
+    assert.match(registryEntry.notes, /management-family/u);
+    assert.match(bindingEntry.compatibility_notes, /Management-family/u);
   }
 });

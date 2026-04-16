@@ -7,7 +7,8 @@ import type {
   ExportRuleRecord,
   RegistryEntryRecord,
   RuntimeRelationshipType,
-} from "./runtime-types";
+} from "./runtime-types.ts";
+import { runtimePrivateManagementObjectTypes } from "./runtime-types.ts";
 
 interface RegistryDocument {
   objects: RegistryEntryRecord[];
@@ -91,6 +92,22 @@ export function load_binding_matrix_document(
 ): BindingMatrixDocument {
   return load_yaml_document<BindingMatrixDocument>(
     join(repo_root, "bindings", "mplp-coregentis-binding-matrix.v0.yaml")
+  );
+}
+
+export function load_runtime_private_management_registry_entries(
+  repo_root: string
+): RegistryEntryRecord[] {
+  return load_registry_document(repo_root).objects.filter((entry) =>
+    runtimePrivateManagementObjectTypes.includes(entry.object_type)
+  );
+}
+
+export function load_runtime_private_management_binding_entries(
+  repo_root: string
+): BindingMatrixEntryRecord[] {
+  return load_binding_matrix_document(repo_root).bindings.filter((entry) =>
+    runtimePrivateManagementObjectTypes.includes(entry.coregentis_object)
   );
 }
 

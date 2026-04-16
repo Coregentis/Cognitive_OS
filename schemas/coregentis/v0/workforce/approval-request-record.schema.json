@@ -48,8 +48,11 @@
     "cell_runtime_scope_id": {
       "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
     },
-    "target_objective_id": {
+    "objective_id": {
       "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "management_record_kind": {
+      "const": "approval_request"
     },
     "request_kind": {
       "type": "string",
@@ -87,6 +90,7 @@
     "governance",
     "project_id",
     "cell_runtime_scope_id",
+    "management_record_kind",
     "request_kind",
     "request_summary",
     "requested_decision",

@@ -129,7 +129,7 @@ bindings:
     import_rule: "No MPLP object is imported as Management Directive Record."
     export_rule: "Management Directive Record is not directly exportable as an MPLP artifact."
     reconstruction_rule: "Not applicable."
-    compatibility_notes: "Directive-like runtime preconditions remain private governance semantics, not MPLP envelope law."
+    compatibility_notes: "Management-family directive records remain Coregentis-private runtime governance semantics, not MPLP envelope law or exportable protocol truth."
     runtime_substrate_hint: "multi_substrate"
     runtime_substrate_note: "Likely spans durable governance state and later policy coordination support. Informational only."
 
@@ -139,7 +139,7 @@ bindings:
     import_rule: "No MPLP object is imported as Delivery Return Record."
     export_rule: "Delivery Return Record is not directly exportable as an MPLP artifact."
     reconstruction_rule: "Not applicable."
-    compatibility_notes: "Result-return-like runtime records remain private runtime governance semantics, not protocol truth."
+    compatibility_notes: "Management-family delivery-return records remain Coregentis-private runtime governance semantics, not MPLP envelope law or exportable protocol truth."
     runtime_substrate_hint: "multi_substrate"
     runtime_substrate_note: "Likely spans durable result state and later evidence references. Informational only."
 
@@ -149,7 +149,7 @@ bindings:
     import_rule: "No MPLP object is imported as Approval Request Record."
     export_rule: "Approval Request Record is not directly exportable as an MPLP artifact."
     reconstruction_rule: "Not applicable."
-    compatibility_notes: "Approval and escalation gate records remain Coregentis-private runtime governance semantics."
+    compatibility_notes: "Management-family approval-request records remain Coregentis-private runtime governance semantics, not MPLP envelope law or exportable protocol truth."
     runtime_substrate_hint: "multi_substrate"
     runtime_substrate_note: "Likely spans durable governance state and later confirm-like coordination support. Informational only."
 

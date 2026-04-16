@@ -30,6 +30,15 @@ export type CoregentisObjectType =
   | "memory-promotion-record"
   | "learning-candidate";
 
+export const runtimePrivateManagementObjectTypes = [
+  "management-directive-record",
+  "delivery-return-record",
+  "approval-request-record",
+] as const;
+
+export type RuntimePrivateManagementObjectType =
+  typeof runtimePrivateManagementObjectTypes[number];
+
 export type CoregentisAuthorityClass =
   | "protocol_native"
   | "runtime_bound"
