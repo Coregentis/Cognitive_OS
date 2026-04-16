@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a bounded `v0.4` workforce/runtime-private closure pack, multi-cell runtime boundary closure pack, cross-repo consumption/non-promotion closure pack, and a formal workforce runtime closure record
+- kept that closure wave governance-only and explicitly out of scope for new runtime behavior, new product behavior, schema or binding changes, and protocol-law promotion
 - added the first machine-readable runtime-private `v0.4` workforce preconditions for bounded cell scope, summary, directive, delivery-return, and approval-request records
 - updated registry, binding, export, runtime-type, and frozen-truth loading surfaces for those runtime-private objects without claiming protocol law or full portfolio runtime behavior
 - performed a `v0.4` foundation reality refresh, added SoloCrew-driven runtime blocker intake and precondition docs, and did not claim full runtime expansion or product implementation
