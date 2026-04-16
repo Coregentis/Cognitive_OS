@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- completed an upstream boundary review for current downstream packet-state pressure and recorded that no new workflow-truth family is adopted in `Cognitive_OS` now
+- kept that boundary wave governance-only and explicitly out of scope for new runtime behavior, new object families, schema change, and protocol-law promotion
 - hardened the internal symmetry and schema/runtime-core consistency of the runtime-private management-object family without adding new runtime behavior, product behavior, or protocol law
 - added a bounded `v0.4` workforce/runtime-private closure pack, multi-cell runtime boundary closure pack, cross-repo consumption/non-promotion closure pack, and a formal workforce runtime closure record
 - kept that closure wave governance-only and explicitly out of scope for new runtime behavior, new product behavior, schema or binding changes, and protocol-law promotion
