@@ -35,22 +35,19 @@ export interface ProtocolExportPlan {
 export interface BindingService {
   get_binding(
     object_type: CoregentisObjectType
-  ):
-    | Promise<BindingMatrixEntryRecord | undefined>
-    | BindingMatrixEntryRecord
-    | undefined;
+  ): BindingMatrixEntryRecord | undefined;
 
   get_export_rule(
     object_type: CoregentisObjectType
-  ): Promise<ExportRuleRecord | undefined> | ExportRuleRecord | undefined;
+  ): ExportRuleRecord | undefined;
 
   plan_protocol_import(
     request: ProtocolImportRequest
-  ): Promise<ProtocolImportPlan> | ProtocolImportPlan;
+  ): ProtocolImportPlan;
 
   plan_protocol_export(
     request: ProtocolExportRequest
-  ): Promise<ProtocolExportPlan> | ProtocolExportPlan;
+  ): ProtocolExportPlan;
 }
 
 export class FrozenBindingService implements BindingService {

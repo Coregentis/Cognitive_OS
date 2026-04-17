@@ -18,11 +18,11 @@ export interface ResolveConfirmGateRequest {
 export interface ConfirmService {
   create_confirm_gate(
     request: CreateConfirmGateRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   resolve_confirm_gate(
     request: ResolveConfirmGateRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 }
 
 export class DeterministicConfirmService implements ConfirmService {

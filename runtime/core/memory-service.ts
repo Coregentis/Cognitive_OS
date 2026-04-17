@@ -36,19 +36,19 @@ export interface MemoryPlacementRecord {
 export interface MemoryService {
   place_working_state(
     request: PlaceWorkingStateRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   open_episode(
     request: OpenEpisodeRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   register_semantic_fact(
     request: RegisterSemanticFactRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   inspect_memory_placement(
     object_record: RuntimeObjectRecord
-  ): Promise<MemoryPlacementRecord> | MemoryPlacementRecord;
+  ): MemoryPlacementRecord;
 }
 
 export class DeterministicMemoryService implements MemoryService {

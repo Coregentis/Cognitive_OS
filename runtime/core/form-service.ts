@@ -26,19 +26,19 @@ export interface FormDeltaIntentRequest {
 export interface FormService {
   capture_external_input(
     request: CaptureExternalInputRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   form_intent(
     request: FormIntentRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   form_delta_intent(
     request: FormDeltaIntentRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   plan_form_step(
     input: MinimalLoopInput
-  ): Promise<RuntimeObjectRecord[]> | RuntimeObjectRecord[];
+  ): RuntimeObjectRecord[];
 }
 
 export class DeterministicFormService implements FormService {

@@ -21,11 +21,11 @@ export interface CreateDecisionRecordRequest {
 export interface TraceService {
   create_trace_evidence(
     request: CreateTraceEvidenceRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   create_decision_record(
     request: CreateDecisionRecordRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 }
 
 export class DeterministicTraceService implements TraceService {

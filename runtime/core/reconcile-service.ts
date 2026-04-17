@@ -31,15 +31,15 @@ export interface ReconciliationAssessment {
 export interface ReconcileService {
   create_drift_record(
     request: CreateDriftRecordRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   create_conflict_case(
     request: CreateConflictCaseRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   assess_reconciliation(
     input: RuntimeObjectRecord[]
-  ): Promise<ReconciliationAssessment> | ReconciliationAssessment;
+  ): ReconciliationAssessment;
 }
 
 export class DeterministicReconcileService implements ReconcileService {

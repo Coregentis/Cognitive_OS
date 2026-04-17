@@ -19,7 +19,7 @@ export interface PolicyEvaluationResult {
 export interface PolicyService {
   evaluate_policies(
     request: PolicyEvaluationRequest
-  ): Promise<PolicyEvaluationResult> | PolicyEvaluationResult;
+  ): PolicyEvaluationResult;
 }
 
 export class MinimalPolicyService implements PolicyService {

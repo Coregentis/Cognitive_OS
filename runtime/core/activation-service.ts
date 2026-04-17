@@ -21,11 +21,11 @@ export interface CreateActionUnitRequest {
 export interface ActivationService {
   create_activation_signal(
     request: CreateActivationSignalRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   create_action_unit(
     request: CreateActionUnitRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 }
 
 export class DeterministicActivationService implements ActivationService {

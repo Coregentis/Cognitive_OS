@@ -22,11 +22,11 @@ export interface CreateMemoryPromotionRecordRequest {
 export interface ConsolidationService {
   create_learning_candidate(
     request: CreateLearningCandidateRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 
   create_memory_promotion_record(
     request: CreateMemoryPromotionRecordRequest
-  ): Promise<RuntimeObjectRecord> | RuntimeObjectRecord;
+  ): RuntimeObjectRecord;
 }
 
 export class DeterministicConsolidationService

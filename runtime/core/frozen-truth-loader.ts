@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 import type {
   BindingMatrixEntryRecord,
+  CoregentisObjectType,
   ExportRuleRecord,
   RegistryEntryRecord,
   RuntimeRelationshipType,
@@ -42,6 +43,10 @@ export interface ImportLockDocument {
     module_schemas: string[];
   };
 }
+
+const runtime_private_management_object_type_set = new Set<CoregentisObjectType>(
+  runtimePrivateManagementObjectTypes
+);
 
 function load_yaml_document<T>(path: string): T {
   const ruby = [
@@ -99,7 +104,7 @@ export function load_runtime_private_management_registry_entries(
   repo_root: string
 ): RegistryEntryRecord[] {
   return load_registry_document(repo_root).objects.filter((entry) =>
-    runtimePrivateManagementObjectTypes.includes(entry.object_type)
+    runtime_private_management_object_type_set.has(entry.object_type)
   );
 }
 
@@ -107,7 +112,7 @@ export function load_runtime_private_management_binding_entries(
   repo_root: string
 ): BindingMatrixEntryRecord[] {
   return load_binding_matrix_document(repo_root).bindings.filter((entry) =>
-    runtimePrivateManagementObjectTypes.includes(entry.coregentis_object)
+    runtime_private_management_object_type_set.has(entry.coregentis_object)
   );
 }
 

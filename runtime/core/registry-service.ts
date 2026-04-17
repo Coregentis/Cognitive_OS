@@ -11,17 +11,15 @@ import {
 export interface RegistryService {
   get_object_definition(
     object_type: CoregentisObjectType
-  ): Promise<RegistryEntryRecord | undefined> | RegistryEntryRecord | undefined;
+  ): RegistryEntryRecord | undefined;
 
-  list_object_definitions():
-    | Promise<RegistryEntryRecord[]>
-    | RegistryEntryRecord[];
+  list_object_definitions(): RegistryEntryRecord[];
 
-  assert_registered(object_type: CoregentisObjectType): Promise<void> | void;
+  assert_registered(object_type: CoregentisObjectType): void;
 
   get_allowed_relationships(
     object_type: CoregentisObjectType
-  ): Promise<RuntimeRelationshipType[]> | RuntimeRelationshipType[];
+  ): RuntimeRelationshipType[];
 }
 
 export class FrozenRegistryService implements RegistryService {
