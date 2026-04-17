@@ -987,7 +987,8 @@ export class MinimalRuntimeOrchestratorSkeleton
         .map((record) => record.object_id),
       notes: [
         "Export-preparation summary is derived from frozen binding and export truth only.",
-        "No final MPLP artifact materialization is performed in this phase.",
+        "Final MPLP artifact materialization is not performed inside runtime-core execution itself.",
+        "The optional frozen export service may materialize only the bounded protocol subset justified by this preparation surface.",
       ],
     };
     push_event(

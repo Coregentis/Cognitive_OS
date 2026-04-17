@@ -42,6 +42,7 @@ This repository responds to that pressure by:
 - recording an explicit upstream boundary judgment that current SoloCrew packet-state semantics remain downstream product posture only rather than new upstream workflow-truth objects
 - providing a first deterministic runnable fresh-intent minimal cognitive loop path across `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate` without claiming full runtime realization
 - extending that runnable baseline with a bounded delta-intent / requirement-change path that emits real `drift-record` output and only emits `conflict-case` when explicit reconcile tension is present
+- adding the first bounded MPLP reconstruction/export path over the runnable minimal loop, exporting only the currently lawful `Confirm` / `Trace` subset and explicitly omitting `Context` / `Plan` when frozen truth does not support canonical reconstruction
 
 This wave does not implement product behavior inside `Cognitive_OS`.
 It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.

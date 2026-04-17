@@ -154,6 +154,10 @@ export class MinimalLoopHarness {
           project_id: input.project_id,
           run_result: result,
         }),
+        notes: [
+          ...result.notes,
+          "Bounded MPLP reconstruction/export was attempted through the frozen protocol export service.",
+        ],
       };
     }
 

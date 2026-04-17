@@ -52,7 +52,7 @@ It does not implement:
 - full runtime behavior
 - state transition engines
 - policy evaluation logic
-- binding reconstruction logic
+- full or generic binding reconstruction logic inside runtime core
 - AEL realization
 - VSL realization
 - PSG realization
@@ -63,6 +63,7 @@ The purpose is narrower:
 - stabilize runtime service boundaries
 - align those boundaries with frozen schemas, registry, and binding artifacts
 - provide one deterministic in-memory execution baseline for the fresh-intent path and a bounded delta-intent / requirement-change path without skipping directly into full runtime realization
+- expose one bounded frozen-truth-first MPLP reconstruction/export path adjacent to runtime core without claiming full protocol reconstruction
 
 ## Relation To Later AEL / VSL / PSG Realization
 
@@ -86,6 +87,14 @@ This phase intentionally defers:
 - full in-memory execution behavior beyond the current minimal fresh-intent and bounded change-aware baseline
 - TracePilot/product concerns
 - substrate implementation details
+
+A narrow frozen-truth-first reconstruction/export path now exists under
+`runtime/export/`, but it remains intentionally limited:
+
+- it reconstructs/exports only the currently lawful `Confirm` / `Trace` subset
+- it reports `Context` / `Plan` omissions explicitly when canonical
+  reconstruction is not currently justified by frozen truth
+- it does not imply full protocol completeness or protocol promotion
 
 It also does not treat:
 
