@@ -259,7 +259,13 @@ export interface RuntimePolicySnapshot {
   notes: string[];
 }
 
+export type RuntimeReconciliationOutcome =
+  | "can_continue"
+  | "can_continue_with_change"
+  | "needs_review";
+
 export interface RuntimeReconciliationSnapshot {
+  outcome: RuntimeReconciliationOutcome;
   can_continue: boolean;
   drift_record_ids?: string[];
   conflict_case_ids?: string[];

@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added the first runnable Wave 2 delta-intent / requirement-change minimal cognitive loop path with structured reconcile outcomes, real drift usage, and conditional conflict creation only when explicit reconcile tension is present
+- kept that Wave 2 runnable-path upgrade explicitly below full conflict-engine behavior, rollback/compensation behavior, product semantics, and protocol-law promotion
 - added the first runnable Wave 1 fresh-intent minimal cognitive loop path with deterministic in-memory semantic placement and bounded reconcile assessment
 - kept that runnable-path wave explicitly below full runtime realization, workflow-engine semantics, and protocol-law promotion
 - completed an upstream boundary review for current downstream packet-state pressure and recorded that no new workflow-truth family is adopted in `Cognitive_OS` now

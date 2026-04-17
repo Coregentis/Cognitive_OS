@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { execute_scenario_file } from "../../runtime/harness/minimal-loop-harness.ts";
+import {
+  execute_scenario_file,
+  MinimalLoopHarness,
+} from "../../runtime/harness/minimal-loop-harness.ts";
 
 const repoRoot = process.cwd();
 
@@ -93,6 +96,7 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.equal(result.confirm_summary?.confirm_required, false);
   assert.equal(result.confirm_summary?.confirm_gate_id, undefined);
   assert.ok(result.reconciliation);
+  assert.equal(result.reconciliation?.outcome, "can_continue");
   assert.equal(result.reconciliation?.can_continue, true);
   assert.equal(result.reconciliation?.drift_record_ids, undefined);
   assert.equal(result.reconciliation?.conflict_case_ids, undefined);
@@ -294,7 +298,7 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.ok(objectTypes.has("delta-intent"));
   assert.ok(objectTypes.has("semantic-fact"));
   assert.ok(objectTypes.has("drift-record"));
-  assert.ok(objectTypes.has("conflict-case"));
+  assert.ok(!objectTypes.has("conflict-case"));
   assert.ok(objectTypes.has("confirm-gate"));
   assert.ok(objectTypes.has("trace-evidence"));
   assert.ok(objectTypes.has("decision-record"));
@@ -302,14 +306,42 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.ok(objectTypes.has("memory-promotion-record"));
   assert.ok(!objectTypes.has("intent"));
 
+  const deltaIntent = result.created_objects.find(
+    (record) => record.object_type === "delta-intent"
+  );
+  const driftRecord = result.created_objects.find(
+    (record) => record.object_type === "drift-record"
+  );
+  const promotionRecord = result.created_objects.find(
+    (record) => record.object_type === "memory-promotion-record"
+  );
+
+  assert.ok(deltaIntent);
+  assert.equal(
+    deltaIntent.base_intent_id,
+    "00000000-0000-4000-8000-000000000101"
+  );
+  assert.ok(
+    deltaIntent.lineage?.source_object_ids?.includes(
+      "00000000-0000-4000-8000-000000000101"
+    )
+  );
+  assert.ok(driftRecord);
+  assert.deepEqual(driftRecord.baseline_object_refs, [
+    "00000000-0000-4000-8000-000000000101",
+    "00000000-0000-4000-8000-000000000102",
+  ]);
+  assert.ok(promotionRecord);
+  assert.equal(promotionRecord.target_memory_layer, "semantic_memory");
+
   assert.ok(result.store_snapshot);
   assert.ok(result.store_snapshot.working_object_ids.length >= 2);
-  assert.ok(result.store_snapshot.episodic_object_ids.length >= 5);
+  assert.ok(result.store_snapshot.episodic_object_ids.length >= 4);
   assert.ok(result.store_snapshot.semantic_object_ids.length >= 1);
   assert.ok(result.store_snapshot.evidence_object_ids.length >= 2);
   assert.ok(result.created_object_ids_by_type?.["delta-intent"]?.length);
   assert.ok(result.created_object_ids_by_type?.["drift-record"]?.length);
-  assert.ok(result.created_object_ids_by_type?.["conflict-case"]?.length);
+  assert.equal(result.created_object_ids_by_type?.["conflict-case"], undefined);
   assert.ok(result.status_transitions?.length);
   assert.ok(
     result.status_transitions?.some(
@@ -328,11 +360,8 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
     )
   );
   assert.ok(
-    result.status_transitions?.some(
-      (transition) =>
-        transition.object_type === "conflict-case" &&
-        transition.from_status === "open" &&
-        transition.to_status === "classified"
+    !result.status_transitions?.some(
+      (transition) => transition.object_type === "conflict-case"
     )
   );
 
@@ -343,15 +372,19 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
   assert.equal(result.confirm_summary?.confirm_status, "approved");
 
   assert.ok(result.reconciliation);
-  assert.equal(result.reconciliation?.can_continue, false);
+  assert.equal(result.reconciliation?.outcome, "can_continue_with_change");
+  assert.equal(result.reconciliation?.can_continue, true);
   assert.ok(result.reconciliation?.drift_record_ids?.length);
-  assert.ok(result.reconciliation?.conflict_case_ids?.length);
+  assert.equal(result.reconciliation?.conflict_case_ids, undefined);
   assert.ok(result.evidence_summary?.trace_evidence_ids.length);
   assert.ok(result.evidence_summary?.decision_record_ids.length);
   assert.ok(result.truth_consultation);
   assert.ok(result.export_preparation);
   assert.ok(result.truth_consultation.registry_object_types.includes("delta-intent"));
-  assert.ok(result.truth_consultation.registry_object_types.includes("conflict-case"));
+  assert.ok(result.truth_consultation.registry_object_types.includes("drift-record"));
+  assert.ok(
+    !result.truth_consultation.registry_object_types.includes("conflict-case")
+  );
   assert.ok(result.truth_consultation.binding_object_types.includes("delta-intent"));
   assert.ok(result.truth_consultation.binding_object_types.includes("confirm-gate"));
   assert.ok(result.truth_consultation.binding_object_types.includes("trace-evidence"));
@@ -544,6 +577,60 @@ test("[e2e] requirement-change-midflow executes a neutral change-aware path", as
     result.created_objects.every(
       (record) => !String(record.object_type).toLowerCase().includes("pilot")
     )
+  );
+});
+
+test("[e2e] requirement-change-midflow opens conflict-case only when explicit tension is present", () => {
+  const harness = MinimalLoopHarness.create_default(
+    repoRoot,
+    "requirement-change-midflow"
+  );
+
+  const result = harness.execute_scenario({
+    scenario_id: "requirement-change-midflow",
+    project_id: "00000000-0000-4000-8000-000000000001",
+    raw_input: {
+      input_kind: "text",
+      summary: "Apply a requirement change that now requires bounded review.",
+      change_conflict_signal: "requires_review",
+    },
+    prior_object_refs: [
+      "00000000-0000-4000-8000-000000000101",
+      "00000000-0000-4000-8000-000000000102",
+    ],
+  });
+
+  const objectTypes = new Set(result.created_objects.map((record) => record.object_type));
+  const learningCandidate = result.created_objects.find(
+    (record) => record.object_type === "learning-candidate"
+  );
+  const promotionRecord = result.created_objects.find(
+    (record) => record.object_type === "memory-promotion-record"
+  );
+
+  assert.ok(objectTypes.has("delta-intent"));
+  assert.ok(objectTypes.has("drift-record"));
+  assert.ok(objectTypes.has("conflict-case"));
+  assert.ok(result.reconciliation);
+  assert.equal(result.reconciliation?.outcome, "needs_review");
+  assert.equal(result.reconciliation?.can_continue, false);
+  assert.ok(result.reconciliation?.drift_record_ids?.length);
+  assert.ok(result.reconciliation?.conflict_case_ids?.length);
+  assert.ok(
+    result.status_transitions?.some(
+      (transition) =>
+        transition.object_type === "conflict-case" &&
+        transition.from_status === "open" &&
+        transition.to_status === "classified"
+    )
+  );
+  assert.ok(learningCandidate);
+  assert.equal(learningCandidate.candidate_kind, "review_pattern");
+  assert.ok(promotionRecord);
+  assert.equal(promotionRecord.target_memory_layer, "episodic_memory");
+  assert.match(
+    String(promotionRecord.promotion_reason),
+    /later review semantics exist/u
   );
 });
 

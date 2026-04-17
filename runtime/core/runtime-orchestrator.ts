@@ -134,6 +134,25 @@ export class MinimalRuntimeOrchestratorSkeleton
     }
   }
 
+  private should_create_conflict_case(input: MinimalLoopInput): boolean {
+    const explicit_signals = [
+      input.raw_input.change_conflict_signal,
+      input.raw_input.reconcile_signal,
+    ];
+
+    return explicit_signals.some((value) => {
+      const normalized = String(value ?? "")
+        .trim()
+        .toLowerCase();
+
+      return (
+        normalized === "conflict" ||
+        normalized === "blocking" ||
+        normalized === "requires_review"
+      );
+    });
+  }
+
   private get_registry_entry(
     object_type: CoregentisObjectType
   ): RegistryEntryRecord {
@@ -215,7 +234,7 @@ export class MinimalRuntimeOrchestratorSkeleton
         notes: [
           "Requirement-change plan uses delta-intent rather than intent.",
           "This scenario is expected to relate to existing intent, episode, and semantic-fact context via prior_object_refs.",
-          "This scenario reserves explicit drift-record and conflict-case output in the execution baseline.",
+          "This scenario always emits drift-record output and emits conflict-case output only when explicit reconcile tension is present.",
         ],
       };
     }
@@ -277,6 +296,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     const consulted_export = new Set<CoregentisObjectType>();
     let event_sequence = 1;
     let reconciliation: RuntimeReconciliationSnapshot = {
+      outcome: "can_continue",
       can_continue: true,
       notes: ["Reconcile assessment pending."],
     };
@@ -684,7 +704,6 @@ export class MinimalRuntimeOrchestratorSkeleton
 
     if (input.scenario_id === "requirement-change-midflow") {
       consult_registry("drift-record");
-      consult_registry("conflict-case");
       let drift_record = record(
         this.deps.reconcile_service.create_drift_record({
           project_id: input.project_id,
@@ -699,51 +718,66 @@ export class MinimalRuntimeOrchestratorSkeleton
         "Drift record created.",
       ]);
 
-      let conflict_case = record(
-        this.deps.reconcile_service.create_conflict_case({
-          project_id: input.project_id,
-          conflict_kind: "plan_conflict",
-          conflict_summary: "Existing plan context conflicts with the new change path.",
-          object_refs: semantic_fact
-            ? [entry_object.object_id, semantic_fact.object_id, drift_record.object_id]
-            : [entry_object.object_id, drift_record.object_id],
-          proposed_resolution: "branch",
-        })
-      );
-      push_event("reconcile", "object_created", [conflict_case.object_id], [
-        "Conflict case created.",
-      ]);
-
       drift_record = transition_status("reconcile", drift_record, "reviewed", [
         "Drift record reviewed for the change path.",
       ]);
-      conflict_case = transition_status("reconcile", conflict_case, "classified", [
-        "Conflict case classified for the change path.",
-      ]);
 
-      reconciliation = this.deps.reconcile_service.assess_reconciliation([
-        drift_record,
-        conflict_case,
-      ]);
+      const reconcile_objects: RuntimeObjectRecord[] = [drift_record];
+      let conflict_case: RuntimeObjectRecord | undefined;
+
+      if (this.should_create_conflict_case(input)) {
+        consult_registry("conflict-case");
+        conflict_case = record(
+          this.deps.reconcile_service.create_conflict_case({
+            project_id: input.project_id,
+            conflict_kind: "plan_conflict",
+            conflict_summary:
+              "Existing plan context conflicts with the new change path.",
+            object_refs: semantic_fact
+              ? [entry_object.object_id, semantic_fact.object_id, drift_record.object_id]
+              : [entry_object.object_id, drift_record.object_id],
+            proposed_resolution: "branch",
+          })
+        );
+        push_event("reconcile", "object_created", [conflict_case.object_id], [
+          "Conflict case created.",
+        ]);
+        conflict_case = transition_status("reconcile", conflict_case, "classified", [
+          "Conflict case classified for the change path.",
+        ]);
+        reconcile_objects.push(conflict_case);
+      }
+
+      reconciliation = this.deps.reconcile_service.assess_reconciliation(
+        reconcile_objects
+      );
       reconciliation = {
         ...reconciliation,
         drift_record_ids: [drift_record.object_id],
-        conflict_case_ids: [conflict_case.object_id],
+        conflict_case_ids: conflict_case ? [conflict_case.object_id] : undefined,
       };
       push_event(
         "reconcile",
         "reconcile_assessed",
-        [drift_record.object_id, conflict_case.object_id],
+        conflict_case
+          ? [drift_record.object_id, conflict_case.object_id]
+          : [drift_record.object_id],
         [...reconciliation.notes]
       );
       push_step_outcome(
         "reconcile",
-        [drift_record, conflict_case],
+        reconcile_objects,
         "executed",
-        ["Requirement-change path emitted drift and conflict artifacts deterministically."],
+        conflict_case
+          ? [
+              "Requirement-change path emitted both drift and conflict artifacts because explicit reconcile tension was present.",
+            ]
+          : [
+              "Requirement-change path emitted drift without forcing a conflict-case, then returned a bounded continue-with-change assessment.",
+            ],
         [],
         [],
-        ["drift-record", "conflict-case"]
+        []
       );
     } else {
       reconciliation = this.deps.reconcile_service.assess_reconciliation([
@@ -777,11 +811,15 @@ export class MinimalRuntimeOrchestratorSkeleton
         project_id: input.project_id,
         candidate_kind:
           input.scenario_id === "requirement-change-midflow"
-            ? "failure_pattern"
+            ? reconciliation.outcome === "needs_review"
+              ? "review_pattern"
+              : "change_pattern"
             : "success_pattern",
         candidate_summary:
           input.scenario_id === "requirement-change-midflow"
-            ? "change path captured for future reconcile learning"
+            ? reconciliation.outcome === "needs_review"
+              ? "change path captured for later bounded review"
+              : "change path captured for future bounded change reuse"
             : "fresh intent path captured for future reuse",
         source_episode_refs: [episode.object_id],
         source_evidence_refs: [trace_evidence.object_id, decision_record.object_id],
@@ -803,12 +841,16 @@ export class MinimalRuntimeOrchestratorSkeleton
         source_memory_layer: "working_memory",
         target_memory_layer:
           input.scenario_id === "requirement-change-midflow"
-            ? "semantic_memory"
+            ? reconciliation.outcome === "needs_review"
+              ? "episodic_memory"
+              : "semantic_memory"
             : "episodic_memory",
         source_object_id: working_state.object_id,
         promotion_reason:
           input.scenario_id === "requirement-change-midflow"
-            ? "change path stabilized for later semantic reuse"
+            ? reconciliation.outcome === "needs_review"
+              ? "change path retained episodically until later review semantics exist"
+              : "change path stabilized for later semantic reuse"
             : "fresh path retained for later replay",
         approved_by_ref: "runtime-consolidation-service",
       })

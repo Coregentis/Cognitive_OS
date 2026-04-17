@@ -62,7 +62,7 @@ The purpose is narrower:
 
 - stabilize runtime service boundaries
 - align those boundaries with frozen schemas, registry, and binding artifacts
-- provide one deterministic in-memory execution baseline for the fresh-intent path without skipping directly into full runtime realization
+- provide one deterministic in-memory execution baseline for the fresh-intent path and a bounded delta-intent / requirement-change path without skipping directly into full runtime realization
 
 ## Relation To Later AEL / VSL / PSG Realization
 

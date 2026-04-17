@@ -1,4 +1,7 @@
-import type { RuntimeObjectRecord } from "./runtime-types";
+import type {
+  RuntimeObjectRecord,
+  RuntimeReconciliationOutcome,
+} from "./runtime-types";
 import type { RegistryService } from "./registry-service";
 import { DeterministicExecutionFactory } from "./execution-support.ts";
 
@@ -20,6 +23,7 @@ export interface CreateConflictCaseRequest {
 }
 
 export interface ReconciliationAssessment {
+  outcome: RuntimeReconciliationOutcome;
   can_continue: boolean;
   notes: string[];
 }
@@ -112,15 +116,39 @@ export class DeterministicReconcileService implements ReconcileService {
   assess_reconciliation(
     input: RuntimeObjectRecord[]
   ): ReconciliationAssessment {
+    const has_drift = input.some(
+      (record) => record.object_type === "drift-record"
+    );
     const has_conflict = input.some(
       (record) => record.object_type === "conflict-case"
     );
 
+    if (has_conflict) {
+      return {
+        outcome: "needs_review",
+        can_continue: false,
+        notes: [
+          "Conflict-case present. Change path now requires bounded review before continue semantics can be claimed.",
+        ],
+      };
+    }
+
+    if (has_drift) {
+      return {
+        outcome: "can_continue_with_change",
+        can_continue: true,
+        notes: [
+          "Drift detected without conflict-case. Change path can continue with bounded change-handling semantics.",
+        ],
+      };
+    }
+
     return {
-      can_continue: !has_conflict,
-      notes: has_conflict
-        ? ["Conflict detected in execution baseline. Continue is blocked until later resolution semantics exist."]
-        : ["No conflict-case present. Continue remains allowed in the execution baseline."],
+      outcome: "can_continue",
+      can_continue: true,
+      notes: [
+        "No drift or conflict-case present. Continue remains allowed in the execution baseline.",
+      ],
     };
   }
 }
