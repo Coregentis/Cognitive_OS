@@ -320,7 +320,7 @@ test("[failure] export surfaces missing export-rule truth for trace as a bounded
   assert.deepEqual(
     bundle.export_validation_summary.family_disposition_by_type.trace
       .blocked_by_export_truth_source_object_ids,
-    ["00000000-0000-4000-8000-000000000007"]
+    ["00000000-0000-4000-8000-000000000008"]
   );
   assert.ok(
     bundle.export_manifest.export_error_codes.includes(

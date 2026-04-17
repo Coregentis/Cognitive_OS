@@ -21,6 +21,10 @@ export interface OpenEpisodeRequest {
 export interface RegisterSemanticFactRequest {
   project_id: string;
   source_object: RuntimeObjectRecord;
+  fact_type?: string;
+  fact_statement?: string;
+  confidence_level?: string;
+  source_object_refs?: string[];
 }
 
 export interface MemoryPlacementRecord {
@@ -117,6 +121,10 @@ export class DeterministicMemoryService implements MemoryService {
   register_semantic_fact(
     request: RegisterSemanticFactRequest
   ): RuntimeObjectRecord {
+    const source_object_refs = request.source_object_refs ?? [
+      request.source_object.object_id,
+    ];
+
     return this.factory.create_object({
       registry_entry: this.get_registry_entry("semantic-fact"),
       project_id: request.project_id,
@@ -125,13 +133,15 @@ export class DeterministicMemoryService implements MemoryService {
       creation_source: "runtime_derivation",
       derivation_mode: "promoted",
       lineage_overrides: {
-        source_object_ids: [request.source_object.object_id],
+        source_object_ids: source_object_refs,
         promoted_from_object_id: request.source_object.object_id,
       },
       extra: {
-        fact_type: "requirement",
-        fact_statement: `semantic fact from ${request.source_object.object_type}`,
-        confidence_level: "medium",
+        fact_type: request.fact_type ?? "requirement",
+        fact_statement:
+          request.fact_statement ??
+          `semantic fact from ${request.source_object.object_type}`,
+        confidence_level: request.confidence_level ?? "medium",
       },
     });
   }

@@ -225,6 +225,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       "intent",
       "working-state-node",
       "episode",
+      "semantic-fact",
       "activation-signal",
       "action-unit",
       "confirm-gate",
@@ -241,7 +242,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       target_object_types,
       notes: [
         "Fresh-intent plan uses the simpler non-drifted path.",
-        "This scenario prepares intake, intent formation, placement, bounded activation, trace, and consolidation output.",
+        "This scenario prepares intake, intent formation, explicit working/episodic/semantic placement, bounded activation, trace, and consolidation output.",
       ],
     };
   }
@@ -277,7 +278,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     let event_sequence = 1;
     let reconciliation: RuntimeReconciliationSnapshot = {
       can_continue: true,
-      notes: ["Reconcile step not triggered."],
+      notes: ["Reconcile assessment pending."],
     };
 
     const consult_registry = (
@@ -470,19 +471,35 @@ export class MinimalRuntimeOrchestratorSkeleton
     const place_objects: RuntimeObjectRecord[] = [working_state, episode];
 
     let semantic_fact: RuntimeObjectRecord | undefined;
-    if (input.scenario_id === "requirement-change-midflow") {
-      consult_registry("semantic-fact");
-      semantic_fact = record(
-        this.deps.memory_service.register_semantic_fact({
-          project_id: input.project_id,
-          source_object: entry_object,
-        })
-      );
-      push_event("place", "object_created", [semantic_fact.object_id], [
-        "Semantic fact created for the requirement-change path.",
-      ]);
-      place_objects.push(semantic_fact);
-    }
+    consult_registry("semantic-fact");
+    semantic_fact = record(
+      this.deps.memory_service.register_semantic_fact({
+        project_id: input.project_id,
+        source_object: entry_object,
+        fact_type:
+          input.scenario_id === "requirement-change-midflow"
+            ? "requirement_change"
+            : "fresh_intent",
+        fact_statement:
+          input.scenario_id === "requirement-change-midflow"
+            ? "semantic fact captures the requirement-change path for later reconcile pressure"
+            : "semantic fact captures the fresh-intent objective for later bounded reuse",
+        confidence_level:
+          input.scenario_id === "requirement-change-midflow"
+            ? "medium"
+            : "low",
+        source_object_refs:
+          input.scenario_id === "requirement-change-midflow"
+            ? [external_input.object_id, entry_object.object_id]
+            : [entry_object.object_id],
+      })
+    );
+    push_event("place", "object_created", [semantic_fact.object_id], [
+      input.scenario_id === "requirement-change-midflow"
+        ? "Semantic fact created for the requirement-change path."
+        : "Semantic fact created for the fresh-intent path.",
+    ]);
+    place_objects.push(semantic_fact);
 
     push_step_outcome(
       "place",
@@ -729,14 +746,24 @@ export class MinimalRuntimeOrchestratorSkeleton
         ["drift-record", "conflict-case"]
       );
     } else {
-      push_event("reconcile", "stage_skipped", [], [
-        "Reconcile stage skipped in the fresh-intent path.",
-      ]);
+      reconciliation = this.deps.reconcile_service.assess_reconciliation([
+        action_unit,
+        decision_record,
+        semantic_fact,
+      ].filter(Boolean) as RuntimeObjectRecord[]);
+      push_event(
+        "reconcile",
+        "reconcile_assessed",
+        semantic_fact ? [semantic_fact.object_id, action_unit.object_id] : [action_unit.object_id],
+        [...reconciliation.notes]
+      );
       push_step_outcome(
         "reconcile",
         [],
-        "skipped",
-        ["Fresh-intent path does not emit drift or conflict artifacts in the minimal baseline."],
+        "executed",
+        [
+          "Fresh-intent path performs a bounded reconcile assessment without emitting drift or conflict artifacts.",
+        ],
         [],
         [],
         []

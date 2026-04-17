@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added the first runnable Wave 1 fresh-intent minimal cognitive loop path with deterministic in-memory semantic placement and bounded reconcile assessment
+- kept that runnable-path wave explicitly below full runtime realization, workflow-engine semantics, and protocol-law promotion
 - completed an upstream boundary review for current downstream packet-state pressure and recorded that no new workflow-truth family is adopted in `Cognitive_OS` now
 - kept that boundary wave governance-only and explicitly out of scope for new runtime behavior, new object families, schema change, and protocol-law promotion
 - hardened the internal symmetry and schema/runtime-core consistency of the runtime-private management-object family without adding new runtime behavior, product behavior, or protocol law

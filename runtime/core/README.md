@@ -38,7 +38,7 @@ All of that remains limited to the minimal cognitive loop:
 - `consolidation-service.ts`
   - handles learning candidate and memory promotion record creation
 - `runtime-orchestrator.ts`
-  - stitches service interfaces into a later minimal-loop execution path
+  - stitches service interfaces into the current deterministic minimal-loop execution path
 - `runtime-types.ts`
   - shared skeleton types aligned with frozen schema, registry, and binding layers
   - keeps registry authority classification separate from binding taxonomy
@@ -62,7 +62,7 @@ The purpose is narrower:
 
 - stabilize runtime service boundaries
 - align those boundaries with frozen schemas, registry, and binding artifacts
-- provide one deterministic in-memory execution baseline without skipping directly into full runtime realization
+- provide one deterministic in-memory execution baseline for the fresh-intent path without skipping directly into full runtime realization
 
 ## Relation To Later AEL / VSL / PSG Realization
 
@@ -83,7 +83,7 @@ This phase intentionally defers:
 - production logic
 - production persistence
 - field-level protocol transformation
-- full in-memory execution behavior
+- full in-memory execution behavior beyond the current minimal fresh-intent and bounded change-aware baseline
 - TracePilot/product concerns
 - substrate implementation details
 
@@ -93,4 +93,4 @@ It also does not treat:
 - runtime dry-run planning as runtime execution
 - substrate hints as substrate implementation
 
-This directory is therefore a mother-runtime skeleton only.
+This directory is therefore still a mother-runtime skeleton-first runtime core, even though the first deterministic runnable baseline now exists.

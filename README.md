@@ -40,6 +40,7 @@ This repository responds to that pressure by:
 - hardening the internal symmetry and naming clarity of the runtime-private management-object family without widening runtime behavior
 - recording a formal closure pack for the current runtime-private workforce line and its cross-repo downstream boundary
 - recording an explicit upstream boundary judgment that current SoloCrew packet-state semantics remain downstream product posture only rather than new upstream workflow-truth objects
+- providing a first deterministic runnable fresh-intent minimal cognitive loop path across `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate` without claiming full runtime realization
 
 This wave does not implement product behavior inside `Cognitive_OS`.
 It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.

@@ -53,6 +53,7 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.ok(objectTypes.has("intent"));
   assert.ok(objectTypes.has("working-state-node"));
   assert.ok(objectTypes.has("episode"));
+  assert.ok(objectTypes.has("semantic-fact"));
   assert.ok(objectTypes.has("activation-signal"));
   assert.ok(objectTypes.has("action-unit"));
   assert.ok(objectTypes.has("trace-evidence"));
@@ -65,9 +66,10 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.ok(result.store_snapshot);
   assert.ok(result.store_snapshot.working_object_ids.length >= 2);
   assert.ok(result.store_snapshot.episodic_object_ids.length >= 3);
-  assert.equal(result.store_snapshot.semantic_object_ids.length, 0);
+  assert.ok(result.store_snapshot.semantic_object_ids.length >= 1);
   assert.ok(result.store_snapshot.evidence_object_ids.length >= 2);
   assert.ok(result.created_object_ids_by_type?.intent?.length);
+  assert.ok(result.created_object_ids_by_type?.["semantic-fact"]?.length);
   assert.ok(result.created_object_ids_by_type?.["trace-evidence"]?.length);
   assert.ok(result.status_transitions?.length);
   assert.ok(
@@ -90,6 +92,10 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
   assert.equal(result.policy_snapshots?.[0]?.confirm_required, false);
   assert.equal(result.confirm_summary?.confirm_required, false);
   assert.equal(result.confirm_summary?.confirm_gate_id, undefined);
+  assert.ok(result.reconciliation);
+  assert.equal(result.reconciliation?.can_continue, true);
+  assert.equal(result.reconciliation?.drift_record_ids, undefined);
+  assert.equal(result.reconciliation?.conflict_case_ids, undefined);
   assert.ok(result.evidence_summary?.trace_evidence_ids.length);
   assert.ok(result.evidence_summary?.decision_record_ids.length);
   assert.ok(result.truth_consultation);
@@ -178,21 +184,21 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
       context: [],
       plan: [],
       confirm: [],
-      trace: ["00000000-0000-4000-8000-000000000007"],
+      trace: ["00000000-0000-4000-8000-000000000008"],
     }
   );
   assert.deepEqual(
     result.protocol_export.export_manifest.runtime_source_object_refs_by_artifact_id,
     {
-      "00000000-0000-4000-8000-000000000007": [
-        "00000000-0000-4000-8000-000000000006",
+      "00000000-0000-4000-8000-000000000008": [
+        "00000000-0000-4000-8000-000000000007",
       ],
     }
   );
   assert.deepEqual(
     result.protocol_export.export_validation_summary.family_disposition_by_type.trace
       ?.validated_and_passed_source_object_ids,
-    ["00000000-0000-4000-8000-000000000007"]
+    ["00000000-0000-4000-8000-000000000008"]
   );
   assert.equal(
     result.protocol_export.export_truth_summary.import_lock_id,
@@ -221,31 +227,31 @@ test("[e2e] fresh-intent executes a neutral minimal in-memory path", async () =>
         protocol_version: "1.0.0",
         schema_version: "2.0.0",
       },
-      trace_id: "00000000-0000-4000-8000-000000000007",
+      trace_id: "00000000-0000-4000-8000-000000000008",
       context_id: "00000000-0000-4000-8000-000000000001",
       root_span: {
-        trace_id: "00000000-0000-4000-8000-000000000007",
-        span_id: "00000000-0000-4000-8000-000000000006",
+        trace_id: "00000000-0000-4000-8000-000000000008",
+        span_id: "00000000-0000-4000-8000-000000000007",
         context_id: "00000000-0000-4000-8000-000000000001",
         attributes: {
           scenario_id: "fresh-intent",
           evidence_kind: "execution",
-          source_object_ids: ["00000000-0000-4000-8000-000000000006"],
+          source_object_ids: ["00000000-0000-4000-8000-000000000007"],
           step_count: 7,
         },
       },
       status: "completed",
-      started_at: "2026-01-01T00:00:06.000Z",
+      started_at: "2026-01-01T00:00:07.000Z",
     }
   );
   assert.deepEqual(
     result.protocol_export.exported_artifacts_by_type.trace[0]
       ?.source_runtime_object_refs,
-    ["00000000-0000-4000-8000-000000000006"]
+    ["00000000-0000-4000-8000-000000000007"]
   );
   assert.deepEqual(
     result.protocol_export.export_summary.exported_runtime_object_ids,
-    ["00000000-0000-4000-8000-000000000007"]
+    ["00000000-0000-4000-8000-000000000008"]
   );
   assert.ok(
     !Array.from(collectObjectKeys(result.protocol_export)).some((key) =>
