@@ -4,6 +4,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a runtime first-pass closure audit and SoloCrew projection-readiness baseline, freezing current first-pass slice status and projection boundaries without claiming full runtime seal or SoloCrew operational readiness
 - added a first-pass VSL continuity substrate with project-scoped checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata over the current minimal runtime
 - kept that VSL wave explicitly below full VSL realization, full storage completion, replay/rollback execution, product DTO semantics, and protocol-law promotion
 - added a first-pass PSG semantic relation substrate with project-scoped graph state, typed runtime-private edges, lineage/evidence-aware graph inspection, and bounded graph-update summaries over the current minimal runtime
