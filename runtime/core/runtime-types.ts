@@ -76,6 +76,15 @@ export type CoregentisMutationClass =
   | "policy_mutable"
   | "derivation_only";
 
+export type CoregentisFunctionalFamily =
+  | "organization"
+  | "entry"
+  | "memory"
+  | "action"
+  | "governance"
+  | "evidence"
+  | "learning";
+
 export type RuntimeRelationshipType =
   | "references"
   | "contains"
@@ -187,14 +196,7 @@ export interface RegistryEntryRecord {
   object_type: CoregentisObjectType;
   schema_ref: string;
   authority_class: CoregentisAuthorityClass;
-  functional_family:
-    | "organization"
-    | "entry"
-    | "memory"
-    | "action"
-    | "governance"
-    | "evidence"
-    | "learning";
+  functional_family: CoregentisFunctionalFamily;
   primary_layer: CoregentisPrimaryLayer;
   memory_layer: CoregentisMemoryLayer;
   temporal_class: CoregentisTemporalClass;
@@ -315,6 +317,77 @@ export interface RuntimeVslStore {
   recover_continuation_anchor(
     project_id: string
   ): RuntimeContinuationAnchor | undefined;
+  clear(): void;
+}
+
+export type RuntimePsgRelationOrigin =
+  | "lineage"
+  | "anchor"
+  | "reference"
+  | "evidence_support";
+
+export interface RuntimePsgNodeRecord {
+  node_id: string;
+  object_id: string;
+  object_type: CoregentisObjectType;
+  project_id: string;
+  authority_class: CoregentisAuthorityClass;
+  functional_family: CoregentisFunctionalFamily;
+  primary_layer: CoregentisPrimaryLayer;
+  memory_layer: CoregentisMemoryLayer;
+  status: string;
+  protocol_binding_ref?: RuntimeProtocolBindingRef;
+  source_object_ids: string[];
+  evidence_refs: string[];
+  export_class: "runtime_private_non_exportable";
+  notes: string[];
+}
+
+export interface RuntimePsgRelationEdge {
+  relation_id: string;
+  project_id: string;
+  relation_type: RuntimeRelationshipType;
+  source_object_id: string;
+  source_object_type: CoregentisObjectType;
+  target_object_id: string;
+  target_object_type?: CoregentisObjectType;
+  status: "active" | "resolved" | "superseded" | "archived";
+  created_at: string;
+  origin: RuntimePsgRelationOrigin;
+  origin_field: string;
+  source_lineage_object_ids: string[];
+  evidence_refs: string[];
+  export_class: "runtime_private_non_exportable";
+  notes: string[];
+}
+
+export interface RuntimePsgGraphState {
+  graph_id: string;
+  project_id: string;
+  graph_revision: number;
+  updated_at: string;
+  export_class: "runtime_private_non_exportable";
+  node_records: RuntimePsgNodeRecord[];
+  relation_edges: RuntimePsgRelationEdge[];
+  notes: string[];
+}
+
+export interface RuntimePsgGraphUpdateSummary {
+  graph_id: string;
+  project_id: string;
+  graph_revision: number;
+  update_kind: "node_edge_bulk_upsert";
+  node_delta: number;
+  edge_delta: number;
+  affected_node_ids: string[];
+  affected_relation_ids: string[];
+  export_class: "runtime_private_non_exportable";
+  notes: string[];
+}
+
+export interface RuntimePsgStore {
+  write(state: RuntimePsgGraphState): RuntimePsgGraphState;
+  load(project_id: string): RuntimePsgGraphState | undefined;
   clear(): void;
 }
 
@@ -561,6 +634,8 @@ export interface MinimalLoopRunResult {
   ordered_step_outcomes?: RuntimeStepOutcome[];
   store_snapshot?: RuntimeStoreSnapshot;
   continuity_state?: RuntimeVslContinuityState;
+  graph_state?: RuntimePsgGraphState;
+  graph_update_summary?: RuntimePsgGraphUpdateSummary;
   policy_snapshots?: RuntimePolicySnapshot[];
   confirm_summary?: RuntimeConfirmSummary;
   evidence_summary?: RuntimeEvidenceSummary;

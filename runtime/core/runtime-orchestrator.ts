@@ -9,6 +9,7 @@ import type { ReconcileService } from "./reconcile-service";
 import type { RegistryService } from "./registry-service";
 import type { TraceService } from "./trace-service";
 import type { VslService } from "./vsl-service.ts";
+import type { PsgService } from "./psg-service.ts";
 import type {
   ActionDispatchOutcome,
   ActionDispatcher,
@@ -46,6 +47,8 @@ import type {
   RuntimeExportPreparationSummary,
   RuntimeObjectRecord,
   RuntimeObjectStore,
+  RuntimePsgGraphState,
+  RuntimePsgGraphUpdateSummary,
   RuntimePolicySnapshot,
   RuntimeReconciliationSnapshot,
   RuntimeStatusTransition,
@@ -71,6 +74,7 @@ export interface RuntimeSkeletonDependencies {
   semantic_store: RuntimeObjectStore;
   evidence_store: RuntimeObjectStore;
   vsl_service?: VslService;
+  psg_service?: PsgService;
   action_dispatcher?: ActionDispatcher;
   objective_anchor?: ObjectiveAnchorPort;
   correction_capture?: CorrectionCapturePort;
@@ -94,6 +98,9 @@ export interface RuntimeOrchestrator {
   recover_continuation_anchor(
     project_id: string
   ): RuntimeContinuationAnchor | undefined;
+  inspect_project_graph(
+    project_id: string
+  ): RuntimePsgGraphState | undefined;
   dispatch_bounded_action(
     request: ExecutionRequestEnvelope
   ): Promise<ActionDispatchOutcome> | ActionDispatchOutcome;
@@ -1037,6 +1044,14 @@ export class MinimalRuntimeOrchestratorSkeleton
       store_snapshot: storeSnapshot,
       reconciliation,
     });
+    const psgIngestResult = this.deps.psg_service?.ingest_runtime_objects({
+      project_id: input.project_id,
+      object_records: finalCreatedObjects,
+    });
+    const graphState: RuntimePsgGraphState | undefined =
+      psgIngestResult?.graph_state;
+    const graphUpdateSummary: RuntimePsgGraphUpdateSummary | undefined =
+      psgIngestResult?.update_summary;
 
     return {
       scenario_id: input.scenario_id,
@@ -1052,6 +1067,8 @@ export class MinimalRuntimeOrchestratorSkeleton
       ordered_step_outcomes,
       store_snapshot: storeSnapshot,
       continuity_state: continuityState,
+      graph_state: graphState,
+      graph_update_summary: graphUpdateSummary,
       policy_snapshots,
       confirm_summary: confirmSummary,
       evidence_summary: evidenceSummary,
@@ -1066,6 +1083,9 @@ export class MinimalRuntimeOrchestratorSkeleton
         continuityState
           ? `Project-scoped VSL continuity state checkpointed at ${continuityState.continuation_anchor.anchor_object_id}.`
           : "No VSL service configured, so continuity state was not checkpointed.",
+        graphUpdateSummary
+          ? `Project-scoped PSG graph updated with ${graphUpdateSummary.node_delta} net nodes and ${graphUpdateSummary.edge_delta} net edges.`
+          : "No PSG service configured, so semantic graph state was not updated.",
       ],
     };
   }
@@ -1073,25 +1093,19 @@ export class MinimalRuntimeOrchestratorSkeleton
   load_project_continuity(
     project_id: string
   ): RuntimeVslContinuityState | undefined {
-    if (!this.deps.vsl_service) {
-      throw new Error(
-        "VSL first-pass continuity service is not configured."
-      );
-    }
-
-    return this.deps.vsl_service.load_project_continuity(project_id);
+    return this.deps.vsl_service?.load_project_continuity(project_id);
   }
 
   recover_continuation_anchor(
     project_id: string
   ): RuntimeContinuationAnchor | undefined {
-    if (!this.deps.vsl_service) {
-      throw new Error(
-        "VSL first-pass continuity service is not configured."
-      );
-    }
+    return this.deps.vsl_service?.recover_continuation_anchor(project_id);
+  }
 
-    return this.deps.vsl_service.recover_continuation_anchor(project_id);
+  inspect_project_graph(
+    project_id: string
+  ): RuntimePsgGraphState | undefined {
+    return this.deps.psg_service?.inspect_project_graph(project_id);
   }
 
   dispatch_bounded_action(

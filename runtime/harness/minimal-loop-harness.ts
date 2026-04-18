@@ -10,6 +10,7 @@ import type {
   MinimalLoopPlan,
   MinimalLoopRunResult,
   RuntimeContinuationAnchor,
+  RuntimePsgGraphState,
   RuntimeVslContinuityState,
 } from "../core/runtime-types";
 import { FrozenRegistryService } from "../core/registry-service.ts";
@@ -28,7 +29,9 @@ import { InMemoryEpisodicStore } from "../in-memory/episodic-store.ts";
 import { InMemorySemanticStore } from "../in-memory/semantic-store.ts";
 import { InMemoryEvidenceStore } from "../in-memory/evidence-store.ts";
 import { InMemoryVslStore } from "../in-memory/vsl-store.ts";
+import { InMemoryPsgStore } from "../in-memory/psg-store.ts";
 import { DeterministicVslService } from "../core/vsl-service.ts";
+import { DeterministicPsgService } from "../core/psg-service.ts";
 import { FrozenProtocolExportService } from "../export/protocol-export.ts";
 
 export type MinimalLoopScenarioName =
@@ -75,6 +78,7 @@ export class MinimalLoopHarness {
     const semantic_store = new InMemorySemanticStore();
     const evidence_store = new InMemoryEvidenceStore();
     const vsl_store = new InMemoryVslStore();
+    const psg_store = new InMemoryPsgStore();
 
     const orchestrator = new MinimalRuntimeOrchestratorSkeleton({
       registry_service,
@@ -125,6 +129,10 @@ export class MinimalLoopHarness {
       vsl_service: new DeterministicVslService({
         vsl_store,
       }),
+      psg_service: new DeterministicPsgService({
+        registry_service,
+        psg_store,
+      }),
     });
 
     return new MinimalLoopHarness(orchestrator, protocol_export_service);
@@ -155,6 +163,12 @@ export class MinimalLoopHarness {
     project_id: string
   ): RuntimeContinuationAnchor | undefined {
     return this.orchestrator.recover_continuation_anchor(project_id);
+  }
+
+  inspect_project_graph(
+    project_id: string
+  ): RuntimePsgGraphState | undefined {
+    return this.orchestrator.inspect_project_graph(project_id);
   }
 
   execute_scenario(

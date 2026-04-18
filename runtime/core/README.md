@@ -39,6 +39,8 @@ All of that remains limited to the minimal cognitive loop:
   - handles learning candidate and memory promotion record creation
 - `vsl-service.ts`
   - handles first-pass project-scoped continuity checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata
+- `psg-service.ts`
+  - handles first-pass project-scoped semantic node/edge state, lineage/evidence-aware relation ingestion, and deterministic graph inspection
 - `runtime-orchestrator.ts`
   - stitches service interfaces into the current deterministic minimal-loop execution path
 - `runtime-types.ts`
@@ -57,7 +59,7 @@ It does not implement:
 - full or generic binding reconstruction logic inside runtime core
 - AEL realization
 - full VSL realization
-- PSG realization
+- full PSG realization
 - drift-resolution mechanics
 
 The purpose is narrower:
@@ -75,9 +77,9 @@ Examples:
 
 - activation-facing services are later candidates for AEL-backed realization
 - durable stores and evidence records are later candidates for fuller VSL-backed realization beyond the current first-pass continuity slice
-- graph-shaped cognitive and semantic structures are later candidates for PSG-backed realization
+- graph-shaped cognitive and semantic structures now have a first-pass runtime-private PSG substrate, but not full PSG realization, impact propagation, or graph export semantics
 
-But none of that is implemented here.
+Only the bounded first-pass PSG substrate is now implemented here.
 
 ## What Is Intentionally Deferred
 

@@ -23,6 +23,8 @@ These stores are:
   - temporarily serves as the event/evidence scaffold for this phase
 - `vsl-store.ts`
   - first-pass project-scoped continuity store for continuation anchors and bounded replay / rollback / retention metadata
+- `psg-store.ts`
+  - first-pass project-scoped semantic graph store for runtime-private node and edge state
 
 ## What This Is Not
 
@@ -46,6 +48,14 @@ The new `vsl-store.ts` is still bounded to:
 - metadata-only replay / rollback / retention horizons
 
 It is not a replay engine, rollback engine, or production storage layer.
+
+The new `psg-store.ts` is still bounded to:
+
+- runtime-instance in-memory project graphs
+- runtime-private node and relation inspection
+- lineage/evidence-aware graph state capture
+
+It is not a graph database commitment, impact engine, or protocol export layer.
 
 There is intentionally no separate event-store scaffold yet.
 For this phase only, `evidence-store.ts` is the temporary event/evidence scaffold.
