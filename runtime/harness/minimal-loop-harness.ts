@@ -9,6 +9,8 @@ import type {
   MinimalLoopInput,
   MinimalLoopPlan,
   MinimalLoopRunResult,
+  RuntimeContinuationAnchor,
+  RuntimeVslContinuityState,
 } from "../core/runtime-types";
 import { FrozenRegistryService } from "../core/registry-service.ts";
 import { FrozenBindingService } from "../core/binding-service.ts";
@@ -25,6 +27,8 @@ import { InMemoryWorkingStore } from "../in-memory/working-store.ts";
 import { InMemoryEpisodicStore } from "../in-memory/episodic-store.ts";
 import { InMemorySemanticStore } from "../in-memory/semantic-store.ts";
 import { InMemoryEvidenceStore } from "../in-memory/evidence-store.ts";
+import { InMemoryVslStore } from "../in-memory/vsl-store.ts";
+import { DeterministicVslService } from "../core/vsl-service.ts";
 import { FrozenProtocolExportService } from "../export/protocol-export.ts";
 
 export type MinimalLoopScenarioName =
@@ -70,6 +74,7 @@ export class MinimalLoopHarness {
     const episodic_store = new InMemoryEpisodicStore();
     const semantic_store = new InMemorySemanticStore();
     const evidence_store = new InMemoryEvidenceStore();
+    const vsl_store = new InMemoryVslStore();
 
     const orchestrator = new MinimalRuntimeOrchestratorSkeleton({
       registry_service,
@@ -117,6 +122,9 @@ export class MinimalLoopHarness {
       episodic_store,
       semantic_store,
       evidence_store,
+      vsl_service: new DeterministicVslService({
+        vsl_store,
+      }),
     });
 
     return new MinimalLoopHarness(orchestrator, protocol_export_service);
@@ -135,6 +143,18 @@ export class MinimalLoopHarness {
 
   dry_run_scenario(input: MinimalLoopInput): MinimalLoopRunResult {
     return this.orchestrator.dry_run_minimal_loop(input);
+  }
+
+  load_project_continuity(
+    project_id: string
+  ): RuntimeVslContinuityState | undefined {
+    return this.orchestrator.load_project_continuity(project_id);
+  }
+
+  recover_continuation_anchor(
+    project_id: string
+  ): RuntimeContinuationAnchor | undefined {
+    return this.orchestrator.recover_continuation_anchor(project_id);
   }
 
   execute_scenario(

@@ -21,6 +21,8 @@ These stores are:
 - `evidence-store.ts`
   - placeholder store for evidence-oriented records
   - temporarily serves as the event/evidence scaffold for this phase
+- `vsl-store.ts`
+  - first-pass project-scoped continuity store for continuation anchors and bounded replay / rollback / retention metadata
 
 ## What This Is Not
 
@@ -36,6 +38,14 @@ It does not implement:
 - audit-grade storage guarantees
 
 The only role of these files is to provide a minimal scaffold so later skeleton work can hold objects in memory without pretending production durability already exists.
+
+The new `vsl-store.ts` is still bounded to:
+
+- runtime-instance in-memory continuity checkpoints
+- project-scoped continuation recovery
+- metadata-only replay / rollback / retention horizons
+
+It is not a replay engine, rollback engine, or production storage layer.
 
 There is intentionally no separate event-store scaffold yet.
 For this phase only, `evidence-store.ts` is the temporary event/evidence scaffold.

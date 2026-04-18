@@ -8,6 +8,7 @@ import type { PolicyService } from "./policy-service";
 import type { ReconcileService } from "./reconcile-service";
 import type { RegistryService } from "./registry-service";
 import type { TraceService } from "./trace-service";
+import type { VslService } from "./vsl-service.ts";
 import type {
   ActionDispatchOutcome,
   ActionDispatcher,
@@ -39,6 +40,7 @@ import type {
   MinimalLoopStep,
   RegistryEntryRecord,
   RuntimeConfirmSummary,
+  RuntimeContinuationAnchor,
   RuntimeEventTimelineEntry,
   RuntimeEvidenceSummary,
   RuntimeExportPreparationSummary,
@@ -50,6 +52,7 @@ import type {
   RuntimeStepOutcome,
   RuntimeStoreSnapshot,
   RuntimeTruthConsultationSummary,
+  RuntimeVslContinuityState,
 } from "./runtime-types";
 
 export interface RuntimeSkeletonDependencies {
@@ -67,6 +70,7 @@ export interface RuntimeSkeletonDependencies {
   episodic_store: RuntimeObjectStore;
   semantic_store: RuntimeObjectStore;
   evidence_store: RuntimeObjectStore;
+  vsl_service?: VslService;
   action_dispatcher?: ActionDispatcher;
   objective_anchor?: ObjectiveAnchorPort;
   correction_capture?: CorrectionCapturePort;
@@ -84,6 +88,12 @@ export interface RuntimeOrchestrator {
   execute_minimal_loop(
     input: MinimalLoopInput
   ): MinimalLoopRunResult;
+  load_project_continuity(
+    project_id: string
+  ): RuntimeVslContinuityState | undefined;
+  recover_continuation_anchor(
+    project_id: string
+  ): RuntimeContinuationAnchor | undefined;
   dispatch_bounded_action(
     request: ExecutionRequestEnvelope
   ): Promise<ActionDispatchOutcome> | ActionDispatchOutcome;
@@ -1018,6 +1028,15 @@ export class MinimalRuntimeOrchestratorSkeleton
     };
 
     const finalCreatedObjects = creation_order.map((id) => object_map.get(id)!);
+    const storeSnapshot = this.build_store_snapshot(input.project_id);
+    const continuityState = this.deps.vsl_service?.checkpoint_project_continuity({
+      project_id: input.project_id,
+      scenario_id: input.scenario_id,
+      last_completed_step: plan.steps.at(-1) ?? "consolidate",
+      created_objects: finalCreatedObjects,
+      store_snapshot: storeSnapshot,
+      reconciliation,
+    });
 
     return {
       scenario_id: input.scenario_id,
@@ -1031,7 +1050,8 @@ export class MinimalRuntimeOrchestratorSkeleton
       status_transitions,
       event_timeline,
       ordered_step_outcomes,
-      store_snapshot: this.build_store_snapshot(input.project_id),
+      store_snapshot: storeSnapshot,
+      continuity_state: continuityState,
       policy_snapshots,
       confirm_summary: confirmSummary,
       evidence_summary: evidenceSummary,
@@ -1043,8 +1063,35 @@ export class MinimalRuntimeOrchestratorSkeleton
         "Behavior remains deterministic and fixture-driven.",
         `Created ${creation_order.length} runtime objects.`,
         `Learning candidate recorded: ${learning_candidate.object_id}.`,
+        continuityState
+          ? `Project-scoped VSL continuity state checkpointed at ${continuityState.continuation_anchor.anchor_object_id}.`
+          : "No VSL service configured, so continuity state was not checkpointed.",
       ],
     };
+  }
+
+  load_project_continuity(
+    project_id: string
+  ): RuntimeVslContinuityState | undefined {
+    if (!this.deps.vsl_service) {
+      throw new Error(
+        "VSL first-pass continuity service is not configured."
+      );
+    }
+
+    return this.deps.vsl_service.load_project_continuity(project_id);
+  }
+
+  recover_continuation_anchor(
+    project_id: string
+  ): RuntimeContinuationAnchor | undefined {
+    if (!this.deps.vsl_service) {
+      throw new Error(
+        "VSL first-pass continuity service is not configured."
+      );
+    }
+
+    return this.deps.vsl_service.recover_continuation_anchor(project_id);
   }
 
   dispatch_bounded_action(

@@ -37,6 +37,8 @@ All of that remains limited to the minimal cognitive loop:
   - handles drift/conflict record creation and later reconcile assessment
 - `consolidation-service.ts`
   - handles learning candidate and memory promotion record creation
+- `vsl-service.ts`
+  - handles first-pass project-scoped continuity checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata
 - `runtime-orchestrator.ts`
   - stitches service interfaces into the current deterministic minimal-loop execution path
 - `runtime-types.ts`
@@ -54,7 +56,7 @@ It does not implement:
 - policy evaluation logic
 - full or generic binding reconstruction logic inside runtime core
 - AEL realization
-- VSL realization
+- full VSL realization
 - PSG realization
 - drift-resolution mechanics
 
@@ -72,7 +74,7 @@ These interfaces intentionally leave room for later substrate realization.
 Examples:
 
 - activation-facing services are later candidates for AEL-backed realization
-- durable stores and evidence records are later candidates for VSL-backed realization
+- durable stores and evidence records are later candidates for fuller VSL-backed realization beyond the current first-pass continuity slice
 - graph-shaped cognitive and semantic structures are later candidates for PSG-backed realization
 
 But none of that is implemented here.

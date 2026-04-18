@@ -252,6 +252,72 @@ export interface RuntimeStoreSnapshot {
   evidence_object_ids: string[];
 }
 
+export type RuntimeVslDurabilityMode =
+  | "runtime_instance_bounded_in_memory";
+
+export type RuntimeContinuationDisposition =
+  | "recoverable"
+  | "review_required";
+
+export interface RuntimeContinuationAnchor {
+  project_id: string;
+  scenario_id: string;
+  anchor_object_id: string;
+  anchor_object_type: CoregentisObjectType;
+  anchored_at: string;
+  source_object_ids: string[];
+  last_completed_step: MinimalLoopStep;
+  disposition: RuntimeContinuationDisposition;
+  notes: string[];
+}
+
+export interface RuntimeReplayHorizon {
+  mode: "episodic_checkpoint_window";
+  anchor_object_id: string;
+  replayable_object_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeRollbackHorizon {
+  mode: "checkpoint_boundary_only";
+  anchor_object_id: string;
+  boundary_step: MinimalLoopStep;
+  rollback_candidate_object_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeRetentionHorizon {
+  mode: "bounded_memory_partition";
+  retained_object_ids: string[];
+  expirable_object_ids: string[];
+  notes: string[];
+}
+
+export interface RuntimeVslContinuityState {
+  project_id: string;
+  scenario_id: string;
+  continuity_revision: number;
+  durability_mode: RuntimeVslDurabilityMode;
+  continuity_status: RuntimeContinuationDisposition;
+  updated_at: string;
+  last_completed_step: MinimalLoopStep;
+  continuation_anchor: RuntimeContinuationAnchor;
+  replay_horizon: RuntimeReplayHorizon;
+  rollback_horizon: RuntimeRollbackHorizon;
+  retention_horizon: RuntimeRetentionHorizon;
+  store_snapshot: RuntimeStoreSnapshot;
+  notes: string[];
+}
+
+export interface RuntimeVslStore {
+  write(state: RuntimeVslContinuityState): RuntimeVslContinuityState;
+  load(project_id: string): RuntimeVslContinuityState | undefined;
+  recover_continuation_anchor(
+    project_id: string
+  ): RuntimeContinuationAnchor | undefined;
+  clear(): void;
+}
+
 export interface RuntimePolicySnapshot {
   matched_rule_ids: string[];
   confirm_required: boolean;
@@ -494,6 +560,7 @@ export interface MinimalLoopRunResult {
   event_timeline?: RuntimeEventTimelineEntry[];
   ordered_step_outcomes?: RuntimeStepOutcome[];
   store_snapshot?: RuntimeStoreSnapshot;
+  continuity_state?: RuntimeVslContinuityState;
   policy_snapshots?: RuntimePolicySnapshot[];
   confirm_summary?: RuntimeConfirmSummary;
   evidence_summary?: RuntimeEvidenceSummary;

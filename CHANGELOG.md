@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a first-pass VSL continuity substrate with project-scoped checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata over the current minimal runtime
+- kept that VSL wave explicitly below full VSL realization, full storage completion, replay/rollback execution, product DTO semantics, and protocol-law promotion
 - added the first bounded MPLP reconstruction/export path on top of the runnable minimal loop, with lawful `Confirm` / `Trace` reconstruction, explicit `Context` / `Plan` omissions, and locked-schema validation over frozen import/binding/export truth
 - kept that Wave 3 export path explicitly below full protocol reconstruction, full MPLP interoperability guarantees, product semantics, and protocol-law promotion
 - added the first runnable Wave 2 delta-intent / requirement-change minimal cognitive loop path with structured reconcile outcomes, real drift usage, and conditional conflict creation only when explicit reconcile tension is present
