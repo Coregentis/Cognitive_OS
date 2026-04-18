@@ -9,14 +9,24 @@ The lock freezes the exact MPLP upstream reference and the exact MPLP asset clas
 The locked upstream reference is:
 
 - source repo: `https://github.com/Coregentis/MPLP-Protocol.git`
-- local repo path: `/Users/jasonwang/Documents/AI_Dev/V1.0_release`
+- local repo path: `/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol`
 - source reference type: `git-commit-sha`
 - source reference value: `8df1f0a4151d74b02b03f3807380ea33d5fadad6`
 
-R6b verification confirmed that:
+The current active sibling MPLP checkout now contains newer governance/tooling
+commits beyond the locked reference.
 
-- the local checkout commit equals `8df1f0a4151d74b02b03f3807380ea33d5fadad6`
-- the public `Coregentis/MPLP-Protocol` repository exposes the same commit at `HEAD` / `main`
+This does not widen the lock automatically.
+The lock remains commit-pinned because the first mother-runtime implementation
+phase still treats the exact locked commit as the authoritative import boundary.
+
+Current truthful read:
+
+- the current local MPLP checkout still contains
+  `8df1f0a4151d74b02b03f3807380ea33d5fadad6` in history as the locked source
+  reference
+- the public `Coregentis/MPLP-Protocol` repository still exposes that locked
+  commit in history even though current `HEAD` has advanced beyond it
 - the actual imported schema files used by Cognitive_OS are content-aligned with the public repository at that locked reference
 
 The locked import surface includes:

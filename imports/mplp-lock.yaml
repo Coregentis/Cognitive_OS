@@ -11,7 +11,7 @@ source_repo: "https://github.com/Coregentis/MPLP-Protocol.git"
 source_reference_type: "git-commit-sha"
 source_reference_value: "8df1f0a4151d74b02b03f3807380ea33d5fadad6"
 source_reference_tag: "unavailable"
-source_reference_explanation: "The local MPLP checkout at /Users/jasonwang/Documents/AI_Dev/V1.0_release is aligned with the public Coregentis/MPLP-Protocol repository at commit 8df1f0a4151d74b02b03f3807380ea33d5fadad6. HEAD does not match an exact git tag, so the commit SHA remains the authoritative lock reference for this import step."
+source_reference_explanation: "The current active MPLP sibling checkout is /Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol. That checkout now contains newer governance/tooling commits beyond the locked commit, but the first mother-runtime implementation phase remains intentionally pinned to 8df1f0a4151d74b02b03f3807380ea33d5fadad6 so the protocol import boundary does not widen by convenience. Commit-based truth remains authoritative for this lock."
 
 imported_paths:
   - "schemas/v2/common"
@@ -35,7 +35,7 @@ architectural_order:
 
 upstream:
   repo_name: "MPLP-Protocol"
-  repo_root: "/Users/jasonwang/Documents/AI_Dev/V1.0_release"
+  repo_root: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol"
   repo_remote: "https://github.com/Coregentis/MPLP-Protocol.git"
   source_reference_type: "git-commit-sha"
   source_reference_value: "8df1f0a4151d74b02b03f3807380ea33d5fadad6"
@@ -44,8 +44,8 @@ upstream:
   invariant_bundle_version: "2.0.0"
   validation_ruleset_version: "ruleset-1.0"
   governance_source:
-    release_config: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/release-config.yaml"
-    protocol_readme: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/README.md"
+    release_config: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/release-config.yaml"
+    protocol_readme: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/README.md"
 
 import_policy:
   allowed_truth_classes:
@@ -63,49 +63,49 @@ import_policy:
     - "stale runtime tests treated as schema authority"
 
 allowed_import_roots:
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common"
     relative_path: "schemas/v2/common"
     class: "protocol-common-schemas"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/events"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/events"
     relative_path: "schemas/v2/events"
     class: "protocol-event-schemas"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/learning"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/learning"
     relative_path: "schemas/v2/learning"
     class: "protocol-learning-schemas"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/taxonomy"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/taxonomy"
     relative_path: "schemas/v2/taxonomy"
     class: "protocol-taxonomy"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/invariants"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/invariants"
     relative_path: "schemas/v2/invariants"
     class: "protocol-invariants"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/tests/golden/flows"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/tests/golden/flows"
     relative_path: "tests/golden/flows"
     class: "golden-flow-fixtures"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/examples"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/examples"
     relative_path: "examples"
     class: "protocol-examples"
-  - path: "/Users/jasonwang/Documents/AI_Dev/V1.0_release/packages/sources/validator/src"
+  - path: "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/packages/sources/validator/src"
     relative_path: "packages/sources/validator/src"
     class: "validator-source-pattern"
 
 required_protocol_artifacts:
   module_schemas:
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/mplp-context.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/mplp-plan.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/mplp-confirm.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/mplp-trace.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/mplp-context.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/mplp-plan.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/mplp-confirm.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/mplp-trace.schema.json"
   common_schemas:
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common/metadata.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common/identifiers.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common/events.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common/trace-base.schema.json"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/common/learning-sample.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common/metadata.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common/identifiers.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common/events.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common/trace-base.schema.json"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/common/learning-sample.schema.json"
   taxonomy:
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/taxonomy/kernel-duties.yaml"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/schemas/v2/taxonomy/module-event-matrix.yaml"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/taxonomy/kernel-duties.yaml"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/schemas/v2/taxonomy/module-event-matrix.yaml"
   validator_seed_files:
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/packages/sources/validator/src/engine/schema.ts"
-    - "/Users/jasonwang/Documents/AI_Dev/V1.0_release/packages/sources/validator/src/engine/flow01.ts"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/packages/sources/validator/src/engine/schema.ts"
+    - "/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol/packages/sources/validator/src/engine/flow01.ts"
 
 binding_guardrails:
   protocol_is_not_runtime: true
