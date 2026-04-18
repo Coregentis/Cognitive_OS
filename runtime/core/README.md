@@ -27,6 +27,9 @@ All of that remains limited to the minimal cognitive loop:
   - handles working/episodic/semantic placement and memory promotion inspection
 - `activation-service.ts`
   - handles bounded activation and action-unit creation
+- `ael-service.ts`
+  - handles first-pass runtime-private governed activation assessment over the
+    bounded action path
 - `policy-service.ts`
   - handles policy evaluation and confirm/suppression gating decisions
 - `confirm-service.ts`
@@ -57,7 +60,7 @@ It does not implement:
 - state transition engines
 - policy evaluation logic
 - full or generic binding reconstruction logic inside runtime core
-- AEL realization
+- full AEL realization
 - full VSL realization
 - full PSG realization
 - drift-resolution mechanics
@@ -76,12 +79,15 @@ These interfaces intentionally leave room for later substrate realization.
 
 Examples:
 
-- activation-facing services are later candidates for AEL-backed realization
+- activation-facing services now include a first-pass runtime-private AEL
+  assessment, but not provider execution, dispatch execution, or full policy
+  richness
 - durable stores and evidence records are later candidates for fuller VSL-backed realization beyond the current first-pass continuity slice
 - graph-shaped cognitive and semantic structures now have a first-pass runtime-private PSG substrate, but not full PSG realization, impact propagation, or graph export semantics
 - delta-intent change handling now has a first-pass drift/impact enrichment slice using prior VSL continuity anchors and direct PSG relation discovery, but not rollback, compensation, or full conflict resolution
 
-Only the bounded first-pass PSG substrate is now implemented here.
+Only bounded first-pass AEL / VSL / PSG substrate slices are now implemented
+here.
 
 ## What Is Intentionally Deferred
 

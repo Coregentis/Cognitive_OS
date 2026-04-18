@@ -1,4 +1,8 @@
 import type { ActivationService } from "./activation-service";
+import {
+  DeterministicAelService,
+  type AelService,
+} from "./ael-service.ts";
 import type { BindingService } from "./binding-service";
 import type { ConsolidationService } from "./consolidation-service";
 import type { ConfirmService } from "./confirm-service";
@@ -41,6 +45,7 @@ import type {
   MinimalLoopStep,
   RegistryEntryRecord,
   RuntimeConfirmSummary,
+  RuntimeAelAssessment,
   RuntimeContinuationAnchor,
   RuntimeEventTimelineEntry,
   RuntimeEvidenceSummary,
@@ -64,6 +69,7 @@ export interface RuntimeSkeletonDependencies {
   form_service: FormService;
   memory_service: MemoryService;
   activation_service: ActivationService;
+  ael_service?: AelService;
   policy_service: PolicyService;
   confirm_service: ConfirmService;
   trace_service: TraceService;
@@ -137,9 +143,11 @@ export class MinimalRuntimeOrchestratorSkeleton
     "consolidate",
   ];
   private readonly deps: RuntimeSkeletonDependencies;
+  private readonly ael_service: AelService;
 
   constructor(deps: RuntimeSkeletonDependencies) {
     this.deps = deps;
+    this.ael_service = deps.ael_service ?? new DeterministicAelService();
   }
 
   private assert_supported_scenario(scenario_id: string): void {
@@ -186,6 +194,73 @@ export class MinimalRuntimeOrchestratorSkeleton
     for (const object_type of target_object_types) {
       this.deps.registry_service.assert_registered(object_type);
     }
+  }
+
+  private unique_ids(values: unknown[]): string[] {
+    return [...new Set(
+      values.filter(
+        (value): value is string =>
+          typeof value === "string" && value.length > 0
+      )
+    )].sort();
+  }
+
+  private approval_state_from_ael(
+    assessment: RuntimeAelAssessment
+  ): "not_required" | "pending" | "approved" | "rejected" | "escalated" | "bypassed" {
+    switch (assessment.outcome) {
+      case "confirm_required":
+        return assessment.confirm_gate_id ? "approved" : "pending";
+      case "suppressed":
+        return "rejected";
+      case "escalate":
+        return "escalated";
+      case "activate":
+      default:
+        return "not_required";
+    }
+  }
+
+  private attach_ael_governance(
+    object: RuntimeObjectRecord,
+    assessment: RuntimeAelAssessment
+  ): RuntimeObjectRecord {
+    const policy_refs = this.unique_ids([
+      ...(Array.isArray(object.governance?.policy_refs)
+        ? object.governance.policy_refs
+        : []),
+      ...assessment.matched_rule_ids,
+    ]);
+    const confirm_refs = this.unique_ids([
+      ...(Array.isArray(object.governance?.confirm_refs)
+        ? object.governance.confirm_refs
+        : []),
+      assessment.confirm_gate_id,
+    ]);
+    const note_parts = [
+      String(object.governance?.notes ?? "").trim(),
+      `AEL first-pass outcome=${assessment.outcome}; basis=${assessment.gating_basis}.`,
+      assessment.suppression_reason,
+      assessment.escalation_reason,
+    ].filter(
+      (value): value is string => typeof value === "string" && value.length > 0
+    );
+
+    return {
+      ...object,
+      governance: {
+        ...object.governance,
+        locked:
+          assessment.outcome === "suppressed" ||
+          assessment.outcome === "escalate",
+        review_required:
+          assessment.outcome === "escalate",
+        approval_state: this.approval_state_from_ael(assessment),
+        policy_refs,
+        confirm_refs,
+        notes: note_parts.join(" "),
+      },
+    };
   }
 
   private store_runtime_object(record: RuntimeObjectRecord): void {
@@ -308,6 +383,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     const status_transitions: RuntimeStatusTransition[] = [];
     const event_timeline: RuntimeEventTimelineEntry[] = [];
     const policy_snapshots: RuntimePolicySnapshot[] = [];
+    let aelAssessment: RuntimeAelAssessment | undefined;
     const consulted_registry = new Set<CoregentisObjectType>();
     const consulted_binding = new Set<CoregentisObjectType>();
     const consulted_export = new Set<CoregentisObjectType>();
@@ -323,6 +399,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     const priorProjectGraph = this.deps.psg_service?.inspect_project_graph(
       input.project_id
     );
+    const explicitReconcileTension = this.should_create_conflict_case(input);
 
     const consult_registry = (
       object_type: CoregentisObjectType
@@ -636,6 +713,8 @@ export class MinimalRuntimeOrchestratorSkeleton
       scenario_id: input.scenario_id,
       candidate_object: action_unit,
       registry_entry: this.get_registry_entry(action_unit.object_type),
+      raw_input: input.raw_input,
+      explicit_reconcile_tension: explicitReconcileTension,
     });
     policy_snapshots.push(policy_result);
     push_event("confirm", "policy_evaluated", [action_unit.object_id], [
@@ -643,7 +722,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     ]);
 
     let confirm_gate: RuntimeObjectRecord | undefined;
-    if (policy_result.confirm_required) {
+    if (policy_result.confirm_required && !policy_result.suppressed) {
       consult_registry("confirm-gate");
       consult_binding("confirm-gate");
       confirm_gate = this.deps.confirm_service.create_confirm_gate({
@@ -686,7 +765,9 @@ export class MinimalRuntimeOrchestratorSkeleton
       );
     } else {
       push_event("confirm", "stage_skipped", [], [
-        "Confirm stage skipped in the fresh-intent path.",
+        policy_result.suppressed
+          ? "Confirm stage skipped because the action was suppressed before confirm handling."
+          : "Confirm stage skipped in the fresh-intent path.",
       ]);
       push_step_outcome(
         "confirm",
@@ -701,6 +782,33 @@ export class MinimalRuntimeOrchestratorSkeleton
       );
     }
 
+    aelAssessment = this.ael_service.assess_activation({
+      project_id: input.project_id,
+      trigger_object: entry_object,
+      activation_signal,
+      action_unit,
+      policy_result,
+      confirm_gate,
+      explicit_reconcile_tension: explicitReconcileTension,
+    });
+    activation_signal = this.attach_ael_governance(activation_signal, aelAssessment);
+    record(activation_signal);
+    action_unit = this.attach_ael_governance(action_unit, aelAssessment);
+    record(action_unit);
+    push_event(
+      "confirm",
+      "activation_assessed",
+      this.unique_ids([
+        activation_signal.object_id,
+        action_unit.object_id,
+        aelAssessment.confirm_gate_id,
+      ]),
+      [
+        `AEL assessed outcome ${aelAssessment.outcome}.`,
+        ...aelAssessment.notes,
+      ]
+    );
+
     const trace_subjects = confirm_gate
       ? [action_unit.object_id, confirm_gate.object_id]
       : [action_unit.object_id];
@@ -711,11 +819,20 @@ export class MinimalRuntimeOrchestratorSkeleton
     const trace_evidence = record(
       this.deps.trace_service.create_trace_evidence({
         project_id: input.project_id,
-        evidence_kind: "execution",
+        evidence_kind:
+          aelAssessment.outcome === "suppressed"
+            ? "decision_basis"
+            : aelAssessment.outcome === "escalate"
+              ? "conflict"
+              : "execution",
         evidence_summary:
-          input.scenario_id === "requirement-change-midflow"
-            ? "requirement change execution trace"
-            : "fresh intent execution trace",
+          aelAssessment.outcome === "suppressed"
+            ? "governed suppression trace"
+            : aelAssessment.outcome === "escalate"
+              ? "activation escalation trace"
+              : input.scenario_id === "requirement-change-midflow"
+                ? "requirement change execution trace"
+                : "fresh intent execution trace",
         subject_object_refs: trace_subjects,
       })
     );
@@ -725,27 +842,81 @@ export class MinimalRuntimeOrchestratorSkeleton
     const decision_record = record(
       this.deps.trace_service.create_decision_record({
         project_id: input.project_id,
-        decision_type: policy_result.confirm_required ? "approval" : "activation",
+        decision_type:
+          aelAssessment.outcome === "suppressed"
+            ? "suppression"
+            : aelAssessment.outcome === "escalate"
+              ? "conflict_resolution"
+              : policy_result.confirm_required
+                ? "approval"
+                : "activation",
         decision_summary:
-          input.scenario_id === "requirement-change-midflow"
-            ? "change path decision recorded"
-            : "fresh path decision recorded",
-        outcome: policy_result.confirm_required ? "approved" : "continued",
+          aelAssessment.outcome === "suppressed"
+            ? "governed suppression decision recorded"
+            : aelAssessment.outcome === "escalate"
+              ? "activation escalation decision recorded"
+              : input.scenario_id === "requirement-change-midflow"
+                ? "change path decision recorded"
+                : "fresh path decision recorded",
+        outcome:
+          aelAssessment.outcome === "suppressed"
+            ? "suppressed"
+            : aelAssessment.outcome === "escalate"
+              ? "branched"
+              : policy_result.confirm_required
+                ? "approved"
+                : "continued",
         subject_object_refs: [action_unit.object_id],
       })
     );
     push_event("trace", "object_created", [decision_record.object_id], [
       "Decision record created.",
     ]);
+    aelAssessment = this.ael_service.assess_activation({
+      project_id: input.project_id,
+      trigger_object: entry_object,
+      activation_signal,
+      action_unit,
+      policy_result,
+      confirm_gate,
+      explicit_reconcile_tension: explicitReconcileTension,
+      evidence_refs: [trace_evidence.object_id, decision_record.object_id],
+    });
+    activation_signal = this.attach_ael_governance(activation_signal, aelAssessment);
+    record(activation_signal);
+    action_unit = this.attach_ael_governance(action_unit, aelAssessment);
+    record(action_unit);
     activation_signal = transition_status(
       "trace",
       activation_signal,
-      "completed",
-      ["Activation signal completed after trace emission."]
+      aelAssessment.outcome === "suppressed"
+        ? "suppressed"
+        : aelAssessment.outcome === "escalate"
+          ? "failed"
+          : "completed",
+      [
+        aelAssessment.outcome === "suppressed"
+          ? "Activation signal marked suppressed after governed activation assessment."
+          : aelAssessment.outcome === "escalate"
+            ? "Activation signal failed closed because governed activation escalated the path."
+            : "Activation signal completed after trace emission.",
+      ]
     );
-    action_unit = transition_status("trace", action_unit, "completed", [
-      "Action unit completed after trace emission.",
-    ]);
+    action_unit = transition_status(
+      "trace",
+      action_unit,
+      aelAssessment.outcome === "activate" ||
+        aelAssessment.outcome === "confirm_required"
+        ? "completed"
+        : "cancelled",
+      [
+        aelAssessment.outcome === "suppressed"
+          ? "Action unit cancelled after governed suppression."
+          : aelAssessment.outcome === "escalate"
+            ? "Action unit cancelled because the path escalated under explicit tension."
+            : "Action unit completed after trace emission.",
+      ]
+    );
     push_step_outcome(
       "trace",
       [trace_evidence, decision_record],
@@ -801,7 +972,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       const reconcile_objects: RuntimeObjectRecord[] = [drift_record];
       let conflict_case: RuntimeObjectRecord | undefined;
 
-      if (this.should_create_conflict_case(input)) {
+      if (explicitReconcileTension) {
         consult_registry("conflict-case");
         conflict_case = record(
           this.deps.reconcile_service.create_conflict_case({
@@ -1109,6 +1280,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       graph_state: graphState,
       graph_update_summary: graphUpdateSummary,
       policy_snapshots,
+      ael_assessment: aelAssessment,
       confirm_summary: confirmSummary,
       evidence_summary: evidenceSummary,
       reconciliation,

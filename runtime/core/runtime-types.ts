@@ -417,6 +417,38 @@ export interface RuntimePolicySnapshot {
   notes: string[];
 }
 
+export type RuntimeAelOutcome =
+  | "activate"
+  | "confirm_required"
+  | "suppressed"
+  | "escalate";
+
+export type RuntimeAelGatingBasis =
+  | "policy_allow"
+  | "confirm_gate"
+  | "policy_suppression"
+  | "reconcile_tension";
+
+export interface RuntimeAelAssessment {
+  project_id: string;
+  trigger_object_id: string;
+  activation_signal_id: string;
+  action_unit_id: string;
+  action_kind: string;
+  activation_scope: string;
+  priority: string;
+  outcome: RuntimeAelOutcome;
+  gating_basis: RuntimeAelGatingBasis;
+  confirm_required: boolean;
+  matched_rule_ids: string[];
+  confirm_gate_id?: string;
+  suppression_reason?: string;
+  escalation_reason?: string;
+  evidence_refs: string[];
+  export_class: "runtime_private_non_exportable";
+  notes: string[];
+}
+
 export type RuntimeReconciliationOutcome =
   | "can_continue"
   | "can_continue_with_change"
@@ -449,6 +481,7 @@ export interface RuntimeEventTimelineEntry {
     | "object_created"
     | "status_transition"
     | "policy_evaluated"
+    | "activation_assessed"
     | "stage_skipped"
     | "confirm_resolution"
     | "reconcile_assessed"
@@ -661,6 +694,7 @@ export interface MinimalLoopRunResult {
   graph_state?: RuntimePsgGraphState;
   graph_update_summary?: RuntimePsgGraphUpdateSummary;
   policy_snapshots?: RuntimePolicySnapshot[];
+  ael_assessment?: RuntimeAelAssessment;
   confirm_summary?: RuntimeConfirmSummary;
   evidence_summary?: RuntimeEvidenceSummary;
   reconciliation?: RuntimeReconciliationSnapshot;
