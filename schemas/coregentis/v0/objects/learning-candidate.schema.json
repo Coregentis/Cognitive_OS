@@ -59,6 +59,15 @@
       "type": "string",
       "minLength": 1
     },
+    "candidate_hint_type": {
+      "type": "string",
+      "enum": [
+        "reuse_pattern_candidate",
+        "failure_pattern_candidate",
+        "policy_suggestion_candidate",
+        "continuity_pattern_candidate"
+      ]
+    },
     "source_episode_refs": {
       "type": "array",
       "items": {
@@ -67,11 +76,93 @@
       "minItems": 1,
       "uniqueItems": true
     },
+    "source_object_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
     "source_evidence_refs": {
       "type": "array",
       "items": {
         "type": "string",
         "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "source_relation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "activation_outcome": {
+      "type": "string",
+      "enum": [
+        "activate",
+        "confirm_required",
+        "suppressed",
+        "escalate"
+      ]
+    },
+    "continuity_anchor_ref": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "impacted_object_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
+    "drift_record_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
+    "conflict_case_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
+    "future_protocol_sample_family": {
+      "type": "string",
+      "enum": [
+        "intent_resolution",
+        "delta_impact",
+        "pipeline_outcome",
+        "confirm_decision",
+        "graph_evolution"
+      ]
+    },
+    "future_protocol_export_eligibility": {
+      "type": "string",
+      "enum": [
+        "not_eligible",
+        "derived_only_future_governance"
+      ]
+    },
+    "suggestion_only": {
+      "type": "boolean"
+    },
+    "policy_mutation_applied": {
+      "type": "boolean"
+    },
+    "semantic_promotion_applied": {
+      "type": "boolean"
+    },
+    "linked_promotion_record_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
       },
       "uniqueItems": true
     },

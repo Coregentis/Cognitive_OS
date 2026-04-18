@@ -39,7 +39,8 @@ All of that remains limited to the minimal cognitive loop:
 - `reconcile-service.ts`
   - handles drift/conflict record creation, delta-drift impact assessment, and later reconcile assessment
 - `consolidation-service.ts`
-  - handles learning candidate and memory promotion record creation
+  - handles first-pass governed learning assessment, learning candidate
+    creation, and memory promotion record creation
 - `vsl-service.ts`
   - handles first-pass project-scoped continuity checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata
 - `psg-service.ts`
@@ -63,6 +64,7 @@ It does not implement:
 - full AEL realization
 - full VSL realization
 - full PSG realization
+- full governed learning realization
 - drift-resolution mechanics
 - full drift/impact propagation
 
@@ -85,9 +87,12 @@ Examples:
 - durable stores and evidence records are later candidates for fuller VSL-backed realization beyond the current first-pass continuity slice
 - graph-shaped cognitive and semantic structures now have a first-pass runtime-private PSG substrate, but not full PSG realization, impact propagation, or graph export semantics
 - delta-intent change handling now has a first-pass drift/impact enrichment slice using prior VSL continuity anchors and direct PSG relation discovery, but not rollback, compensation, or full conflict resolution
+- consolidation-facing services now include first-pass governed learning
+  candidate capture, but not autonomous policy mutation, MPLP learning-sample
+  export, model training, or downstream preference projection
 
-Only bounded first-pass AEL / VSL / PSG substrate slices are now implemented
-here.
+Only bounded first-pass AEL / VSL / PSG / governed-learning substrate slices
+are now implemented here.
 
 ## What Is Intentionally Deferred
 

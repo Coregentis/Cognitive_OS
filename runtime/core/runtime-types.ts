@@ -449,6 +449,53 @@ export interface RuntimeAelAssessment {
   notes: string[];
 }
 
+export type RuntimeLearningCandidateKind =
+  | "success_pattern"
+  | "failure_pattern"
+  | "reuse_pattern"
+  | "policy_suggestion";
+
+export type RuntimeLearningHintType =
+  | "reuse_pattern_candidate"
+  | "failure_pattern_candidate"
+  | "policy_suggestion_candidate"
+  | "continuity_pattern_candidate";
+
+export type RuntimeFutureLearningSampleFamily =
+  | "intent_resolution"
+  | "delta_impact"
+  | "pipeline_outcome"
+  | "confirm_decision"
+  | "graph_evolution";
+
+export interface RuntimeGovernedLearningAssessment {
+  project_id: string;
+  scenario_id: string;
+  candidate_kind: RuntimeLearningCandidateKind;
+  candidate_hint_type: RuntimeLearningHintType;
+  candidate_summary: string;
+  score_label: "low" | "medium" | "high";
+  source_episode_refs: string[];
+  source_object_refs: string[];
+  source_evidence_refs: string[];
+  source_relation_refs: string[];
+  activation_outcome: RuntimeAelOutcome;
+  decision_outcome: string;
+  continuity_anchor_ref?: string;
+  impacted_object_refs: string[];
+  drift_record_refs: string[];
+  conflict_case_refs: string[];
+  future_protocol_sample_family?: RuntimeFutureLearningSampleFamily;
+  future_protocol_export_eligibility:
+    | "not_eligible"
+    | "derived_only_future_governance";
+  suggestion_only: true;
+  policy_mutation_applied: false;
+  semantic_promotion_applied: false;
+  export_class: "runtime_private_non_exportable";
+  notes: string[];
+}
+
 export type RuntimeReconciliationOutcome =
   | "can_continue"
   | "can_continue_with_change"
@@ -695,6 +742,7 @@ export interface MinimalLoopRunResult {
   graph_update_summary?: RuntimePsgGraphUpdateSummary;
   policy_snapshots?: RuntimePolicySnapshot[];
   ael_assessment?: RuntimeAelAssessment;
+  governed_learning_assessment?: RuntimeGovernedLearningAssessment;
   confirm_summary?: RuntimeConfirmSummary;
   evidence_summary?: RuntimeEvidenceSummary;
   reconciliation?: RuntimeReconciliationSnapshot;

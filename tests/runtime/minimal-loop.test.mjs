@@ -625,7 +625,7 @@ test("[e2e] requirement-change-midflow opens conflict-case only when explicit te
     )
   );
   assert.ok(learningCandidate);
-  assert.equal(learningCandidate.candidate_kind, "review_pattern");
+  assert.equal(learningCandidate.candidate_kind, "failure_pattern");
   assert.ok(promotionRecord);
   assert.equal(promotionRecord.target_memory_layer, "episodic_memory");
   assert.match(

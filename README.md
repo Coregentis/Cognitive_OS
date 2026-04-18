@@ -47,6 +47,7 @@ This repository responds to that pressure by:
 - adding a first-pass PSG semantic relation substrate that keeps project-scoped runtime object nodes and typed relation edges in-memory without claiming full PSG, graph export, or downstream projection semantics
 - adding a first-pass Delta Drift & Impact path that enriches requirement-change assessment using prior VSL continuity anchors and direct PSG relation discovery without claiming full drift, impact, rollback, or compensation behavior
 - adding a first-pass AEL governed activation substrate that classifies bounded action paths into activate / confirm-required / suppressed / escalate outcomes without claiming provider execution, dispatch execution, or downstream product workflow law
+- adding a first-pass governed learning substrate that captures runtime-private, suggestion-only learning candidates from VSL / PSG / Delta Drift / AEL / Trace / Decision context without claiming autonomous learning, policy mutation, or product preference law
 
 This wave does not implement product behavior inside `Cognitive_OS`.
 It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.

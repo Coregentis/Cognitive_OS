@@ -45,11 +45,13 @@ import type {
   MinimalLoopStep,
   RegistryEntryRecord,
   RuntimeConfirmSummary,
+  RuntimeDeltaDriftImpactAssessment,
   RuntimeAelAssessment,
   RuntimeContinuationAnchor,
   RuntimeEventTimelineEntry,
   RuntimeEvidenceSummary,
   RuntimeExportPreparationSummary,
+  RuntimeGovernedLearningAssessment,
   RuntimeObjectRecord,
   RuntimeObjectStore,
   RuntimePsgGraphState,
@@ -393,6 +395,14 @@ export class MinimalRuntimeOrchestratorSkeleton
       can_continue: true,
       notes: ["Reconcile assessment pending."],
     };
+    let governedLearningAssessment:
+      | RuntimeGovernedLearningAssessment
+      | undefined;
+    let deltaDriftAssessment:
+      | RuntimeDeltaDriftImpactAssessment
+      | undefined;
+    let drift_record: RuntimeObjectRecord | undefined;
+    let conflict_case: RuntimeObjectRecord | undefined;
     const priorContinuityState = this.deps.vsl_service?.load_project_continuity(
       input.project_id
     );
@@ -930,7 +940,7 @@ export class MinimalRuntimeOrchestratorSkeleton
     );
 
     if (input.scenario_id === "requirement-change-midflow") {
-      const deltaDriftAssessment =
+      deltaDriftAssessment =
         this.deps.reconcile_service.assess_delta_drift_impact({
           project_id: input.project_id,
           delta_intent: entry_object,
@@ -943,7 +953,7 @@ export class MinimalRuntimeOrchestratorSkeleton
           ],
         });
       consult_registry("drift-record");
-      let drift_record = record(
+      drift_record = record(
         this.deps.reconcile_service.create_drift_record({
           project_id: input.project_id,
           drift_kind: deltaDriftAssessment.drift_kind,
@@ -970,7 +980,6 @@ export class MinimalRuntimeOrchestratorSkeleton
       ]);
 
       const reconcile_objects: RuntimeObjectRecord[] = [drift_record];
-      let conflict_case: RuntimeObjectRecord | undefined;
 
       if (explicitReconcileTension) {
         consult_registry("conflict-case");
@@ -1077,33 +1086,67 @@ export class MinimalRuntimeOrchestratorSkeleton
 
     consult_registry("learning-candidate");
     consult_registry("memory-promotion-record");
+    if (!aelAssessment) {
+      throw new Error(
+        "AEL assessment must exist before governed learning capture."
+      );
+    }
+    governedLearningAssessment =
+      this.deps.consolidation_service.assess_governed_learning({
+        project_id: input.project_id,
+        scenario_id: input.scenario_id,
+        entry_object,
+        working_state,
+        episode,
+        semantic_fact,
+        action_unit,
+        ael_assessment: aelAssessment,
+        trace_evidence,
+        decision_record,
+        reconciliation,
+        continuity_state: priorContinuityState,
+        graph_state: priorProjectGraph,
+        delta_drift_assessment: deltaDriftAssessment,
+        drift_record,
+        conflict_case,
+      });
     let learning_candidate = record(
       this.deps.consolidation_service.create_learning_candidate({
         project_id: input.project_id,
-        candidate_kind:
-          input.scenario_id === "requirement-change-midflow"
-            ? reconciliation.outcome === "needs_review"
-              ? "review_pattern"
-              : "change_pattern"
-            : "success_pattern",
-        candidate_summary:
-          input.scenario_id === "requirement-change-midflow"
-            ? reconciliation.outcome === "needs_review"
-              ? "change path captured for later bounded review"
-              : "change path captured for future bounded change reuse"
-            : "fresh intent path captured for future reuse",
-        source_episode_refs: [episode.object_id],
-        source_evidence_refs: [
-          trace_evidence.object_id,
-          decision_record.object_id,
-        ],
+        candidate_kind: governedLearningAssessment.candidate_kind,
+        candidate_summary: governedLearningAssessment.candidate_summary,
+        candidate_hint_type: governedLearningAssessment.candidate_hint_type,
+        source_episode_refs: governedLearningAssessment.source_episode_refs,
+        source_object_refs: governedLearningAssessment.source_object_refs,
+        source_evidence_refs: governedLearningAssessment.source_evidence_refs,
+        source_relation_refs: governedLearningAssessment.source_relation_refs,
+        activation_outcome: governedLearningAssessment.activation_outcome,
+        continuity_anchor_ref:
+          governedLearningAssessment.continuity_anchor_ref,
+        impacted_object_refs:
+          governedLearningAssessment.impacted_object_refs,
+        drift_record_refs: governedLearningAssessment.drift_record_refs,
+        conflict_case_refs: governedLearningAssessment.conflict_case_refs,
+        future_protocol_sample_family:
+          governedLearningAssessment.future_protocol_sample_family,
+        future_protocol_export_eligibility:
+          governedLearningAssessment.future_protocol_export_eligibility,
+        suggestion_only: governedLearningAssessment.suggestion_only,
+        policy_mutation_applied:
+          governedLearningAssessment.policy_mutation_applied,
+        semantic_promotion_applied:
+          governedLearningAssessment.semantic_promotion_applied,
+        score_label: governedLearningAssessment.score_label,
       })
     );
     push_event(
       "consolidate",
       "object_created",
       [learning_candidate.object_id],
-      ["Learning candidate created."]
+      [
+        "Learning candidate created.",
+        ...governedLearningAssessment.notes,
+      ]
     );
     learning_candidate = transition_status(
       "consolidate",
@@ -1144,6 +1187,23 @@ export class MinimalRuntimeOrchestratorSkeleton
       "applied",
       ["Memory promotion record applied for deterministic inspection."]
     );
+    learning_candidate = {
+      ...learning_candidate,
+      linked_promotion_record_refs: [promotion_record.object_id],
+      governance: {
+        ...learning_candidate.governance,
+        review_required:
+          governedLearningAssessment.candidate_kind === "policy_suggestion" ||
+          governedLearningAssessment.candidate_kind === "failure_pattern",
+        notes: [
+          String(learning_candidate.governance?.notes ?? "").trim(),
+          `Governed learning hint=${governedLearningAssessment.candidate_hint_type}; future_export=${governedLearningAssessment.future_protocol_export_eligibility}.`,
+        ]
+          .filter((value) => value.length > 0)
+          .join(" "),
+      },
+    };
+    record(learning_candidate);
     push_step_outcome(
       "consolidate",
       [learning_candidate, promotion_record],
@@ -1281,6 +1341,7 @@ export class MinimalRuntimeOrchestratorSkeleton
       graph_update_summary: graphUpdateSummary,
       policy_snapshots,
       ael_assessment: aelAssessment,
+      governed_learning_assessment: governedLearningAssessment,
       confirm_summary: confirmSummary,
       evidence_summary: evidenceSummary,
       reconciliation,
@@ -1291,6 +1352,9 @@ export class MinimalRuntimeOrchestratorSkeleton
         "Behavior remains deterministic and fixture-driven.",
         `Created ${creation_order.length} runtime objects.`,
         `Learning candidate recorded: ${learning_candidate.object_id}.`,
+        governedLearningAssessment
+          ? `Governed learning captured as ${governedLearningAssessment.candidate_hint_type}.`
+          : "No governed learning assessment was captured.",
         continuityState
           ? `Project-scoped VSL continuity state checkpointed at ${continuityState.continuation_anchor.anchor_object_id}.`
           : "No VSL service configured, so continuity state was not checkpointed.",
