@@ -34,7 +34,7 @@ All of that remains limited to the minimal cognitive loop:
 - `trace-service.ts`
   - handles trace evidence and decision record creation
 - `reconcile-service.ts`
-  - handles drift/conflict record creation and later reconcile assessment
+  - handles drift/conflict record creation, delta-drift impact assessment, and later reconcile assessment
 - `consolidation-service.ts`
   - handles learning candidate and memory promotion record creation
 - `vsl-service.ts`
@@ -61,6 +61,7 @@ It does not implement:
 - full VSL realization
 - full PSG realization
 - drift-resolution mechanics
+- full drift/impact propagation
 
 The purpose is narrower:
 
@@ -78,6 +79,7 @@ Examples:
 - activation-facing services are later candidates for AEL-backed realization
 - durable stores and evidence records are later candidates for fuller VSL-backed realization beyond the current first-pass continuity slice
 - graph-shaped cognitive and semantic structures now have a first-pass runtime-private PSG substrate, but not full PSG realization, impact propagation, or graph export semantics
+- delta-intent change handling now has a first-pass drift/impact enrichment slice using prior VSL continuity anchors and direct PSG relation discovery, but not rollback, compensation, or full conflict resolution
 
 Only the bounded first-pass PSG substrate is now implemented here.
 

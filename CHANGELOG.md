@@ -8,6 +8,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 - kept that VSL wave explicitly below full VSL realization, full storage completion, replay/rollback execution, product DTO semantics, and protocol-law promotion
 - added a first-pass PSG semantic relation substrate with project-scoped graph state, typed runtime-private edges, lineage/evidence-aware graph inspection, and bounded graph-update summaries over the current minimal runtime
 - kept that PSG wave explicitly below full PSG realization, graph database commitments, MPLP graph export semantics, product DTO semantics, and protocol-law promotion
+- added a first-pass Delta Drift & Impact path that enriches requirement-change drift assessment using prior VSL continuity anchors, direct PSG relation discovery, and bounded evidence linkage
+- kept that Delta Drift & Impact wave explicitly below full drift-engine behavior, full impact propagation, rollback execution, compensation execution, product DTO semantics, and protocol-law promotion
 - added the first bounded MPLP reconstruction/export path on top of the runnable minimal loop, with lawful `Confirm` / `Trace` reconstruction, explicit `Context` / `Plan` omissions, and locked-schema validation over frozen import/binding/export truth
 - kept that Wave 3 export path explicitly below full protocol reconstruction, full MPLP interoperability guarantees, product semantics, and protocol-law promotion
 - added the first runnable Wave 2 delta-intent / requirement-change minimal cognitive loop path with structured reconcile outcomes, real drift usage, and conditional conflict creation only when explicit reconcile tension is present

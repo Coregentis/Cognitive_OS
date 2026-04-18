@@ -391,6 +391,25 @@ export interface RuntimePsgStore {
   clear(): void;
 }
 
+export type RuntimeDeltaImpactAssessmentMode =
+  | "baseline_only"
+  | "vsl_anchor_and_direct_psg_neighbors";
+
+export interface RuntimeDeltaDriftImpactAssessment {
+  project_id: string;
+  delta_intent_id: string;
+  drift_kind: "intent_drift";
+  severity: "low" | "medium" | "high";
+  assessment_mode: RuntimeDeltaImpactAssessmentMode;
+  baseline_object_refs: string[];
+  observed_object_refs: string[];
+  affected_object_refs: string[];
+  continuation_anchor_ref?: string;
+  supporting_evidence_refs: string[];
+  impact_summary: string;
+  notes: string[];
+}
+
 export interface RuntimePolicySnapshot {
   matched_rule_ids: string[];
   confirm_required: boolean;
@@ -408,6 +427,11 @@ export interface RuntimeReconciliationSnapshot {
   can_continue: boolean;
   drift_record_ids?: string[];
   conflict_case_ids?: string[];
+  baseline_object_refs?: string[];
+  affected_object_refs?: string[];
+  continuation_anchor_ref?: string;
+  supporting_evidence_refs?: string[];
+  impact_summary?: string;
   notes: string[];
 }
 

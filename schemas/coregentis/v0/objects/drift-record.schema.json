@@ -73,12 +73,33 @@
       },
       "uniqueItems": true
     },
+    "affected_object_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
+      "uniqueItems": true
+    },
     "observed_object_refs": {
       "type": "array",
       "items": {
         "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
       },
       "minItems": 1,
+      "uniqueItems": true
+    },
+    "continuation_anchor_ref": {
+      "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+    },
+    "impact_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supporting_evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../base/cognitive-object-envelope.schema.json#/$defs/coregentis_identifier"
+      },
       "uniqueItems": true
     }
   },

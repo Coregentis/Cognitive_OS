@@ -405,6 +405,34 @@ export class DeterministicPsgService implements PsgService {
       });
     }
 
+    for (const target_object_id of get_array_refs(record.affected_object_refs)) {
+      relations.push({
+        relation_type: "references",
+        source_object_id: record.object_id,
+        target_object_id,
+        origin: "reference",
+        origin_field: "affected_object_refs",
+        evidence_refs: supporting_evidence_refs,
+        notes: [
+          "Reference relation derived from affected_object_refs.",
+        ],
+      });
+    }
+
+    if (typeof record.continuation_anchor_ref === "string") {
+      relations.push({
+        relation_type: "references",
+        source_object_id: record.object_id,
+        target_object_id: record.continuation_anchor_ref,
+        origin: "reference",
+        origin_field: "continuation_anchor_ref",
+        evidence_refs: supporting_evidence_refs,
+        notes: [
+          "Reference relation derived from continuation_anchor_ref.",
+        ],
+      });
+    }
+
     for (const target_object_id of get_array_refs(record.observed_object_refs)) {
       relations.push({
         relation_type: "references",

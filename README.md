@@ -45,6 +45,7 @@ This repository responds to that pressure by:
 - adding the first bounded MPLP reconstruction/export path over the runnable minimal loop, exporting only the currently lawful `Confirm` / `Trace` subset and explicitly omitting `Context` / `Plan` when frozen truth does not support canonical reconstruction
 - adding a first-pass VSL continuity substrate that checkpoints project-scoped continuation state and bounded replay / rollback / retention metadata in-memory without claiming full VSL or storage completion
 - adding a first-pass PSG semantic relation substrate that keeps project-scoped runtime object nodes and typed relation edges in-memory without claiming full PSG, graph export, or downstream projection semantics
+- adding a first-pass Delta Drift & Impact path that enriches requirement-change assessment using prior VSL continuity anchors and direct PSG relation discovery without claiming full drift, impact, rollback, or compensation behavior
 
 This wave does not implement product behavior inside `Cognitive_OS`.
 It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.

@@ -317,6 +317,12 @@ export class MinimalRuntimeOrchestratorSkeleton
       can_continue: true,
       notes: ["Reconcile assessment pending."],
     };
+    const priorContinuityState = this.deps.vsl_service?.load_project_continuity(
+      input.project_id
+    );
+    const priorProjectGraph = this.deps.psg_service?.inspect_project_graph(
+      input.project_id
+    );
 
     const consult_registry = (
       object_type: CoregentisObjectType
@@ -753,19 +759,39 @@ export class MinimalRuntimeOrchestratorSkeleton
     );
 
     if (input.scenario_id === "requirement-change-midflow") {
+      const deltaDriftAssessment =
+        this.deps.reconcile_service.assess_delta_drift_impact({
+          project_id: input.project_id,
+          delta_intent: entry_object,
+          prior_object_refs: input.prior_object_refs,
+          continuity_state: priorContinuityState,
+          graph_state: priorProjectGraph,
+          current_evidence_refs: [
+            trace_evidence.object_id,
+            decision_record.object_id,
+          ],
+        });
       consult_registry("drift-record");
       let drift_record = record(
         this.deps.reconcile_service.create_drift_record({
           project_id: input.project_id,
-          drift_kind: "intent_drift",
-          drift_summary: "Requirement change diverges from prior intent path.",
-          severity: "medium",
-          observed_object_refs: [entry_object.object_id],
-          baseline_object_refs: input.prior_object_refs ?? [],
+          drift_kind: deltaDriftAssessment.drift_kind,
+          drift_summary:
+            "Requirement change diverges from prior intent path under bounded delta-drift assessment.",
+          severity: deltaDriftAssessment.severity,
+          observed_object_refs: deltaDriftAssessment.observed_object_refs,
+          baseline_object_refs: deltaDriftAssessment.baseline_object_refs,
+          affected_object_refs: deltaDriftAssessment.affected_object_refs,
+          continuation_anchor_ref:
+            deltaDriftAssessment.continuation_anchor_ref,
+          impact_summary: deltaDriftAssessment.impact_summary,
+          supporting_evidence_refs:
+            deltaDriftAssessment.supporting_evidence_refs,
         })
       );
       push_event("reconcile", "object_created", [drift_record.object_id], [
         "Drift record created.",
+        deltaDriftAssessment.impact_summary,
       ]);
 
       drift_record = transition_status("reconcile", drift_record, "reviewed", [
@@ -781,15 +807,17 @@ export class MinimalRuntimeOrchestratorSkeleton
           this.deps.reconcile_service.create_conflict_case({
             project_id: input.project_id,
             conflict_kind: "plan_conflict",
-            conflict_summary:
+            conflict_summary: [
               "Existing plan context conflicts with the new change path.",
-            object_refs: semantic_fact
-              ? [
-                  entry_object.object_id,
-                  semantic_fact.object_id,
-                  drift_record.object_id,
-                ]
-              : [entry_object.object_id, drift_record.object_id],
+              deltaDriftAssessment.impact_summary,
+            ].join(" "),
+            object_refs: [...new Set([
+              entry_object.object_id,
+              drift_record.object_id,
+              ...(semantic_fact ? [semantic_fact.object_id] : []),
+              ...deltaDriftAssessment.affected_object_refs,
+              ...deltaDriftAssessment.supporting_evidence_refs,
+            ])],
             proposed_resolution: "branch",
           })
         );
@@ -814,6 +842,17 @@ export class MinimalRuntimeOrchestratorSkeleton
         conflict_case_ids: conflict_case
           ? [conflict_case.object_id]
           : undefined,
+        baseline_object_refs: deltaDriftAssessment.baseline_object_refs,
+        affected_object_refs: deltaDriftAssessment.affected_object_refs,
+        continuation_anchor_ref:
+          deltaDriftAssessment.continuation_anchor_ref,
+        supporting_evidence_refs:
+          deltaDriftAssessment.supporting_evidence_refs,
+        impact_summary: deltaDriftAssessment.impact_summary,
+        notes: [
+          ...reconciliation.notes,
+          ...deltaDriftAssessment.notes,
+        ],
       };
       push_event(
         "reconcile",
