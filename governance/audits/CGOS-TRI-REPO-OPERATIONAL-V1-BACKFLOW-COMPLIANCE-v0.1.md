@@ -13,7 +13,8 @@ This record depends on:
 
 - SoloCrew sealed tag `solocrew-operational-v1-rc-seal-20260420`
 - SoloCrew sealed commit `2dea8c96052c28cacdc89c80bb30ea35c6e62468`
-- SoloCrew current `main` opening line at `d6c544fe123606832f3dbd32e29e83a413a1fcfe`
+- SoloCrew current `main` backflow input line at
+  `98cbebab27b258bfdb1163ce19c9ddbeb24668c0`
 - SoloCrew upstream extraction audit
 - `Cognitive_OS` Operational V1 pattern candidate map
 - MPLP Operational V1 mapping candidate note
@@ -81,6 +82,8 @@ This means:
 - V1.1 planning may proceed
 - V1.1 implementation is still separately gated and should not be inferred from
   this record alone
+- V1.1 implementation remains blocked until a later explicit implementation
+  planning wave authorizes it
 
 ## E. Next Step
 

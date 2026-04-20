@@ -60,6 +60,8 @@ Current alignment read:
   governance patterns
 - implementation requires a later separate wave
 - the current wave records candidate map only
+- this map may inform SoloCrew V1.1 planning, but it does not grant runtime
+  implementation authority
 
 ## E. Decision
 
