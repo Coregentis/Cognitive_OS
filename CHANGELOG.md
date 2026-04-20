@@ -4,6 +4,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a projection-safe runtime design baseline, projection contract surface plan, runtime consumption boundary addendum, and design readiness audit, freezing neutral projection-safe contract direction without runtime implementation, schema change, product-specific naming, or downstream product dependency
 - renamed and neutralized downstream projection backflow records so `Cognitive_OS` carries only generic runtime/projection/governance candidate patterns, without product-specific names, product-version semantics, runtime implementation, or schema change
 - added a runtime first-pass closure audit and downstream projection-readiness baseline, freezing current first-pass slice status and projection boundaries without claiming full runtime seal or downstream product operational readiness
 - added a first-pass VSL continuity substrate with project-scoped checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata over the current minimal runtime
