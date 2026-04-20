@@ -57,6 +57,8 @@ All of that remains limited to the minimal cognitive loop:
   - builds deterministic projection-safe summaries without provider or channel
     execution, approve/reject/dispatch/execute semantics, product-specific
     naming, or raw runtime internals as downstream API
+  - enforces project-id consistency across projection summary envelopes and
+    nested safe summaries
 
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 

@@ -136,6 +136,52 @@ function assert_valid_result(result: ValidationResult): void {
   }
 }
 
+function collect_nested_project_consistency_errors(
+  summary: Record<string, unknown>,
+  target: string[] = []
+): string[] {
+  const envelope_project_id = summary.project_id;
+  if (typeof envelope_project_id !== "string" || envelope_project_id.length === 0) {
+    return target;
+  }
+
+  const nested_checks: Array<{
+    key: "state_exposure" | "evidence_posture" | "recommendation";
+    error: string;
+  }> = [
+    {
+      key: "state_exposure",
+      error: "state_exposure.project_id must match envelope project_id",
+    },
+    {
+      key: "evidence_posture",
+      error: "evidence_posture.project_id must match envelope project_id",
+    },
+    {
+      key: "recommendation",
+      error: "recommendation.project_id must match envelope project_id",
+    },
+  ];
+
+  for (const check of nested_checks) {
+    const nested = summary[check.key];
+    if (!nested || typeof nested !== "object") {
+      continue;
+    }
+
+    const nested_project_id = (nested as Record<string, unknown>).project_id;
+    if (
+      typeof nested_project_id === "string" &&
+      nested_project_id.length > 0 &&
+      nested_project_id !== envelope_project_id
+    ) {
+      target.push(check.error);
+    }
+  }
+
+  return target;
+}
+
 export class DeterministicProjectionService {
   create_state_exposure(
     input: CreateRuntimeProjectionSafeStateExposureInput
@@ -305,6 +351,7 @@ export class DeterministicProjectionService {
     }
 
     const candidate = summary as Record<string, unknown>;
+    collect_nested_project_consistency_errors(candidate, errors);
 
     if ("non_executing" in candidate && candidate.non_executing !== true) {
       errors.push("non_executing must be true");

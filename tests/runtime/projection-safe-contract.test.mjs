@@ -201,6 +201,75 @@ test("[runtime] projection-safe contracts reject raw runtime-like keys", () => {
   }
 });
 
+test("[runtime] projection-safe contracts reject envelope with mismatched state_exposure.project_id", () => {
+  const service = new DeterministicProjectionService();
+  const invalid = {
+    ...createProjectionSummary(service),
+    state_exposure: service.create_state_exposure(
+      createStateExposureInput({
+        project_id: "00000000-0000-4000-8000-710000000099",
+      })
+    ),
+  };
+
+  assert.throws(() =>
+    service.create_projection_summary_envelope({
+      ...invalid,
+    })
+  );
+
+  assert.deepEqual(service.validate_projection_summary(invalid), {
+    valid: false,
+    errors: ["state_exposure.project_id must match envelope project_id"],
+  });
+});
+
+test("[runtime] projection-safe contracts reject envelope with mismatched evidence_posture.project_id", () => {
+  const service = new DeterministicProjectionService();
+  const invalid = {
+    ...createProjectionSummary(service),
+    evidence_posture: service.create_evidence_posture_summary(
+      createEvidenceInput({
+        project_id: "00000000-0000-4000-8000-710000000099",
+      })
+    ),
+  };
+
+  assert.throws(() =>
+    service.create_projection_summary_envelope({
+      ...invalid,
+    })
+  );
+
+  assert.deepEqual(service.validate_projection_summary(invalid), {
+    valid: false,
+    errors: ["evidence_posture.project_id must match envelope project_id"],
+  });
+});
+
+test("[runtime] projection-safe contracts reject envelope with mismatched recommendation.project_id", () => {
+  const service = new DeterministicProjectionService();
+  const invalid = {
+    ...createProjectionSummary(service),
+    recommendation: service.create_non_executing_recommendation(
+      createRecommendationInput({
+        project_id: "00000000-0000-4000-8000-710000000099",
+      })
+    ),
+  };
+
+  assert.throws(() =>
+    service.create_projection_summary_envelope({
+      ...invalid,
+    })
+  );
+
+  assert.deepEqual(service.validate_projection_summary(invalid), {
+    valid: false,
+    errors: ["recommendation.project_id must match envelope project_id"],
+  });
+});
+
 test("[runtime] projection-safe contracts preserve project isolation in projection store", () => {
   const service = new DeterministicProjectionService();
   const store = new InMemoryProjectionStore();
