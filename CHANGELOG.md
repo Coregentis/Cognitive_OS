@@ -4,8 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- added an Operational V1 pattern candidate map and tri-repo backflow compliance record, freezing neutral runtime/projection/governance candidates derived from SoloCrew’s sealed bounded loop without runtime implementation, schema change, or SoloCrew product semantics promoted into runtime law
-- added a runtime first-pass closure audit and SoloCrew projection-readiness baseline, freezing current first-pass slice status and projection boundaries without claiming full runtime seal or SoloCrew operational readiness
+- renamed and neutralized downstream projection backflow records so `Cognitive_OS` carries only generic runtime/projection/governance candidate patterns, without product-specific names, product-version semantics, runtime implementation, or schema change
+- added a runtime first-pass closure audit and downstream projection-readiness baseline, freezing current first-pass slice status and projection boundaries without claiming full runtime seal or downstream product operational readiness
 - added a first-pass VSL continuity substrate with project-scoped checkpoints, continuation-anchor recovery, and bounded replay / rollback / retention horizon metadata over the current minimal runtime
 - kept that VSL wave explicitly below full VSL realization, full storage completion, replay/rollback execution, product DTO semantics, and protocol-law promotion
 - added a first-pass PSG semantic relation substrate with project-scoped graph state, typed runtime-private edges, lineage/evidence-aware graph inspection, and bounded graph-update summaries over the current minimal runtime
@@ -28,8 +28,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 - added a bounded `v0.4` workforce/runtime-private closure pack, multi-cell runtime boundary closure pack, cross-repo consumption/non-promotion closure pack, and a formal workforce runtime closure record
 - kept that closure wave governance-only and explicitly out of scope for new runtime behavior, new product behavior, schema or binding changes, and protocol-law promotion
 - added the first machine-readable runtime-private `v0.4` workforce preconditions for bounded cell scope, summary, directive, delivery-return, and approval-request records
-- updated registry, binding, export, runtime-type, and frozen-truth loading surfaces for those runtime-private objects without claiming protocol law or full portfolio runtime behavior
-- performed a `v0.4` foundation reality refresh, added SoloCrew-driven runtime blocker intake and precondition docs, and did not claim full runtime expansion or product implementation
+- updated registry, binding, export, runtime-type, and frozen-truth loading surfaces for those runtime-private objects without claiming protocol law or full aggregate runtime behavior
+- performed a `v0.4` foundation reality refresh, added downstream-driven runtime blocker intake and precondition docs, and did not claim full runtime expansion or product implementation
 - execution baseline R7 governance closure aligned
 - first executable mother-runtime baseline now present rather than schema/binding/skeleton-only
 - public remote verification surfaces aligned with the current P0-A mother-runtime baseline
