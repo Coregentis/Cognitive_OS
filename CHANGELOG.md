@@ -4,6 +4,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- implemented projection-safe contract types, deterministic projection service, in-memory projection store, and runtime tests without schema change, MPLP/protocol change, product-specific names, provider/channel execution, or approve/reject/dispatch/execute semantics
 - added a projection-safe contract implementation plan, projection-safe contract test plan, implementation readiness gate, and downstream consumption planning handoff, freezing the next contract-planning wave without runtime implementation, runtime code change, schema change, product-specific naming, or downstream product dependency
 - added a projection-safe runtime design baseline, projection contract surface plan, runtime consumption boundary addendum, and design readiness audit, freezing neutral projection-safe contract direction without runtime implementation, schema change, product-specific naming, or downstream product dependency
 - renamed and neutralized downstream projection backflow records so `Cognitive_OS` carries only generic runtime/projection/governance candidate patterns, without product-specific names, product-version semantics, runtime implementation, or schema change

@@ -25,6 +25,9 @@ These stores are:
   - first-pass project-scoped continuity store for continuation anchors and bounded replay / rollback / retention metadata
 - `psg-store.ts`
   - first-pass project-scoped semantic graph store for runtime-private node and edge state
+- `projection-store.ts`
+  - project-isolated storage for projection summary envelopes only
+  - does not expose raw runtime storage or provide durability guarantees
 
 ## What This Is Not
 

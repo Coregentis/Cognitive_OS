@@ -50,6 +50,13 @@ All of that remains limited to the minimal cognitive loop:
 - `runtime-types.ts`
   - shared skeleton types aligned with frozen schema, registry, and binding layers
   - keeps registry authority classification separate from binding taxonomy
+- `projection-types.ts`
+  - defines neutral projection-safe contract types for state exposure, evidence
+    posture, non-executing recommendation, and projection summary envelopes
+- `projection-service.ts`
+  - builds deterministic projection-safe summaries without provider or channel
+    execution, approve/reject/dispatch/execute semantics, product-specific
+    naming, or raw runtime internals as downstream API
 
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 
