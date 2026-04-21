@@ -4,6 +4,14 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added Cognitive_OS V1.2 release-readiness gate for generic projection
+  revision and evidence insufficiency runtime surfaces, including release
+  scope/boundary, evidence manifest, runtime surface release readiness audit,
+  validation plan, downstream evidence release boundary note, and release
+  gate; no schema change, no MPLP protocol law change, no product-specific
+  naming, no provider/channel execution, no
+  approve/reject/dispatch/execute, no queue implementation, no tag/release,
+  and no protocol certification claim
 - recorded neutral downstream evidence review for projection revision and
   evidence insufficiency runtime surfaces, including generic downstream usage
   signals and candidate follow-up review notes, without schema change, MPLP
