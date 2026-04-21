@@ -76,6 +76,7 @@ These surfaces remain bounded:
 - no approve/reject/dispatch/execute
 - no queue
 - evidence detail is not proof/certification
+- safe clarification prompt is not provider/channel send
 - revision is not approval/rejection/execution
 
 ## Why This Is A Skeleton And Not Full Runtime Implementation

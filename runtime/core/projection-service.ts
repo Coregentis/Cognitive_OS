@@ -569,6 +569,24 @@ export class DeterministicProjectionService {
       errors.push("safe_evidence_refs must be an array");
     }
 
+    if (Array.isArray(candidate.safe_evidence_refs)) {
+      if (
+        candidate.safe_evidence_refs.some(
+          (value) => typeof value !== "string"
+        )
+      ) {
+        errors.push("safe_evidence_refs must contain only non-empty strings");
+      }
+
+      if (
+        candidate.safe_evidence_refs.some(
+          (value) => typeof value === "string" && value.trim().length === 0
+        )
+      ) {
+        errors.push("safe_evidence_refs must contain only non-empty strings");
+      }
+    }
+
     return {
       valid: errors.length === 0,
       errors: [...new Set(errors)].sort(),
@@ -626,6 +644,16 @@ export class DeterministicProjectionService {
       candidate.revision_input_summary.length === 0
     ) {
       errors.push("revision_input_summary is required");
+    }
+
+    if (
+      candidate.resulting_projection_summary_id !== undefined &&
+      (
+        typeof candidate.resulting_projection_summary_id !== "string" ||
+        candidate.resulting_projection_summary_id.length === 0
+      )
+    ) {
+      errors.push("resulting_projection_summary_id must be non-empty when provided");
     }
 
     if (candidate.non_executing !== true) {

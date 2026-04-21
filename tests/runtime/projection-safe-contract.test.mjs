@@ -497,6 +497,36 @@ test("[runtime] projection-safe contracts reject safe_evidence_refs when not arr
   );
 });
 
+test("[runtime] projection-safe contracts reject safe_evidence_refs with non-string value", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_evidence_insufficiency_detail({
+      ...createEvidenceInsufficiencyInput(),
+      safe_evidence_refs: ["safe_ref_01", 42],
+    }),
+    {
+      valid: false,
+      errors: ["safe_evidence_refs must contain only non-empty strings"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject empty safe evidence ref", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_evidence_insufficiency_detail({
+      ...createEvidenceInsufficiencyInput(),
+      safe_evidence_refs: ["safe_ref_01", ""],
+    }),
+    {
+      valid: false,
+      errors: ["safe_evidence_refs must contain only non-empty strings"],
+    }
+  );
+});
+
 test("[runtime] projection-safe contracts reject raw runtime-like keys in evidence detail", () => {
   const service = new DeterministicProjectionService();
 
@@ -519,6 +549,36 @@ test("[runtime] projection-safe contracts reject forbidden action labels in evid
     {
       valid: false,
       errors: ["forbidden action label at detail.safe_clarification_prompt: approved"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject provider/channel positive claim in safe clarification prompt", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_evidence_insufficiency_detail({
+      ...createEvidenceInsufficiencyInput(),
+      safe_clarification_prompt: "provider/channel execution available",
+    }),
+    {
+      valid: false,
+      errors: ["provider/channel execution is not allowed"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject proof/certification positive claim in omission reason", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_evidence_insufficiency_detail({
+      ...createEvidenceInsufficiencyInput(),
+      omission_reason: "This is proof of correctness.",
+    }),
+    {
+      valid: false,
+      errors: ["evidence detail is not proof or certification"],
     }
   );
 });
@@ -580,6 +640,36 @@ test("[runtime] projection-safe contracts reject invalid revision_reason", () =>
   );
 });
 
+test("[runtime] projection-safe contracts reject empty revision_input_summary", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_projection_revision_envelope({
+      ...createProjectionRevisionInput(service),
+      revision_input_summary: "",
+    }),
+    {
+      valid: false,
+      errors: ["revision_input_summary is required"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject empty resulting_projection_summary_id when provided", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_projection_revision_envelope({
+      ...createProjectionRevisionInput(service),
+      resulting_projection_summary_id: "",
+    }),
+    {
+      valid: false,
+      errors: ["resulting_projection_summary_id must be non-empty when provided"],
+    }
+  );
+});
+
 test("[runtime] projection-safe contracts reject evidence_insufficiency project mismatch", () => {
   const service = new DeterministicProjectionService();
 
@@ -595,6 +685,24 @@ test("[runtime] projection-safe contracts reject evidence_insufficiency project 
     {
       valid: false,
       errors: ["evidence_insufficiency.project_id must match revision project_id"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject invalid nested evidence insufficiency detail inside revision", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_projection_revision_envelope({
+      ...createProjectionRevisionInput(service),
+      evidence_insufficiency: {
+        ...createEvidenceInsufficiencyInput(),
+        safe_evidence_refs: "not_array",
+      },
+    }),
+    {
+      valid: false,
+      errors: ["safe_evidence_refs must be an array"],
     }
   );
 });
@@ -649,6 +757,23 @@ test("[runtime] projection-safe contracts reject provider/channel or queue seman
       errors: ["queue implementation is not allowed"],
     }
   );
+});
+
+test("[runtime] projection-safe contracts validation errors are deterministic across repeated calls", () => {
+  const service = new DeterministicProjectionService();
+  const invalid = {
+    ...createProjectionRevisionInput(service),
+    revision_input_summary: "dispatch",
+    evidence_insufficiency: {
+      ...createEvidenceInsufficiencyInput(),
+      safe_evidence_refs: "not_array",
+    },
+  };
+
+  const first = service.validate_projection_revision_envelope(invalid);
+  const second = service.validate_projection_revision_envelope(invalid);
+
+  assert.deepEqual(first, second);
 });
 
 test("[runtime] projection-safe contracts preserve safe_evidence_refs only", () => {
@@ -707,5 +832,102 @@ test("[runtime] projection-safe contracts store persists and retrieves revision 
       "projection_revision_beta"
     )?.project_id,
     "00000000-0000-4000-8000-710000000020"
+  );
+});
+
+test("[runtime] projection-safe contracts revision store returns cloned object on get", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const envelope = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service)
+  );
+
+  store.put_projection_revision_envelope(envelope);
+  const retrieved = store.get_projection_revision_envelope(
+    envelope.project_id,
+    envelope.revision_id
+  );
+
+  assert.notEqual(retrieved, envelope);
+});
+
+test("[runtime] projection-safe contracts revision store list returns cloned objects", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const envelope = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service)
+  );
+
+  store.put_projection_revision_envelope(envelope);
+  const listed = store.list_projection_revision_envelopes(envelope.project_id);
+
+  assert.equal(listed.length, 1);
+  assert.notEqual(listed[0], envelope);
+});
+
+test("[runtime] projection-safe contracts mutating retrieved revision does not mutate stored state", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const envelope = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service)
+  );
+
+  store.put_projection_revision_envelope(envelope);
+  const retrieved = store.get_projection_revision_envelope(
+    envelope.project_id,
+    envelope.revision_id
+  );
+
+  retrieved.revision_input_summary = "mutated";
+
+  const again = store.get_projection_revision_envelope(
+    envelope.project_id,
+    envelope.revision_id
+  );
+
+  assert.equal(again.revision_input_summary, "bounded revision input summary");
+});
+
+test("[runtime] projection-safe contracts listing revision envelopes is deterministic", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+
+  const alpha = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service, {
+      revision_id: "projection_revision_alpha",
+    })
+  );
+  const beta = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service, {
+      revision_id: "projection_revision_beta",
+    })
+  );
+
+  store.put_projection_revision_envelope(alpha);
+  store.put_projection_revision_envelope(beta);
+
+  assert.deepEqual(
+    store.list_projection_revision_envelopes(alpha.project_id).map(
+      (envelope) => envelope.revision_id
+    ),
+    ["projection_revision_alpha", "projection_revision_beta"]
+  );
+});
+
+test("[runtime] projection-safe contracts cross-project revision retrieval returns no result", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const envelope = service.create_projection_revision_envelope(
+    createProjectionRevisionInput(service)
+  );
+
+  store.put_projection_revision_envelope(envelope);
+
+  assert.equal(
+    store.get_projection_revision_envelope(
+      "00000000-0000-4000-8000-710000000099",
+      envelope.revision_id
+    ),
+    undefined
   );
 });
