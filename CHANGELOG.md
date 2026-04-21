@@ -4,6 +4,13 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- opened Cognitive_OS V1.2 tag/release/seal planning for the projection
+  revision runtime surface, including release notes draft, seal preparation
+  plan, validation execution plan, forbidden-claim gate, tag/release
+  execution plan, seal authorization readiness plan, and release planning
+  audit; no runtime source change, no schema change, no MPLP protocol law
+  change, no product-specific naming, no tag, no GitHub Release, and no seal
+  record
 - added Cognitive_OS V1.2 release-readiness gate for generic projection
   revision and evidence insufficiency runtime surfaces, including release
   scope/boundary, evidence manifest, runtime surface release readiness audit,
