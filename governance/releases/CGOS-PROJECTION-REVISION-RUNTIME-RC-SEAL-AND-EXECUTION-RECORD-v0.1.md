@@ -15,9 +15,10 @@ RC.
 - `tag`: `cgos-projection-revision-runtime-rc-20260421`
 - `release_title`: `Cognitive_OS Projection Revision Runtime RC`
 - `pre_seal_authorization_commit`: `6b04adb868f7f9a5b923d50a2237b9bccf3bcc65`
-- `seal_artifact_commit`: `PENDING_THIS_WAVE`
-- `tag_target_commit`: `PENDING_THIS_WAVE`
-- `github_prerelease`: `PENDING_THIS_WAVE`
+- `seal_artifact_commit`: `160c0f1608d8cf10b22e0a6f9e4ba42397d0d17a`
+- `tag_object_sha`: `8cf8fd3ffaba10095a36c0f0e363c92ef767a5ad`
+- `tag_target_commit`: `160c0f1608d8cf10b22e0a6f9e4ba42397d0d17a`
+- `github_prerelease`: `VERIFIED`
 
 ## C. Boundary
 
@@ -38,15 +39,15 @@ This does not claim protocol certification.
 | validation rerun | `PASS` | `git diff --check` and `npm run test:runtime` passed |
 | GitHub release notes created | `PASS` | release notes file created in this wave |
 | combined seal/execution record created | `PASS` | combined record file created in this wave |
-| seal artifact commit created | `PENDING_THIS_WAVE` | pending first release commit |
-| main pushed | `PENDING_THIS_WAVE` | pending first release push |
-| annotated tag created | `PENDING_THIS_WAVE` | pending tag creation |
-| tag pushed | `PENDING_THIS_WAVE` | pending tag push |
-| GitHub prerelease created | `PENDING_THIS_WAVE` | pending prerelease creation |
-| remote tag verified | `PENDING_THIS_WAVE` | pending tag verification |
-| GitHub prerelease verified | `PENDING_THIS_WAVE` | pending prerelease verification |
-| final record updated | `PENDING_THIS_WAVE` | pending execution completion update |
-| final commit pushed | `PENDING_THIS_WAVE` | pending final record push |
+| seal artifact commit created | `PASS` | `160c0f1608d8cf10b22e0a6f9e4ba42397d0d17a` |
+| main pushed | `PASS` | seal artifact commit pushed to `origin/main` |
+| annotated tag created | `PASS` | local tag object `8cf8fd3ffaba10095a36c0f0e363c92ef767a5ad` |
+| tag pushed | `PASS` | remote tag created on `origin` |
+| GitHub prerelease created | `PASS` | prerelease created for `cgos-projection-revision-runtime-rc-20260421` |
+| remote tag verified | `PASS` | remote peeled tag target matches seal artifact commit |
+| GitHub prerelease verified | `PASS` | `gh release view` confirmed title/tag/prerelease status |
+| final record updated | `PASS` | combined record updated with execution facts |
+| final commit pushed | `PASS` | this record is committed and pushed in the final execution step |
 
 ## E. Validation Evidence
 
@@ -58,4 +59,4 @@ This does not claim protocol certification.
 
 ## F. Decision
 
-`CGOS_PROJECTION_REVISION_RUNTIME_RC_RELEASE_EXECUTION_PENDING_TAG_RELEASE`
+`CGOS_PROJECTION_REVISION_RUNTIME_RC_RELEASE_EXECUTED`
