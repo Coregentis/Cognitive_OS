@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- executed projection-revision-runtime RC validation and seal authorization
+  checks, adding validation execution record, forbidden-claim verification,
+  release notes final review, seal authorization decision, and authorization
+  audit; no runtime source change, no schema change, no MPLP change, no
+  Cognitive_OS v1.2 declaration, no tag, no GitHub Release, and no seal
+  record
 - recorded independent Cognitive_OS versioning decision for the projection
   revision runtime surface as a capability-line RC, adding version decision
   record, versioning rationale, release line boundary, tag naming policy, and
