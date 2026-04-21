@@ -151,3 +151,12 @@ This is not:
 - full MPLP interoperability guarantee
 - full reconcile engine
 - any product or TracePilot runtime
+
+## Projection Revision / Evidence Insufficiency Draft
+
+`Cognitive_OS` now has a draft governance-level abstraction review for generic
+projection revision envelopes and evidence insufficiency detail.
+
+This is not runtime implementation. It introduces no schema change, no
+provider/channel execution, no approve/reject/dispatch/execute behavior, and
+no downstream product-specific semantics.
