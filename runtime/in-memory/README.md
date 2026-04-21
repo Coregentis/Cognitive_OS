@@ -28,6 +28,10 @@ These stores are:
 - `projection-store.ts`
   - project-isolated storage for projection summary envelopes only
   - does not expose raw runtime storage or provide durability guarantees
+  - project-scoped storage for projection-adjacent revision envelopes
+  - supports project-scoped retrieval and listing of revision envelopes
+  - does not expose raw runtime-private storage, queue semantics, or execution
+    state
 
 ## What This Is Not
 

@@ -3,13 +3,19 @@ import { createHash } from "node:crypto";
 import {
   FORBIDDEN_PROJECTION_ACTION_LABELS,
   FORBIDDEN_PROJECTION_RAW_KEYS,
+  type CreateRuntimeEvidenceInsufficiencyDetailInput,
   type CreateRuntimeEvidencePostureSummaryInput,
   type CreateRuntimeNonExecutingRecommendationEnvelopeInput,
+  type CreateRuntimeProjectionRevisionEnvelopeInput,
   type CreateRuntimeProjectionSafeStateExposureInput,
   type CreateRuntimeProjectionSummaryEnvelopeInput,
   type RuntimeBlockedProjectionAction,
+  type RuntimeEvidenceInsufficiencyCategory,
+  type RuntimeEvidenceInsufficiencyDetail,
   type RuntimeEvidencePostureSummary,
   type RuntimeNonExecutingRecommendationEnvelope,
+  type RuntimeProjectionRevisionEnvelope,
+  type RuntimeProjectionRevisionReason,
   type RuntimeProjectionSafeStateExposure,
   type RuntimeProjectionSummaryEnvelope,
 } from "./projection-types.ts";
@@ -33,6 +39,33 @@ const STATE_INTERPRETATION = {
 const EVIDENCE_INTERPRETATION = {
   evidence_summary_meaning: "summary, not proof or certification",
 } as const;
+
+const REVISION_REASONS: RuntimeProjectionRevisionReason[] = [
+  "insufficient_evidence",
+  "stale_context",
+  "operator_clarification",
+  "contract_blocked",
+  "other",
+];
+
+const INSUFFICIENCY_CATEGORIES: RuntimeEvidenceInsufficiencyCategory[] = [
+  "missing_required_context",
+  "stale_context",
+  "conflicting_evidence",
+  "runtime_private_omitted",
+  "other",
+];
+
+const FORBIDDEN_RUNTIME_SEMANTIC_PATTERNS = [
+  {
+    pattern: /provider\/channel execution/i,
+    error: "provider/channel execution is not allowed",
+  },
+  {
+    pattern: /\bqueue(?:\s+implementation|\s+execution)?\b/i,
+    error: "queue implementation is not allowed",
+  },
+] as const;
 
 type ValidationResult = {
   valid: boolean;
@@ -113,6 +146,39 @@ function collect_forbidden_action_label_errors(
   return target;
 }
 
+function collect_forbidden_direct_action_errors(
+  value: unknown,
+  path = "root",
+  target: string[] = []
+): string[] {
+  if (typeof value === "string") {
+    if ((CANONICAL_BLOCKED_ACTIONS as readonly string[]).includes(value)) {
+      target.push(`forbidden action label at ${path}: ${value}`);
+    }
+    return target;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => {
+      collect_forbidden_direct_action_errors(item, `${path}[${index}]`, target);
+    });
+    return target;
+  }
+
+  if (!value || typeof value !== "object") {
+    return target;
+  }
+
+  for (const [key, nested] of Object.entries(value)) {
+    if (key === "blocked_actions") {
+      continue;
+    }
+    collect_forbidden_direct_action_errors(nested, `${path}.${key}`, target);
+  }
+
+  return target;
+}
+
 function stable_stringify(value: unknown): string {
   if (Array.isArray(value)) {
     return `[${value.map((item) => stable_stringify(item)).join(",")}]`;
@@ -134,6 +200,66 @@ function assert_valid_result(result: ValidationResult): void {
   if (!result.valid) {
     throw new Error(result.errors.join("; "));
   }
+}
+
+function collect_evidence_claim_errors(
+  value: unknown,
+  target: string[] = []
+): string[] {
+  if (typeof value === "string") {
+    if (/(proof|certification)/i.test(value)) {
+      target.push("evidence detail is not proof or certification");
+    }
+    return target;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item) => {
+      collect_evidence_claim_errors(item, target);
+    });
+    return target;
+  }
+
+  if (!value || typeof value !== "object") {
+    return target;
+  }
+
+  for (const nested of Object.values(value)) {
+    collect_evidence_claim_errors(nested, target);
+  }
+
+  return target;
+}
+
+function collect_forbidden_runtime_semantic_errors(
+  value: unknown,
+  target: string[] = []
+): string[] {
+  if (typeof value === "string") {
+    for (const { pattern, error } of FORBIDDEN_RUNTIME_SEMANTIC_PATTERNS) {
+      if (pattern.test(value)) {
+        target.push(error);
+      }
+    }
+    return target;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item) => {
+      collect_forbidden_runtime_semantic_errors(item, target);
+    });
+    return target;
+  }
+
+  if (!value || typeof value !== "object") {
+    return target;
+  }
+
+  for (const nested of Object.values(value)) {
+    collect_forbidden_runtime_semantic_errors(nested, target);
+  }
+
+  return target;
 }
 
 function collect_nested_project_consistency_errors(
@@ -183,6 +309,27 @@ function collect_nested_project_consistency_errors(
 }
 
 export class DeterministicProjectionService {
+  create_evidence_insufficiency_detail(
+    input: CreateRuntimeEvidenceInsufficiencyDetailInput
+  ): RuntimeEvidenceInsufficiencyDetail {
+    assert_valid_result(this.validate_evidence_insufficiency_detail(input));
+
+    return {
+      detail_id: input.detail_id,
+      project_id: input.project_id,
+      evidence_available: input.evidence_available,
+      insufficient: input.insufficient,
+      stale: input.stale,
+      insufficiency_category: input.insufficiency_category,
+      omission_reason: input.omission_reason,
+      required_evidence_class: input.required_evidence_class,
+      safe_evidence_refs: unique_strings(input.safe_evidence_refs ?? []),
+      safe_clarification_prompt: input.safe_clarification_prompt,
+      non_executing: true,
+      runtime_private_fields_omitted: true,
+    };
+  }
+
   create_state_exposure(
     input: CreateRuntimeProjectionSafeStateExposureInput
   ): RuntimeProjectionSafeStateExposure {
@@ -253,6 +400,24 @@ export class DeterministicProjectionService {
       confidence_posture: input.confidence_posture,
       interpretation: EVIDENCE_INTERPRETATION,
       created_at,
+    };
+  }
+
+  create_projection_revision_envelope(
+    input: CreateRuntimeProjectionRevisionEnvelopeInput
+  ): RuntimeProjectionRevisionEnvelope {
+    assert_valid_result(this.validate_projection_revision_envelope(input));
+
+    return {
+      revision_id: input.revision_id,
+      project_id: input.project_id,
+      previous_projection_summary_id: input.previous_projection_summary_id,
+      revision_reason: input.revision_reason,
+      revision_input_summary: input.revision_input_summary,
+      evidence_insufficiency: input.evidence_insufficiency,
+      resulting_projection_summary_id: input.resulting_projection_summary_id,
+      non_executing: true,
+      runtime_private_fields_omitted: true,
     };
   }
 
@@ -334,6 +499,164 @@ export class DeterministicProjectionService {
 
     assert_valid_result(this.validate_projection_summary(summary));
     return summary;
+  }
+
+  validate_evidence_insufficiency_detail(detail: unknown): ValidationResult {
+    const errors = [
+      ...collect_forbidden_raw_key_errors(detail, "detail"),
+      ...collect_forbidden_action_label_errors(detail, "detail"),
+      ...collect_forbidden_direct_action_errors(detail, "detail"),
+      ...collect_evidence_claim_errors(detail),
+      ...collect_forbidden_runtime_semantic_errors(detail),
+    ];
+
+    if (!detail || typeof detail !== "object" || Array.isArray(detail)) {
+      errors.push("detail must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = detail as Record<string, unknown>;
+
+    if (typeof candidate.detail_id !== "string" || candidate.detail_id.length === 0) {
+      errors.push("detail_id is required");
+    }
+
+    if (typeof candidate.project_id !== "string" || candidate.project_id.length === 0) {
+      errors.push("project_id is required");
+    }
+
+    if (typeof candidate.evidence_available !== "boolean") {
+      errors.push("evidence_available must be boolean");
+    }
+
+    if (typeof candidate.insufficient !== "boolean") {
+      errors.push("insufficient must be boolean");
+    }
+
+    if (typeof candidate.stale !== "boolean") {
+      errors.push("stale must be boolean");
+    }
+
+    if (candidate.non_executing !== true) {
+      errors.push("non_executing must be true");
+    }
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    if (
+      candidate.insufficiency_category !== undefined &&
+      !(
+        typeof candidate.insufficiency_category === "string" &&
+        INSUFFICIENCY_CATEGORIES.includes(
+          candidate.insufficiency_category as RuntimeEvidenceInsufficiencyCategory
+        )
+      )
+    ) {
+      errors.push(
+        "insufficiency_category must be one of missing_required_context, stale_context, conflicting_evidence, runtime_private_omitted, other"
+      );
+    }
+
+    if (
+      candidate.safe_evidence_refs !== undefined &&
+      !Array.isArray(candidate.safe_evidence_refs)
+    ) {
+      errors.push("safe_evidence_refs must be an array");
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
+  }
+
+  validate_projection_revision_envelope(revision: unknown): ValidationResult {
+    const errors = [
+      ...collect_forbidden_raw_key_errors(revision, "revision"),
+      ...collect_forbidden_action_label_errors(revision, "revision"),
+      ...collect_forbidden_direct_action_errors(revision, "revision"),
+      ...collect_forbidden_runtime_semantic_errors(revision),
+    ];
+
+    if (!revision || typeof revision !== "object" || Array.isArray(revision)) {
+      errors.push("revision must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = revision as Record<string, unknown>;
+
+    if (typeof candidate.revision_id !== "string" || candidate.revision_id.length === 0) {
+      errors.push("revision_id is required");
+    }
+
+    if (typeof candidate.project_id !== "string" || candidate.project_id.length === 0) {
+      errors.push("project_id is required");
+    }
+
+    if (
+      typeof candidate.previous_projection_summary_id !== "string" ||
+      candidate.previous_projection_summary_id.length === 0
+    ) {
+      errors.push("previous_projection_summary_id is required");
+    }
+
+    if (
+      !(
+        typeof candidate.revision_reason === "string" &&
+        REVISION_REASONS.includes(
+          candidate.revision_reason as RuntimeProjectionRevisionReason
+        )
+      )
+    ) {
+      errors.push(
+        "revision_reason must be one of insufficient_evidence, stale_context, operator_clarification, contract_blocked, other"
+      );
+    }
+
+    if (
+      typeof candidate.revision_input_summary !== "string" ||
+      candidate.revision_input_summary.length === 0
+    ) {
+      errors.push("revision_input_summary is required");
+    }
+
+    if (candidate.non_executing !== true) {
+      errors.push("non_executing must be true");
+    }
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    const detail = candidate.evidence_insufficiency;
+    if (detail !== undefined) {
+      const detail_validation = this.validate_evidence_insufficiency_detail(detail);
+      errors.push(...detail_validation.errors);
+
+      if (
+        detail &&
+        typeof detail === "object" &&
+        !Array.isArray(detail) &&
+        typeof (detail as Record<string, unknown>).project_id === "string" &&
+        typeof candidate.project_id === "string" &&
+        (detail as Record<string, unknown>).project_id !== candidate.project_id
+      ) {
+        errors.push("evidence_insufficiency.project_id must match revision project_id");
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
   }
 
   validate_projection_summary(summary: unknown): ValidationResult {

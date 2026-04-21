@@ -60,14 +60,23 @@ All of that remains limited to the minimal cognitive loop:
   - enforces project-id consistency across projection summary envelopes and
     nested safe summaries
 
-## Projection Revision / Evidence Insufficiency Implementation Planning
+## Projection Revision / Evidence Insufficiency
 
-`Cognitive_OS` has implementation planning artifacts for future generic
-projection revision envelopes and evidence insufficiency detail.
+`Cognitive_OS` now includes runtime-level projection revision and evidence
+insufficiency surfaces through:
 
-This is planning only. It introduces no runtime implementation, schema change,
-MPLP change, product-specific naming, provider/channel execution,
-approve/reject/dispatch/execute behavior, or queue implementation.
+- `RuntimeProjectionRevisionEnvelope`
+- `RuntimeEvidenceInsufficiencyDetail`
+- deterministic projection service creation and validation methods
+
+These surfaces remain bounded:
+
+- no raw runtime-private exposure
+- no provider/channel
+- no approve/reject/dispatch/execute
+- no queue
+- evidence detail is not proof/certification
+- revision is not approval/rejection/execution
 
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 

@@ -68,6 +68,47 @@ export type RuntimeProjectionSummaryEnvelope = {
   created_at: string;
 };
 
+export type RuntimeProjectionRevisionReason =
+  | "insufficient_evidence"
+  | "stale_context"
+  | "operator_clarification"
+  | "contract_blocked"
+  | "other";
+
+export type RuntimeEvidenceInsufficiencyCategory =
+  | "missing_required_context"
+  | "stale_context"
+  | "conflicting_evidence"
+  | "runtime_private_omitted"
+  | "other";
+
+export type RuntimeEvidenceInsufficiencyDetail = {
+  detail_id: string;
+  project_id: string;
+  evidence_available: boolean;
+  insufficient: boolean;
+  stale: boolean;
+  insufficiency_category?: RuntimeEvidenceInsufficiencyCategory;
+  omission_reason?: string;
+  required_evidence_class?: string;
+  safe_evidence_refs?: string[];
+  safe_clarification_prompt?: string;
+  non_executing: true;
+  runtime_private_fields_omitted: true;
+};
+
+export type RuntimeProjectionRevisionEnvelope = {
+  revision_id: string;
+  project_id: string;
+  previous_projection_summary_id: string;
+  revision_reason: RuntimeProjectionRevisionReason;
+  revision_input_summary: string;
+  evidence_insufficiency?: RuntimeEvidenceInsufficiencyDetail;
+  resulting_projection_summary_id?: string;
+  non_executing: true;
+  runtime_private_fields_omitted: true;
+};
+
 export type CreateRuntimeProjectionSafeStateExposureInput = {
   projection_id?: string;
   project_id: string;
@@ -116,6 +157,33 @@ export type CreateRuntimeProjectionSummaryEnvelopeInput = {
   recommendation?: RuntimeNonExecutingRecommendationEnvelope;
   source_refs?: string[];
   created_at?: string;
+};
+
+export type CreateRuntimeEvidenceInsufficiencyDetailInput = {
+  detail_id: string;
+  project_id: string;
+  evidence_available: boolean;
+  insufficient: boolean;
+  stale: boolean;
+  insufficiency_category?: RuntimeEvidenceInsufficiencyCategory;
+  omission_reason?: string;
+  required_evidence_class?: string;
+  safe_evidence_refs?: string[];
+  safe_clarification_prompt?: string;
+  non_executing: true;
+  runtime_private_fields_omitted: true;
+};
+
+export type CreateRuntimeProjectionRevisionEnvelopeInput = {
+  revision_id: string;
+  project_id: string;
+  previous_projection_summary_id: string;
+  revision_reason: RuntimeProjectionRevisionReason;
+  revision_input_summary: string;
+  evidence_insufficiency?: RuntimeEvidenceInsufficiencyDetail;
+  resulting_projection_summary_id?: string;
+  non_executing: true;
+  runtime_private_fields_omitted: true;
 };
 
 export const FORBIDDEN_PROJECTION_RAW_KEYS = [
