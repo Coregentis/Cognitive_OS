@@ -4,19 +4,26 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- opened Cognitive_OS V1.2 tag/release/seal planning for the projection
-  revision runtime surface, including release notes draft, seal preparation
-  plan, validation execution plan, forbidden-claim gate, tag/release
-  execution plan, seal authorization readiness plan, and release planning
-  audit; no runtime source change, no schema change, no MPLP protocol law
-  change, no product-specific naming, no tag, no GitHub Release, and no seal
-  record
-- added Cognitive_OS V1.2 release-readiness gate for generic projection
-  revision and evidence insufficiency runtime surfaces, including release
-  scope/boundary, evidence manifest, runtime surface release readiness audit,
-  validation plan, downstream evidence release boundary note, and release
-  gate; no schema change, no MPLP protocol law change, no product-specific
-  naming, no provider/channel execution, no
+- corrected Cognitive_OS projection revision runtime release/readiness naming
+  by replacing downstream-aligned release language with projection
+  revision runtime surface release-readiness language, deferring independent
+  Cognitive_OS version assignment, correcting tag/release planning, adding
+  README status alignment, and adding naming/README correction audit and gate;
+  no runtime source change, no schema change, no MPLP change, no tag, no
+  GitHub Release, and no seal record
+- opened projection revision runtime surface tag/release/seal planning for the
+  projection revision runtime surface, including release notes draft, seal
+  preparation plan, validation execution plan, forbidden-claim gate,
+  tag/release execution plan, seal authorization readiness plan, and release
+  planning audit; no runtime source change, no schema change, no MPLP
+  protocol law change, no product-specific naming, no tag, no GitHub Release,
+  and no seal record
+- added projection revision runtime surface release-readiness gate for generic
+  projection revision and evidence insufficiency runtime surfaces, including
+  release scope/boundary, evidence manifest, runtime surface release
+  readiness audit, validation plan, downstream evidence release boundary note,
+  and release gate; no schema change, no MPLP protocol law change, no
+  product-specific naming, no provider/channel execution, no
   approve/reject/dispatch/execute, no queue implementation, no tag/release,
   and no protocol certification claim
 - recorded neutral downstream evidence review for projection revision and
@@ -24,10 +31,31 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
   signals and candidate follow-up review notes, without schema change, MPLP
   change, product-specific naming, provider/channel execution,
   approve/reject/dispatch/execute, or queue implementation
-- hardened Cognitive_OS V1.2 projection revision and evidence insufficiency runtime surfaces with additional validation edge cases, safe evidence reference checks, deterministic error behavior, store clone/isolation tests, hardening audit, hardening gate, and documentation alignment; no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
-- implemented Cognitive_OS V1.2 generic projection revision envelopes and evidence insufficiency detail with runtime types, deterministic projection service validation/creation methods, in-memory projection-adjacent storage, runtime tests, implementation audit, runtime gate, and README updates; no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
-- added Cognitive_OS V1.2 implementation planning for generic projection revision envelopes and evidence insufficiency detail, including runtime type placement, projection service behavior, store, test, downstream handoff, implementation readiness gate, and runtime core README note; no runtime implementation, no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
-- added Cognitive_OS V1.2 upstream abstraction review for generic projection revision envelopes and evidence insufficiency detail, including neutral contract draft, downstream evidence boundary audit, readiness gate, and runtime README note; no runtime implementation, no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
+- hardened projection revision runtime surface implementation with additional
+  validation edge cases, safe evidence reference checks, deterministic error
+  behavior, store clone/isolation tests, hardening audit, hardening gate, and
+  documentation alignment; no schema change, no MPLP change, no
+  product-specific naming, no provider/channel execution, no
+  approve/reject/dispatch/execute, and no queue implementation
+- implemented a generic projection revision and evidence insufficiency runtime
+  surface with runtime types, deterministic projection service
+  validation/creation methods, in-memory projection-adjacent storage, runtime
+  tests, implementation audit, runtime gate, and README updates; no schema
+  change, no MPLP change, no product-specific naming, no
+  provider/channel execution, no approve/reject/dispatch/execute, and no
+  queue implementation
+- added projection revision runtime surface implementation planning,
+  including runtime type placement, projection service behavior, store, test,
+  downstream handoff, implementation readiness gate, and runtime core README
+  note; no runtime implementation, no schema change, no MPLP change, no
+  product-specific naming, no provider/channel execution, no
+  approve/reject/dispatch/execute, and no queue implementation
+- added projection revision runtime surface upstream abstraction review,
+  including neutral contract draft, downstream evidence boundary audit,
+  readiness gate, and runtime README note; no runtime implementation, no
+  schema change, no MPLP change, no product-specific naming, no
+  provider/channel execution, no approve/reject/dispatch/execute, and no
+  queue implementation
 - hardened projection-safe summary validation by rejecting nested state/evidence/recommendation summaries whose project_id does not match the envelope project_id, without schema change, protocol change, product-specific naming, or execution semantics
 - implemented projection-safe contract types, deterministic projection service, in-memory projection store, and runtime tests without schema change, MPLP/protocol change, product-specific names, provider/channel execution, or approve/reject/dispatch/execute semantics
 - added a projection-safe contract implementation plan, projection-safe contract test plan, implementation readiness gate, and downstream consumption planning handoff, freezing the next contract-planning wave without runtime implementation, runtime code change, schema change, product-specific naming, or downstream product dependency

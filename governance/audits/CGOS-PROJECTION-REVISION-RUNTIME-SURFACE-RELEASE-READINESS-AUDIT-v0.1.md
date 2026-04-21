@@ -1,6 +1,6 @@
-# CGOS V1.2 Runtime Surface Release Readiness Audit v0.1
+# CGOS Projection Revision Runtime Surface Release Readiness Audit v0.1
 
-`doc_id: CGOS-V1.2-RUNTIME-SURFACE-RELEASE-READINESS-AUDIT-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-RUNTIME-SURFACE-RELEASE-READINESS-AUDIT-v0.1`
 
 ## A. Purpose
 
@@ -33,4 +33,4 @@ Audit whether the V1.2 runtime surface is ready for release gating.
 
 ## D. Decision
 
-`CGOS_V1_2_RUNTIME_SURFACE_RELEASE_READINESS_AUDIT_PASS`
+`CGOS_PROJECTION_REVISION_RUNTIME_RUNTIME_SURFACE_RELEASE_READINESS_AUDIT_PASS`

@@ -20,38 +20,34 @@ This repository is the home for the mother-runtime foundation layers:
 
 These surfaces together define the active `v0.1` foundation baseline stream.
 
-## Current v0.4 Downstream Intake Note
+## Current Runtime Surface Status
 
-SoloCrew has now frozen `v0.4-multi-cell-foundation` downstream.
+Cognitive_OS currently includes a projection-safe, non-executing projection
+revision runtime surface with evidence insufficiency support.
 
-That creates a bounded mother-runtime intake need around:
+This surface is release-gated as a runtime capability surface, but it is not
+an independent Cognitive_OS V1.2 release. Cognitive_OS version assignment
+remains pending a separate versioning decision.
 
-- lawful multi-cell coexistence
-- cell summary projection
-- the minimum management object family
-- later role/model/tool/constraint policy preconditions
+Current status:
 
-This repository responds to that pressure by:
+- Runtime surface implemented and hardened.
+- Runtime tests passing.
+- Downstream evidence reviewed through neutral, projection-safe boundaries.
+- Release-readiness gate complete.
+- Tag/release/seal execution not authorized.
+- No schema change.
+- No MPLP protocol law change.
+- No downstream product dependency.
+- No provider/channel execution.
+- No approve/reject/dispatch/execute.
+- No queue implementation.
 
-- refreshing current foundation truth
-- classifying what remains product-layer only
-- freezing minimum runtime preconditions for later blocker waves
-- adding the first machine-readable runtime-private workforce preconditions for bounded cell scope, bounded summary records, and bounded management-object records
-- hardening the internal symmetry and naming clarity of the runtime-private management-object family without widening runtime behavior
-- recording a formal closure pack for the current runtime-private workforce line and its cross-repo downstream boundary
-- recording an explicit upstream boundary judgment that current SoloCrew packet-state semantics remain downstream product posture only rather than new upstream workflow-truth objects
-- providing a first deterministic runnable fresh-intent minimal cognitive loop path across `Form -> Place -> Activate -> Confirm -> Trace -> Reconcile -> Consolidate` without claiming full runtime realization
-- extending that runnable baseline with a bounded delta-intent / requirement-change path that emits real `drift-record` output and only emits `conflict-case` when explicit reconcile tension is present
-- adding the first bounded MPLP reconstruction/export path over the runnable minimal loop, exporting only the currently lawful `Confirm` / `Trace` subset and explicitly omitting `Context` / `Plan` when frozen truth does not support canonical reconstruction
-- adding a first-pass VSL continuity substrate that checkpoints project-scoped continuation state and bounded replay / rollback / retention metadata in-memory without claiming full VSL or storage completion
-- adding a first-pass PSG semantic relation substrate that keeps project-scoped runtime object nodes and typed relation edges in-memory without claiming full PSG, graph export, or downstream projection semantics
-- adding a first-pass Delta Drift & Impact path that enriches requirement-change assessment using prior VSL continuity anchors and direct PSG relation discovery without claiming full drift, impact, rollback, or compensation behavior
-- adding a first-pass AEL governed activation substrate that classifies bounded action paths into activate / confirm-required / suppressed / escalate outcomes without claiming provider execution, dispatch execution, or downstream product workflow law
-- adding a first-pass governed learning substrate that captures runtime-private, suggestion-only learning candidates from VSL / PSG / Delta Drift / AEL / Trace / Decision context without claiming autonomous learning, policy mutation, or product preference law
+Active governance references:
 
-This wave does not implement product behavior inside `Cognitive_OS`.
-It does not claim Secretary behavior, portfolio UI behavior, or full runtime expansion.
-It does not claim full portfolio runtime, Secretary runtime, or protocol promotion.
+- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/gates/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md)`
+- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md)`
+- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/audits/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md)`
 
 ## What Does Not Belong Here
 

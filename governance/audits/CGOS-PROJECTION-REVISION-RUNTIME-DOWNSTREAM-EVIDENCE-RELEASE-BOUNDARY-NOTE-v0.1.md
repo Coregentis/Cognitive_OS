@@ -1,10 +1,10 @@
-# CGOS V1.2 Downstream Evidence Release Boundary Note v0.1
+# CGOS Projection Revision Runtime Downstream Evidence Release Boundary Note v0.1
 
-`doc_id: CGOS-V1.2-DOWNSTREAM-EVIDENCE-RELEASE-BOUNDARY-NOTE-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-DOWNSTREAM-EVIDENCE-RELEASE-BOUNDARY-NOTE-v0.1`
 
 ## A. Purpose
 
-Clarify how downstream evidence is treated for V1.2 release-readiness.
+Clarify how downstream evidence is treated for projection revision runtime surface release-readiness.
 
 ## B. Boundary Statement
 
@@ -25,4 +25,4 @@ widening, schema change, or MPLP protocol change.
 
 ## D. Decision
 
-`CGOS_V1_2_DOWNSTREAM_EVIDENCE_RELEASE_BOUNDARY_NOTE_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_DOWNSTREAM_EVIDENCE_RELEASE_BOUNDARY_NOTE_READY`

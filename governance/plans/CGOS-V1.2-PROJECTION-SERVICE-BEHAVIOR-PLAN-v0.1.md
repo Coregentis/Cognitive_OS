@@ -1,6 +1,6 @@
-# CGOS V1.2 Projection Service Behavior Plan v0.1
+# CGOS Projection Revision Runtime Service Behavior Plan v0.1
 
-`doc_id: CGOS-V1.2-PROJECTION-SERVICE-BEHAVIOR-PLAN-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-PROJECTION-SERVICE-BEHAVIOR-PLAN-v0.1`
 
 ## A. Purpose
 
@@ -46,4 +46,4 @@ Planned deterministic error strings:
 
 ## E. Decision
 
-`CGOS_V1_2_PROJECTION_SERVICE_BEHAVIOR_PLAN_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_PROJECTION_SERVICE_BEHAVIOR_PLAN_READY`

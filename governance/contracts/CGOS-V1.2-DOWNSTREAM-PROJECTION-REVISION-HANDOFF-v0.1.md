@@ -1,6 +1,6 @@
-# CGOS V1.2 Downstream Projection Revision Handoff v0.1
+# CGOS Projection Revision Runtime Downstream Handoff v0.1
 
-`doc_id: CGOS-V1.2-DOWNSTREAM-PROJECTION-REVISION-HANDOFF-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-DOWNSTREAM-PROJECTION-REVISION-HANDOFF-v0.1`
 
 ## A. Purpose
 
@@ -34,4 +34,4 @@ Downstream products must map neutral fields to product vocabulary outside
 
 ## E. Decision
 
-`CGOS_V1_2_DOWNSTREAM_PROJECTION_REVISION_HANDOFF_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_DOWNSTREAM_PROJECTION_REVISION_HANDOFF_READY`

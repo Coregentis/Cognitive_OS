@@ -1,10 +1,10 @@
-# CGOS V1.2 Release Scope and Boundary v0.1
+# CGOS Projection Revision Runtime Release Scope and Boundary v0.1
 
-`doc_id: CGOS-V1.2-RELEASE-SCOPE-AND-BOUNDARY-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1`
 
 ## A. Purpose
 
-Define Cognitive_OS V1.2 release-readiness scope and explicit non-scope.
+Define Projection revision runtime surface release-readiness scope and explicit non-scope.
 
 ## B. Included Scope
 
@@ -32,9 +32,9 @@ Define Cognitive_OS V1.2 release-readiness scope and explicit non-scope.
 
 ## D. Release Scope Statement
 
-Cognitive_OS V1.2 release-readiness scope is the generic, projection-safe,
+Projection revision runtime surface release-readiness scope is the generic, projection-safe,
 non-executing projection revision and evidence insufficiency runtime surface.
 
 ## E. Decision
 
-`CGOS_V1_2_RELEASE_SCOPE_BOUNDARY_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_RELEASE_SCOPE_BOUNDARY_READY`

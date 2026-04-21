@@ -1,13 +1,13 @@
-# CGOS V1.2 Release Notes Draft v0.1
+# CGOS Projection Revision Runtime Surface Release Notes Draft v0.1
 
-`doc_id: CGOS-V1.2-RELEASE-NOTES-DRAFT-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-SURFACE-RELEASE-NOTES-DRAFT-v0.1`
 
-## Cognitive_OS V1.2 — Projection Revision Runtime Surface
+## Cognitive_OS Projection Revision Runtime Surface — Release Notes Draft
 
 ### Summary
 
-Cognitive_OS V1.2 prepares a generic, projection-safe, non-executing
-projection revision and evidence insufficiency runtime surface.
+The projection revision runtime surface prepares a generic, projection-safe,
+non-executing projection revision and evidence insufficiency runtime surface.
 
 ### Included
 
@@ -39,7 +39,8 @@ projection revision and evidence insufficiency runtime surface.
 ### Validation Placeholder
 
 Validation must be executed in a later validation / seal authorization wave.
+Independent Cognitive_OS version assignment remains pending.
 
 ### Decision
 
-`CGOS_V1_2_RELEASE_NOTES_DRAFT_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_SURFACE_RELEASE_NOTES_DRAFT_READY`

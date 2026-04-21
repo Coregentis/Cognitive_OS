@@ -1,6 +1,6 @@
-# CGOS V1.2 Release Forbidden Claim Gate v0.1
+# CGOS Projection Revision Runtime Surface Release Forbidden Claim Gate v0.1
 
-`doc_id: CGOS-V1.2-RELEASE-FORBIDDEN-CLAIM-GATE-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-SURFACE-RELEASE-FORBIDDEN-CLAIM-GATE-v0.1`
 
 ## A. Forbidden Positive Claims
 
@@ -25,4 +25,4 @@
 
 ## C. Decision
 
-`CGOS_V1_2_RELEASE_FORBIDDEN_CLAIM_GATE_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_SURFACE_RELEASE_FORBIDDEN_CLAIM_GATE_READY`

@@ -1,6 +1,6 @@
-# CGOS V1.2 Release Gate v0.1
+# CGOS Projection Revision Runtime Release Gate v0.1
 
-`doc_id: CGOS-V1.2-RELEASE-GATE-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1`
 
 ## A. Gate Matrix
 
@@ -28,4 +28,4 @@
 
 ## B. Decision
 
-`CGOS_V1_2_RELEASE_GATE_PASS`
+`CGOS_PROJECTION_REVISION_RUNTIME_RELEASE_GATE_PASS`

@@ -1,6 +1,6 @@
-# CGOS V1.2 Runtime Type Placement Plan v0.1
+# CGOS Projection Revision Runtime Type Placement Plan v0.1
 
-`doc_id: CGOS-V1.2-RUNTIME-TYPE-PLACEMENT-PLAN-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-RUNTIME-TYPE-PLACEMENT-PLAN-v0.1`
 
 ## A. Purpose
 
@@ -70,4 +70,4 @@ Planned `insufficiency_category` enum:
 
 ## F. Decision
 
-`CGOS_V1_2_RUNTIME_TYPE_PLACEMENT_PLAN_READY`
+`CGOS_PROJECTION_REVISION_RUNTIME_RUNTIME_TYPE_PLACEMENT_PLAN_READY`
