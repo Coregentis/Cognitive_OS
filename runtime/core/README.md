@@ -60,6 +60,15 @@ All of that remains limited to the minimal cognitive loop:
   - enforces project-id consistency across projection summary envelopes and
     nested safe summaries
 
+## Projection Revision / Evidence Insufficiency Implementation Planning
+
+`Cognitive_OS` has implementation planning artifacts for future generic
+projection revision envelopes and evidence insufficiency detail.
+
+This is planning only. It introduces no runtime implementation, schema change,
+MPLP change, product-specific naming, provider/channel execution,
+approve/reject/dispatch/execute behavior, or queue implementation.
+
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 
 This phase is still skeleton-first and baseline-first by design.

@@ -4,6 +4,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added Cognitive_OS V1.2 implementation planning for generic projection revision envelopes and evidence insufficiency detail, including runtime type placement, projection service behavior, store, test, downstream handoff, implementation readiness gate, and runtime core README note; no runtime implementation, no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
 - added Cognitive_OS V1.2 upstream abstraction review for generic projection revision envelopes and evidence insufficiency detail, including neutral contract draft, downstream evidence boundary audit, readiness gate, and runtime README note; no runtime implementation, no schema change, no MPLP change, no product-specific naming, no provider/channel execution, no approve/reject/dispatch/execute, and no queue implementation
 - hardened projection-safe summary validation by rejecting nested state/evidence/recommendation summaries whose project_id does not match the envelope project_id, without schema change, protocol change, product-specific naming, or execution semantics
 - implemented projection-safe contract types, deterministic projection service, in-memory projection store, and runtime tests without schema change, MPLP/protocol change, product-specific names, provider/channel execution, or approve/reject/dispatch/execute semantics
