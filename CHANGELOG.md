@@ -8,9 +8,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
   by replacing downstream-aligned release language with projection
   revision runtime surface release-readiness language, deferring independent
   Cognitive_OS version assignment, correcting tag/release planning, adding
-  README status alignment, and adding naming/README correction audit and gate;
-  no runtime source change, no schema change, no MPLP change, no tag, no
-  GitHub Release, and no seal record
+  README status alignment, a superseded alias map, and naming/README
+  correction follow-up audit/gate; no runtime source change, no schema
+  change, no MPLP change, no tag, no GitHub Release, and no seal record
 - opened projection revision runtime surface tag/release/seal planning for the
   projection revision runtime surface, including release notes draft, seal
   preparation plan, validation execution plan, forbidden-claim gate,

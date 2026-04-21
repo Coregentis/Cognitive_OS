@@ -1,10 +1,10 @@
 # CGOS Projection Revision Runtime Hardening Audit v0.1
 
-`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-PROJECTION-REVISION-HARDENING-AUDIT-v0.1`
+`doc_id: CGOS-PROJECTION-REVISION-RUNTIME-HARDENING-AUDIT-v0.1`
 
 ## A. Purpose
 
-This audit records hardening of the V1.2 projection revision / evidence
+This audit records hardening of the projection revision / evidence
 insufficiency runtime surface.
 
 ## B. Hardening Summary
@@ -42,4 +42,4 @@ insufficiency runtime surface.
 
 ## F. Decision
 
-`CGOS_PROJECTION_REVISION_RUNTIME_PROJECTION_REVISION_HARDENING_COMPLETE`
+`CGOS_PROJECTION_REVISION_RUNTIME_HARDENING_COMPLETE`
