@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- recorded independent Cognitive_OS versioning decision for the projection
+  revision runtime surface as a capability-line RC, adding version decision
+  record, versioning rationale, release line boundary, tag naming policy, and
+  version assignment gate; no runtime source change, no schema change, no
+  MPLP change, no Cognitive_OS v1.2 declaration, no tag, no GitHub Release,
+  and no seal record
 - corrected Cognitive_OS projection revision runtime release/readiness naming
   by replacing downstream-aligned release language with projection
   revision runtime surface release-readiness language, deferring independent

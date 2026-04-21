@@ -22,6 +22,7 @@ surface seal/tag/release wave.
 | no schema change | schema precheck in the future validation wave | `PENDING_FUTURE_VALIDATION` |
 | no MPLP protocol law change | governance boundary review in the future validation wave | `PENDING_FUTURE_VALIDATION` |
 | no execution / approval / queue semantics | forbidden claim and boundary grep in the future validation wave | `PENDING_FUTURE_VALIDATION` |
+| capability-line RC release line selected | independent versioning decision and tag naming policy | `READY` |
 | independent version assignment required before tag/release execution | separate versioning decision before any future execution wave | `REQUIRED` |
 | user authorization required before tag/release execution | explicit user authorization in the later execution wave | `REQUIRED` |
 
@@ -29,6 +30,8 @@ surface seal/tag/release wave.
 
 This plan does not authorize execution by itself.
 A later explicit user-authorized tag/release/seal execution wave is required.
+The selected line is a capability-line RC, not a full Cognitive_OS platform
+release.
 
 ## D. Decision
 

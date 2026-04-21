@@ -28,6 +28,8 @@ revision runtime surface with evidence insufficiency support.
 This surface is release-gated as a runtime capability surface, but it is not
 an independent Cognitive_OS V1.2 release. Cognitive_OS version assignment
 remains pending a separate versioning decision.
+The selected line is the projection-revision-runtime RC capability line, not a
+full Cognitive_OS platform release.
 
 Current status:
 
@@ -35,6 +37,7 @@ Current status:
 - Runtime tests passing.
 - Downstream evidence reviewed through neutral, projection-safe boundaries.
 - Release-readiness gate complete.
+- Independent versioning decision complete.
 - Tag/release/seal execution not authorized.
 - No schema change.
 - No MPLP protocol law change.
@@ -48,6 +51,7 @@ Active governance references:
 - `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/gates/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md)`
 - `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md)`
 - `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/audits/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md)`
+- `[CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md)`
 
 ## What Does Not Belong Here
 

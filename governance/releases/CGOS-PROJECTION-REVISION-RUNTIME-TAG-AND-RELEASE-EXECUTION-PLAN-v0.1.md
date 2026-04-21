@@ -10,19 +10,20 @@ assignment.
 
 ## B. Proposed Tag
 
-`CGOS_VERSION_TAG_DEFERRED_PENDING_VERSION_ASSIGNMENT`
+`cgos-projection-revision-runtime-rc-20260421`
 
 ## C. Proposed Release Title
 
-`Cognitive_OS Projection Revision Runtime Surface`
+`Cognitive_OS Projection Revision Runtime Surface RC`
 
 ## D. Future Execution Steps
 
-- No Cognitive_OS tag should be created until an independent Cognitive_OS release version is assigned.
-- Future unresolved neutral tag options may later include:
-  - `cgos-projection-revision-runtime-rc-YYYYMMDD`
-  - `cgos-v0.x-projection-revision-runtime-rc`
-- Future release execution should only be defined after version assignment resolves the final tag and release-title strings.
+- `git tag -a cgos-projection-revision-runtime-rc-20260421 -m "Cognitive_OS Projection Revision Runtime Surface RC"`
+- `git push origin cgos-projection-revision-runtime-rc-20260421`
+- `gh release create cgos-projection-revision-runtime-rc-20260421 --repo Coregentis/Cognitive_OS --title "Cognitive_OS Projection Revision Runtime Surface RC" --notes-file governance/releases/CGOS-PROJECTION-REVISION-RUNTIME-SURFACE-GITHUB-RELEASE-NOTES-v0.1.md --target main --prerelease`
+
+This is a capability-line RC, not a full Cognitive_OS platform release.
+Future release execution still requires explicit user authorization.
 
 ## E. Future Seal Wave Should Create
 
