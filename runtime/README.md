@@ -160,3 +160,11 @@ projection revision envelopes and evidence insufficiency detail.
 This is not runtime implementation. It introduces no schema change, no
 provider/channel execution, no approve/reject/dispatch/execute behavior, and
 no downstream product-specific semantics.
+
+## Durable Lifecycle Continuity Planning
+
+Current planning line: durable lifecycle continuity, including projection-safe
+lifecycle history, pending review summaries below queue semantics, and
+continuity snapshots.
+
+No implementation is added in this wave.

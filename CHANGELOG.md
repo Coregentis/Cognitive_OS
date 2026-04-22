@@ -4,6 +4,13 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- opened Cognitive_OS durable lifecycle continuity dependency baseline,
+  consolidating runtime boundary, projection contract boundary, storage/VSL
+  posture, downstream-neutral capability abstraction, MPLP candidate/backlog
+  posture, and embedded readiness gate; no runtime source implementation, no
+  schema change, no MPLP change, no product-specific naming, no
+  provider/channel execution, no approve/reject/dispatch/execute, no queue
+  implementation, no tag, no GitHub Release, and no seal record
 - executed Cognitive_OS projection-revision-runtime RC seal/release wave with
   minimal documentation budget, creating GitHub release notes and a combined
   seal/execution record; no runtime source change, no schema change, no MPLP
@@ -96,7 +103,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 - kept that Wave 2 runnable-path upgrade explicitly below full conflict-engine behavior, rollback/compensation behavior, product semantics, and protocol-law promotion
 - added the first runnable Wave 1 fresh-intent minimal cognitive loop path with deterministic in-memory semantic placement and bounded reconcile assessment
 - kept that runnable-path wave explicitly below full runtime realization, workflow-engine semantics, and protocol-law promotion
-- completed an upstream boundary review for current downstream packet-state pressure and recorded that no new workflow-truth family is adopted in `Cognitive_OS` now
+- completed an upstream boundary review for current downstream workflow-truth pressure and recorded that no new workflow-truth family is adopted in `Cognitive_OS` now
 - kept that boundary wave governance-only and explicitly out of scope for new runtime behavior, new object families, schema change, and protocol-law promotion
 - hardened the internal symmetry and schema/runtime-core consistency of the runtime-private management-object family without adding new runtime behavior, product behavior, or protocol law
 - added a bounded `v0.4` workforce/runtime-private closure pack, multi-cell runtime boundary closure pack, cross-repo consumption/non-promotion closure pack, and a formal workforce runtime closure record

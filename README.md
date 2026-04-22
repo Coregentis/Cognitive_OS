@@ -38,7 +38,8 @@ Current status:
 - Downstream evidence reviewed through neutral, projection-safe boundaries.
 - Release-readiness gate complete.
 - Independent versioning decision complete.
-- Tag/release/seal execution not authorized.
+- Projection-revision-runtime RC tag/release/seal executed.
+- Durable lifecycle continuity dependency planning open.
 - No schema change.
 - No MPLP protocol law change.
 - No downstream product dependency.
@@ -52,6 +53,13 @@ Active governance references:
 - `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md)`
 - `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/audits/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md)`
 - `[CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md)`
+- `[CGOS-DURABLE-LIFECYCLE-CONTINUITY-DEPENDENCY-BASELINE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/baselines/CGOS-DURABLE-LIFECYCLE-CONTINUITY-DEPENDENCY-BASELINE-v0.1.md)`
+
+Current dependency planning line:
+
+Cognitive_OS dependency planning is open for a generic durable lifecycle
+continuity capability. This is a neutral runtime/projection planning line, not
+a downstream product dependency and not an MPLP protocol change.
 
 ## What Does Not Belong Here
 
