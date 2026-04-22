@@ -111,6 +111,68 @@ function createProjectionRevisionInput(service, overrides = {}) {
   };
 }
 
+function createLifecycleContinuityProjectionInput(overrides = {}) {
+  return {
+    continuity_id: "continuity_projection_01",
+    project_id: "00000000-0000-4000-8000-710000000001",
+    lifecycle_stage: "review_posture",
+    lifecycle_label: "review-only posture",
+    history_summary: "bounded lifecycle history summary",
+    review_posture: "review_only",
+    non_executing_posture: "review-only and non-executing",
+    safe_evidence_refs: ["safe_ref_02", "safe_ref_01"],
+    runtime_private_fields_omitted: true,
+    created_at: "2026-04-22T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
+function createPendingReviewItemInput(overrides = {}) {
+  return {
+    review_item_id: "pending_review_item_01",
+    project_id: "00000000-0000-4000-8000-710000000001",
+    continuity_id: "continuity_projection_01",
+    lifecycle_stage: "evidence_gap",
+    lifecycle_label: "evidence gap visible",
+    evidence_gap_summary: "bounded evidence gap summary",
+    review_posture: "return_for_revision",
+    non_executing_posture: "review-only and non-executing",
+    safe_evidence_refs: ["safe_ref_01"],
+    runtime_private_fields_omitted: true,
+    created_at: "2026-04-22T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
+function createPendingReviewProjectionInput(overrides = {}) {
+  return {
+    continuity_id: "continuity_projection_01",
+    project_id: "00000000-0000-4000-8000-710000000001",
+    pending_review_count: 1,
+    pending_review_items: [createPendingReviewItemInput()],
+    review_posture: "review_only",
+    non_executing_posture: "review-only and non-executing",
+    runtime_private_fields_omitted: true,
+    created_at: "2026-04-22T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
+function createContinuitySnapshotProjectionInput(overrides = {}) {
+  return {
+    continuity_id: "continuity_projection_01",
+    project_id: "00000000-0000-4000-8000-710000000001",
+    lifecycle_stage: "review_posture",
+    lifecycle_label: "review-only posture",
+    history_summary: "bounded continuity snapshot summary",
+    pending_review_count: 1,
+    safe_evidence_refs: ["safe_ref_02", "safe_ref_01"],
+    runtime_private_fields_omitted: true,
+    created_at: "2026-04-22T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
 test("[runtime] projection-safe contracts create deterministic state exposure summary", () => {
   const service = new DeterministicProjectionService();
   const input = createStateExposureInput({
@@ -929,5 +991,249 @@ test("[runtime] projection-safe contracts cross-project revision retrieval retur
       envelope.revision_id
     ),
     undefined
+  );
+});
+
+test("[runtime] projection-safe contracts create valid lifecycle continuity projection", () => {
+  const service = new DeterministicProjectionService();
+  const projection = service.create_lifecycle_continuity_projection(
+    createLifecycleContinuityProjectionInput()
+  );
+
+  assert.equal(projection.continuity_id, "continuity_projection_01");
+  assert.equal(projection.project_id, "00000000-0000-4000-8000-710000000001");
+  assert.equal(projection.runtime_private_fields_omitted, true);
+  assert.deepEqual(projection.safe_evidence_refs, ["safe_ref_01", "safe_ref_02"]);
+});
+
+test("[runtime] projection-safe contracts reject lifecycle continuity projection missing project_id", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_lifecycle_continuity_projection({
+      ...createLifecycleContinuityProjectionInput(),
+      project_id: "",
+    }),
+    {
+      valid: false,
+      errors: ["project_id is required"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject lifecycle continuity projection missing continuity_id", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_lifecycle_continuity_projection({
+      ...createLifecycleContinuityProjectionInput(),
+      continuity_id: "",
+    }),
+    {
+      valid: false,
+      errors: ["continuity_id is required"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject lifecycle continuity projection when runtime_private_fields_omitted is not true", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_lifecycle_continuity_projection({
+      ...createLifecycleContinuityProjectionInput(),
+      runtime_private_fields_omitted: false,
+    }),
+    {
+      valid: false,
+      errors: ["runtime_private_fields_omitted must be true"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject forbidden raw runtime-private fields recursively", () => {
+  const service = new DeterministicProjectionService();
+
+  for (const key of ["raw_vsl", "raw_psg", "raw_trace"]) {
+    assert.deepEqual(
+      service.validate_lifecycle_continuity_projection({
+        ...createLifecycleContinuityProjectionInput(),
+        nested: {
+          [key]: "forbidden",
+        },
+      }),
+      {
+        valid: false,
+        errors: [`forbidden runtime-private field: ${key}`],
+      }
+    );
+  }
+});
+
+test("[runtime] projection-safe contracts reject forbidden execution fields recursively", () => {
+  const service = new DeterministicProjectionService();
+
+  for (const key of [
+    "provider_channel_result",
+    "dispatch_result",
+    "approval_result",
+    "execution_result",
+  ]) {
+    assert.deepEqual(
+      service.validate_lifecycle_continuity_projection({
+        ...createLifecycleContinuityProjectionInput(),
+        nested: {
+          [key]: "forbidden",
+        },
+      }),
+      {
+        valid: false,
+        errors: [`forbidden execution field: ${key}`],
+      }
+    );
+  }
+});
+
+test("[runtime] projection-safe contracts reject forbidden queue field recursively", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_continuity_snapshot_projection({
+      ...createContinuitySnapshotProjectionInput(),
+      nested: {
+        queue_worker_state: "forbidden",
+      },
+    }),
+    {
+      valid: false,
+      errors: ["forbidden queue field: queue_worker_state"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts reject pending review item with mismatched project_id", () => {
+  const service = new DeterministicProjectionService();
+
+  assert.deepEqual(
+    service.validate_pending_review_projection({
+      ...createPendingReviewProjectionInput(),
+      pending_review_items: [
+        createPendingReviewItemInput({
+          project_id: "00000000-0000-4000-8000-710000000099",
+        }),
+      ],
+    }),
+    {
+      valid: false,
+      errors: ["pending_review_items.project_id must match projection project_id"],
+    }
+  );
+});
+
+test("[runtime] projection-safe contracts store and retrieve lifecycle continuity projection", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const projection = service.create_lifecycle_continuity_projection(
+    createLifecycleContinuityProjectionInput()
+  );
+
+  store.put_lifecycle_continuity_projection(projection.project_id, projection);
+
+  assert.equal(
+    store.get_lifecycle_continuity_projection(
+      projection.project_id,
+      projection.continuity_id
+    )?.history_summary,
+    "bounded lifecycle history summary"
+  );
+});
+
+test("[runtime] projection-safe contracts store and list pending review projections by project", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const alpha = service.create_pending_review_projection(
+    createPendingReviewProjectionInput({
+      continuity_id: "continuity_projection_alpha",
+      project_id: "00000000-0000-4000-8000-710000000010",
+      pending_review_items: [
+        createPendingReviewItemInput({
+          review_item_id: "pending_review_item_alpha",
+          continuity_id: "continuity_projection_alpha",
+          project_id: "00000000-0000-4000-8000-710000000010",
+        }),
+      ],
+    })
+  );
+  const beta = service.create_pending_review_projection(
+    createPendingReviewProjectionInput({
+      continuity_id: "continuity_projection_beta",
+      project_id: "00000000-0000-4000-8000-710000000020",
+      pending_review_items: [
+        createPendingReviewItemInput({
+          review_item_id: "pending_review_item_beta",
+          continuity_id: "continuity_projection_beta",
+          project_id: "00000000-0000-4000-8000-710000000020",
+        }),
+      ],
+    })
+  );
+
+  store.put_pending_review_projection(alpha.project_id, alpha);
+  store.put_pending_review_projection(beta.project_id, beta);
+
+  assert.deepEqual(
+    store.list_pending_review_projections(alpha.project_id).map(
+      (projection) => projection.continuity_id
+    ),
+    ["continuity_projection_alpha"]
+  );
+  assert.equal(
+    store.get_pending_review_projection(
+      beta.project_id,
+      beta.continuity_id
+    )?.pending_review_items[0]?.review_item_id,
+    "pending_review_item_beta"
+  );
+});
+
+test("[runtime] projection-safe contracts create valid pending review projection", () => {
+  const service = new DeterministicProjectionService();
+  const projection = service.create_pending_review_projection(
+    createPendingReviewProjectionInput()
+  );
+
+  assert.equal(projection.continuity_id, "continuity_projection_01");
+  assert.equal(projection.pending_review_count, 1);
+  assert.equal(projection.pending_review_items[0].review_item_id, "pending_review_item_01");
+  assert.equal(projection.runtime_private_fields_omitted, true);
+});
+
+test("[runtime] projection-safe contracts create valid continuity snapshot projection", () => {
+  const service = new DeterministicProjectionService();
+  const projection = service.create_continuity_snapshot_projection(
+    createContinuitySnapshotProjectionInput()
+  );
+
+  assert.equal(projection.continuity_id, "continuity_projection_01");
+  assert.equal(projection.pending_review_count, 1);
+  assert.equal(projection.runtime_private_fields_omitted, true);
+  assert.deepEqual(projection.safe_evidence_refs, ["safe_ref_01", "safe_ref_02"]);
+});
+
+test("[runtime] projection-safe contracts store and retrieve continuity snapshot projection", () => {
+  const service = new DeterministicProjectionService();
+  const store = new InMemoryProjectionStore();
+  const projection = service.create_continuity_snapshot_projection(
+    createContinuitySnapshotProjectionInput()
+  );
+
+  store.put_continuity_snapshot_projection(projection.project_id, projection);
+
+  assert.equal(
+    store.get_continuity_snapshot_projection(
+      projection.project_id,
+      projection.continuity_id
+    )?.history_summary,
+    "bounded continuity snapshot summary"
   );
 });

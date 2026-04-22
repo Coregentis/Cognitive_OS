@@ -186,6 +186,134 @@ export type CreateRuntimeProjectionRevisionEnvelopeInput = {
   runtime_private_fields_omitted: true;
 };
 
+export type RuntimeLifecycleHistoryEntry = {
+  history_entry_id: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  evidence_gap_summary?: string;
+  review_posture?: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at: string;
+};
+
+export type RuntimePendingReviewItemSummary = {
+  review_item_id: string;
+  project_id: string;
+  continuity_id?: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  evidence_gap_summary?: string;
+  review_posture: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at: string;
+};
+
+export type RuntimeLifecycleContinuityProjection = {
+  continuity_id: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  review_posture: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at: string;
+};
+
+export type RuntimePendingReviewProjection = {
+  continuity_id: string;
+  project_id: string;
+  pending_review_count: number;
+  pending_review_items: RuntimePendingReviewItemSummary[];
+  review_posture: string;
+  non_executing_posture: string;
+  runtime_private_fields_omitted: true;
+  created_at: string;
+};
+
+export type RuntimeContinuitySnapshotProjection = {
+  continuity_id: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  pending_review_count: number;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at: string;
+};
+
+export type CreateRuntimeLifecycleHistoryEntryInput = {
+  history_entry_id?: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  evidence_gap_summary?: string;
+  review_posture?: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at?: string;
+};
+
+export type CreateRuntimePendingReviewItemSummaryInput = {
+  review_item_id?: string;
+  project_id: string;
+  continuity_id?: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  evidence_gap_summary?: string;
+  review_posture: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at?: string;
+};
+
+export type CreateRuntimeLifecycleContinuityProjectionInput = {
+  continuity_id?: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  review_posture: string;
+  non_executing_posture: string;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at?: string;
+};
+
+export type CreateRuntimePendingReviewProjectionInput = {
+  continuity_id?: string;
+  project_id: string;
+  pending_review_items: CreateRuntimePendingReviewItemSummaryInput[];
+  pending_review_count?: number;
+  review_posture: string;
+  non_executing_posture: string;
+  runtime_private_fields_omitted: true;
+  created_at?: string;
+};
+
+export type CreateRuntimeContinuitySnapshotProjectionInput = {
+  continuity_id?: string;
+  project_id: string;
+  lifecycle_stage: string;
+  lifecycle_label: string;
+  history_summary: string;
+  pending_review_count: number;
+  safe_evidence_refs?: string[];
+  runtime_private_fields_omitted: true;
+  created_at?: string;
+};
+
 export const FORBIDDEN_PROJECTION_RAW_KEYS = [
   "raw_vsl",
   "raw_psg",

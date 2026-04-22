@@ -163,8 +163,7 @@ no downstream product-specific semantics.
 
 ## Durable Lifecycle Continuity Planning
 
-Current planning line: durable lifecycle continuity, including projection-safe
-lifecycle history, pending review summaries below queue semantics, and
-continuity snapshots.
+Durable lifecycle continuity interface scaffold is present for projection-safe
+continuity projections, pending review projections, and continuity snapshots.
 
-No implementation is added in this wave.
+Full durable persistence remains out of scope.

@@ -79,6 +79,24 @@ These surfaces remain bounded:
 - safe clarification prompt is not provider/channel send
 - revision is not approval/rejection/execution
 
+## Durable Lifecycle Continuity Interface Scaffold
+
+`Cognitive_OS` now also exposes interface-first projection-safe continuity
+scaffolds through:
+
+- lifecycle continuity projection types
+- pending review projection types
+- continuity snapshot projection types
+- deterministic projection service validation / creation methods
+
+These remain bounded:
+
+- no provider/channel
+- no approve/reject/dispatch/execute
+- no queue implementation
+- no raw runtime-private exposure
+- no product-specific naming
+
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 
 This phase is still skeleton-first and baseline-first by design.

@@ -136,3 +136,50 @@ Decision enum:
 ## L. Next Step Decision
 
 `Cognitive_OS durable lifecycle continuity implementation planning`
+
+## M. Implementation Planning and Interface-First Scaffold
+
+### M1. Implementation Slice
+
+This wave implements only the interface-first, projection-safe continuity
+scaffold. It does not implement full durable persistence, queue semantics,
+provider/channel execution, approve/reject/dispatch/execute, or
+runtime-private exposure.
+
+### M2. File-Level Task Map
+
+| Area | File | Planned change | Boundary |
+|---|---|---|---|
+| runtime types | `runtime/core/projection-types.ts` | add neutral continuity projection and pending review type surfaces | no product-specific naming, no raw runtime-private public fields |
+| projection service | `runtime/core/projection-service.ts` | add deterministic validation/creation scaffold for continuity projections | no execution, queue, approval, or raw runtime-private exposure |
+| projection-adjacent in-memory store | `runtime/in-memory/projection-store.ts` | add project-scoped continuity/pending-review/snapshot storage methods | no queue semantics, no provider/channel result storage |
+| runtime tests | `tests/runtime/projection-safe-contract.test.mjs` | add continuity projection validation/store tests | no schema change, no product-specific naming |
+| README/runtime README/CHANGELOG | `README.md`, `runtime/README.md`, `runtime/core/README.md`, `runtime/in-memory/README.md`, `CHANGELOG.md` | align repository/runtime status to the interface-first scaffold | no overclaim, no release/tag/seal implication |
+
+### M3. DoR / DoD
+
+DoR:
+
+- dependency baseline ready
+- runtime/projection boundary selected
+- source files inspected
+- no schema change needed
+- no MPLP change needed
+
+DoD:
+
+- types added
+- service validation scaffold added
+- store scaffold added
+- tests pass
+- forbidden raw/runtime-private fields rejected
+- project_id consistency enforced
+- no execution/queue/approval semantics
+
+### M4. Decision
+
+`CGOS_DURABLE_LIFECYCLE_CONTINUITY_INTERFACE_SCAFFOLD_READY_FOR_IMPLEMENTATION`
+
+Final status:
+
+`CGOS_DURABLE_LIFECYCLE_CONTINUITY_INTERFACE_SCAFFOLD_IMPLEMENTED`

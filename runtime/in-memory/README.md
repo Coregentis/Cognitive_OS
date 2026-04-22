@@ -29,6 +29,9 @@ These stores are:
   - project-isolated storage for projection summary envelopes only
   - does not expose raw runtime storage or provide durability guarantees
   - project-scoped storage for projection-adjacent revision envelopes
+  - project-scoped storage for lifecycle continuity projections
+  - project-scoped storage for pending review projections
+  - project-scoped storage for continuity snapshot projections
   - supports project-scoped retrieval and listing of revision envelopes
   - does not expose raw runtime-private storage, queue semantics, or execution
     state

@@ -57,9 +57,11 @@ Active governance references:
 
 Current dependency planning line:
 
-Cognitive_OS dependency planning is open for a generic durable lifecycle
-continuity capability. This is a neutral runtime/projection planning line, not
-a downstream product dependency and not an MPLP protocol change.
+Cognitive_OS now includes an interface-first durable lifecycle continuity
+scaffold for projection-safe lifecycle history, pending review summaries below
+queue semantics, and continuity snapshots. This is not full durable
+persistence and does not add execution, queue, approval, schema, or MPLP
+changes.
 
 ## What Does Not Belong Here
 

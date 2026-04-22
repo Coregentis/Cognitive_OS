@@ -3,16 +3,24 @@ import { createHash } from "node:crypto";
 import {
   FORBIDDEN_PROJECTION_ACTION_LABELS,
   FORBIDDEN_PROJECTION_RAW_KEYS,
+  type CreateRuntimeContinuitySnapshotProjectionInput,
   type CreateRuntimeEvidenceInsufficiencyDetailInput,
   type CreateRuntimeEvidencePostureSummaryInput,
+  type CreateRuntimeLifecycleContinuityProjectionInput,
+  type CreateRuntimePendingReviewItemSummaryInput,
+  type CreateRuntimePendingReviewProjectionInput,
   type CreateRuntimeNonExecutingRecommendationEnvelopeInput,
   type CreateRuntimeProjectionRevisionEnvelopeInput,
   type CreateRuntimeProjectionSafeStateExposureInput,
   type CreateRuntimeProjectionSummaryEnvelopeInput,
   type RuntimeBlockedProjectionAction,
+  type RuntimeContinuitySnapshotProjection,
   type RuntimeEvidenceInsufficiencyCategory,
   type RuntimeEvidenceInsufficiencyDetail,
   type RuntimeEvidencePostureSummary,
+  type RuntimeLifecycleContinuityProjection,
+  type RuntimePendingReviewItemSummary,
+  type RuntimePendingReviewProjection,
   type RuntimeNonExecutingRecommendationEnvelope,
   type RuntimeProjectionRevisionEnvelope,
   type RuntimeProjectionRevisionReason,
@@ -65,6 +73,24 @@ const FORBIDDEN_RUNTIME_SEMANTIC_PATTERNS = [
     pattern: /\bqueue(?:\s+implementation|\s+execution)?\b/i,
     error: "queue implementation is not allowed",
   },
+] as const;
+
+const FORBIDDEN_LIFECYCLE_RUNTIME_PRIVATE_FIELDS = [
+  "raw_vsl",
+  "raw_psg",
+  "raw_trace",
+  "runtime_private_payload",
+] as const;
+
+const FORBIDDEN_LIFECYCLE_EXECUTION_FIELDS = [
+  "provider_channel_result",
+  "dispatch_result",
+  "approval_result",
+  "execution_result",
+] as const;
+
+const FORBIDDEN_LIFECYCLE_QUEUE_FIELDS = [
+  "queue_worker_state",
 ] as const;
 
 type ValidationResult = {
@@ -308,6 +334,126 @@ function collect_nested_project_consistency_errors(
   return target;
 }
 
+function collect_lifecycle_projection_forbidden_field_errors(
+  value: unknown,
+  target: string[] = []
+): string[] {
+  if (Array.isArray(value)) {
+    value.forEach((item) => {
+      collect_lifecycle_projection_forbidden_field_errors(item, target);
+    });
+    return target;
+  }
+
+  if (!value || typeof value !== "object") {
+    return target;
+  }
+
+  for (const [key, nested] of Object.entries(value)) {
+    if (
+      (
+        FORBIDDEN_LIFECYCLE_RUNTIME_PRIVATE_FIELDS as readonly string[]
+      ).includes(key)
+    ) {
+      target.push(`forbidden runtime-private field: ${key}`);
+    }
+
+    if (
+      (
+        FORBIDDEN_LIFECYCLE_EXECUTION_FIELDS as readonly string[]
+      ).includes(key)
+    ) {
+      target.push(`forbidden execution field: ${key}`);
+    }
+
+    if (
+      (
+        FORBIDDEN_LIFECYCLE_QUEUE_FIELDS as readonly string[]
+      ).includes(key)
+    ) {
+      target.push(`forbidden queue field: ${key}`);
+    }
+
+    collect_lifecycle_projection_forbidden_field_errors(nested, target);
+  }
+
+  return target;
+}
+
+function validate_safe_evidence_refs(
+  value: unknown,
+  field_name: string,
+  target: string[]
+): void {
+  if (value === undefined) {
+    return;
+  }
+
+  if (!Array.isArray(value)) {
+    target.push(`${field_name} must be an array`);
+    return;
+  }
+
+  if (
+    value.some(
+      (entry) => typeof entry !== "string" || entry.trim().length === 0
+    )
+  ) {
+    target.push(`${field_name} must contain only non-empty strings`);
+  }
+}
+
+function validate_required_string(
+  candidate: Record<string, unknown>,
+  key: string,
+  target: string[]
+): void {
+  if (typeof candidate[key] !== "string" || (candidate[key] as string).length === 0) {
+    target.push(`${key} is required`);
+  }
+}
+
+function create_pending_review_item_summary(
+  input: CreateRuntimePendingReviewItemSummaryInput,
+  fallback_continuity_id: string,
+  created_at: string
+): RuntimePendingReviewItemSummary {
+  const safe_evidence_refs = unique_strings(input.safe_evidence_refs ?? []);
+  const review_item_id =
+    input.review_item_id ??
+    deterministic_id(
+      "pending_review_item",
+      stable_stringify({
+        continuity_id: input.continuity_id ?? fallback_continuity_id,
+        project_id: input.project_id,
+        lifecycle_stage: input.lifecycle_stage,
+        lifecycle_label: input.lifecycle_label,
+        evidence_gap_summary: input.evidence_gap_summary,
+        review_posture: input.review_posture,
+        non_executing_posture: input.non_executing_posture,
+        safe_evidence_refs,
+        created_at,
+      })
+    );
+
+  return {
+    review_item_id,
+    project_id: input.project_id,
+    continuity_id: input.continuity_id ?? fallback_continuity_id,
+    lifecycle_stage: input.lifecycle_stage,
+    lifecycle_label: input.lifecycle_label,
+    evidence_gap_summary: input.evidence_gap_summary,
+    review_posture: input.review_posture,
+    non_executing_posture: input.non_executing_posture,
+    safe_evidence_refs,
+    runtime_private_fields_omitted: true,
+    created_at:
+      typeof input.created_at === "string" && input.created_at.length > 0
+        ? input.created_at
+        : created_at,
+  };
+}
+
 export class DeterministicProjectionService {
   create_evidence_insufficiency_detail(
     input: CreateRuntimeEvidenceInsufficiencyDetailInput
@@ -419,6 +565,117 @@ export class DeterministicProjectionService {
       non_executing: true,
       runtime_private_fields_omitted: true,
     };
+  }
+
+  create_lifecycle_continuity_projection(
+    input: CreateRuntimeLifecycleContinuityProjectionInput
+  ): RuntimeLifecycleContinuityProjection {
+    const created_at = created_at_or_default(input.created_at);
+    const safe_evidence_refs = unique_strings(input.safe_evidence_refs ?? []);
+    const continuity_id =
+      input.continuity_id ??
+      deterministic_id(
+        "lifecycle_continuity_projection",
+        stable_stringify({
+          project_id: input.project_id,
+          lifecycle_stage: input.lifecycle_stage,
+          lifecycle_label: input.lifecycle_label,
+          history_summary: input.history_summary,
+          review_posture: input.review_posture,
+          non_executing_posture: input.non_executing_posture,
+          safe_evidence_refs,
+          created_at,
+        })
+      );
+    const projection: RuntimeLifecycleContinuityProjection = {
+      continuity_id,
+      project_id: input.project_id,
+      lifecycle_stage: input.lifecycle_stage,
+      lifecycle_label: input.lifecycle_label,
+      history_summary: input.history_summary,
+      review_posture: input.review_posture,
+      non_executing_posture: input.non_executing_posture,
+      safe_evidence_refs,
+      runtime_private_fields_omitted: true,
+      created_at,
+    };
+
+    assert_valid_result(
+      this.validate_lifecycle_continuity_projection(projection)
+    );
+    return projection;
+  }
+
+  create_pending_review_projection(
+    input: CreateRuntimePendingReviewProjectionInput
+  ): RuntimePendingReviewProjection {
+    const created_at = created_at_or_default(input.created_at);
+    const continuity_id =
+      input.continuity_id ??
+      deterministic_id(
+        "pending_review_projection",
+        stable_stringify({
+          project_id: input.project_id,
+          pending_review_items: input.pending_review_items,
+          review_posture: input.review_posture,
+          non_executing_posture: input.non_executing_posture,
+          created_at,
+        })
+      );
+    const pending_review_items = input.pending_review_items.map((item) =>
+      create_pending_review_item_summary(item, continuity_id, created_at)
+    );
+    const projection: RuntimePendingReviewProjection = {
+      continuity_id,
+      project_id: input.project_id,
+      pending_review_count:
+        typeof input.pending_review_count === "number"
+          ? input.pending_review_count
+          : pending_review_items.length,
+      pending_review_items,
+      review_posture: input.review_posture,
+      non_executing_posture: input.non_executing_posture,
+      runtime_private_fields_omitted: true,
+      created_at,
+    };
+
+    assert_valid_result(this.validate_pending_review_projection(projection));
+    return projection;
+  }
+
+  create_continuity_snapshot_projection(
+    input: CreateRuntimeContinuitySnapshotProjectionInput
+  ): RuntimeContinuitySnapshotProjection {
+    const created_at = created_at_or_default(input.created_at);
+    const safe_evidence_refs = unique_strings(input.safe_evidence_refs ?? []);
+    const continuity_id =
+      input.continuity_id ??
+      deterministic_id(
+        "continuity_snapshot_projection",
+        stable_stringify({
+          project_id: input.project_id,
+          lifecycle_stage: input.lifecycle_stage,
+          lifecycle_label: input.lifecycle_label,
+          history_summary: input.history_summary,
+          pending_review_count: input.pending_review_count,
+          safe_evidence_refs,
+          created_at,
+        })
+      );
+    const projection: RuntimeContinuitySnapshotProjection = {
+      continuity_id,
+      project_id: input.project_id,
+      lifecycle_stage: input.lifecycle_stage,
+      lifecycle_label: input.lifecycle_label,
+      history_summary: input.history_summary,
+      pending_review_count: input.pending_review_count,
+      safe_evidence_refs,
+      runtime_private_fields_omitted: true,
+      created_at,
+    };
+
+    assert_valid_result(this.validate_continuity_snapshot_projection(projection));
+    return projection;
   }
 
   create_non_executing_recommendation(
@@ -732,6 +989,184 @@ export class DeterministicProjectionService {
         }
       }
     }
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
+  }
+
+  validate_lifecycle_continuity_projection(
+    projection: unknown
+  ): ValidationResult {
+    const errors = [
+      ...collect_lifecycle_projection_forbidden_field_errors(projection),
+      ...collect_forbidden_action_label_errors(projection, "projection"),
+      ...collect_forbidden_direct_action_errors(projection, "projection"),
+      ...collect_forbidden_runtime_semantic_errors(projection),
+    ];
+
+    if (!projection || typeof projection !== "object" || Array.isArray(projection)) {
+      errors.push("projection must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = projection as Record<string, unknown>;
+
+    validate_required_string(candidate, "project_id", errors);
+    validate_required_string(candidate, "continuity_id", errors);
+    validate_required_string(candidate, "lifecycle_stage", errors);
+    validate_required_string(candidate, "lifecycle_label", errors);
+    validate_required_string(candidate, "history_summary", errors);
+    validate_required_string(candidate, "review_posture", errors);
+    validate_required_string(candidate, "non_executing_posture", errors);
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    validate_safe_evidence_refs(candidate.safe_evidence_refs, "safe_evidence_refs", errors);
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
+  }
+
+  validate_pending_review_projection(projection: unknown): ValidationResult {
+    const errors = [
+      ...collect_lifecycle_projection_forbidden_field_errors(projection),
+      ...collect_forbidden_action_label_errors(projection, "projection"),
+      ...collect_forbidden_direct_action_errors(projection, "projection"),
+      ...collect_forbidden_runtime_semantic_errors(projection),
+    ];
+
+    if (!projection || typeof projection !== "object" || Array.isArray(projection)) {
+      errors.push("projection must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = projection as Record<string, unknown>;
+
+    validate_required_string(candidate, "project_id", errors);
+    validate_required_string(candidate, "continuity_id", errors);
+    validate_required_string(candidate, "review_posture", errors);
+    validate_required_string(candidate, "non_executing_posture", errors);
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    if (
+      typeof candidate.pending_review_count !== "number" ||
+      !Number.isInteger(candidate.pending_review_count) ||
+      candidate.pending_review_count < 0
+    ) {
+      errors.push("pending_review_count must be a non-negative integer");
+    }
+
+    const project_id =
+      typeof candidate.project_id === "string" ? candidate.project_id : undefined;
+    const items = candidate.pending_review_items;
+    if (!Array.isArray(items)) {
+      errors.push("pending_review_items must be an array");
+    } else {
+      if (
+        typeof candidate.pending_review_count === "number" &&
+        candidate.pending_review_count !== items.length
+      ) {
+        errors.push("pending_review_count must match pending_review_items length");
+      }
+
+      for (const item of items) {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push("pending_review_items must contain only objects");
+          continue;
+        }
+
+        const record = item as Record<string, unknown>;
+
+        if (
+          typeof record.project_id !== "string" ||
+          record.project_id.length === 0
+        ) {
+          errors.push("pending_review_items.project_id is required");
+        } else if (
+          project_id &&
+          record.project_id !== project_id
+        ) {
+          errors.push("pending_review_items.project_id must match projection project_id");
+        }
+
+        validate_required_string(record, "review_item_id", errors);
+        validate_required_string(record, "lifecycle_stage", errors);
+        validate_required_string(record, "lifecycle_label", errors);
+        validate_required_string(record, "review_posture", errors);
+        validate_required_string(record, "non_executing_posture", errors);
+
+        if (record.runtime_private_fields_omitted !== true) {
+          errors.push("pending_review_items.runtime_private_fields_omitted must be true");
+        }
+
+        validate_safe_evidence_refs(
+          record.safe_evidence_refs,
+          "pending_review_items.safe_evidence_refs",
+          errors
+        );
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
+  }
+
+  validate_continuity_snapshot_projection(
+    projection: unknown
+  ): ValidationResult {
+    const errors = [
+      ...collect_lifecycle_projection_forbidden_field_errors(projection),
+      ...collect_forbidden_action_label_errors(projection, "projection"),
+      ...collect_forbidden_direct_action_errors(projection, "projection"),
+      ...collect_forbidden_runtime_semantic_errors(projection),
+    ];
+
+    if (!projection || typeof projection !== "object" || Array.isArray(projection)) {
+      errors.push("projection must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = projection as Record<string, unknown>;
+
+    validate_required_string(candidate, "project_id", errors);
+    validate_required_string(candidate, "continuity_id", errors);
+    validate_required_string(candidate, "lifecycle_stage", errors);
+    validate_required_string(candidate, "lifecycle_label", errors);
+    validate_required_string(candidate, "history_summary", errors);
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    if (
+      typeof candidate.pending_review_count !== "number" ||
+      !Number.isInteger(candidate.pending_review_count) ||
+      candidate.pending_review_count < 0
+    ) {
+      errors.push("pending_review_count must be a non-negative integer");
+    }
+
+    validate_safe_evidence_refs(candidate.safe_evidence_refs, "safe_evidence_refs", errors);
 
     return {
       valid: errors.length === 0,

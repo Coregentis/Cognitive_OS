@@ -4,13 +4,13 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- opened Cognitive_OS durable lifecycle continuity dependency baseline,
-  consolidating runtime boundary, projection contract boundary, storage/VSL
-  posture, downstream-neutral capability abstraction, MPLP candidate/backlog
-  posture, and embedded readiness gate; no runtime source implementation, no
-  schema change, no MPLP change, no product-specific naming, no
-  provider/channel execution, no approve/reject/dispatch/execute, no queue
-  implementation, no tag, no GitHub Release, and no seal record
+- implemented Cognitive_OS durable lifecycle continuity interface-first
+  scaffold with neutral projection types, service validation/creation methods,
+  projection-adjacent in-memory store methods, runtime tests, and
+  README/runtime README alignment; no schema change, no MPLP change, no
+  downstream product-specific naming, no provider/channel execution, no
+  approve/reject/dispatch/execute, no queue implementation, no
+  runtime-private exposure, no tag, no GitHub Release, and no seal record
 - executed Cognitive_OS projection-revision-runtime RC seal/release wave with
   minimal documentation budget, creating GitHub release notes and a combined
   seal/execution record; no runtime source change, no schema change, no MPLP
