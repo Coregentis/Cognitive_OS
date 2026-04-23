@@ -167,3 +167,8 @@ Durable lifecycle continuity interface scaffold is present for projection-safe
 continuity projections, pending review projections, and continuity snapshots.
 
 Full durable persistence remains out of scope.
+Verification is complete.
+The available neutral surfaces are lifecycle continuity projections, pending
+review projections, and continuity snapshot projections.
+Full durable persistence, execution, approval, queue, schema, and MPLP
+changes remain out of scope.

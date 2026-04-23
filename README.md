@@ -62,6 +62,10 @@ scaffold for projection-safe lifecycle history, pending review summaries below
 queue semantics, and continuity snapshots. This is not full durable
 persistence and does not add execution, queue, approval, schema, or MPLP
 changes.
+Verification is now recorded.
+Downstream consumers may consume projection-safe continuity summaries,
+pending-review summaries below queue semantics, and continuity snapshots
+without accessing runtime-private internals.
 
 ## What Does Not Belong Here
 
