@@ -67,10 +67,9 @@ Downstream consumers may consume projection-safe continuity summaries,
 pending-review summaries below queue semantics, and continuity snapshots
 without accessing runtime-private internals.
 
-Cognitive_OS now defines a neutral prepared-action interface skeleton for
-projection-safe action-preparation semantics. This is interface-first only and
-does not implement execution, approval, dispatch, provider/channel
-operations, or queue behavior.
+Cognitive_OS has advanced prepared-action to minimal scaffold planning for
+projection-safe downstream consumption. The next allowed step remains neutral
+scaffolding only, not runtime behavior.
 
 ## What Does Not Belong Here
 

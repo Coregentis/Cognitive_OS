@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- advanced prepared-action from interface definition to minimal scaffold
+  planning, defining file-level scaffold targets, allowed/forbidden scaffold
+  scope, and downstream consumption handoff; no schema change, no runtime
+  behavior implementation, no product-specific naming, no provider/channel
+  execution, no approve/reject/dispatch/execute, no queue implementation,
+  and no MPLP change
 - defined a neutral prepared-action design baseline and interface skeleton,
   including projection-safe prepared-action types, contract helpers, and
   contract-level tests; no schema change, no runtime behavior

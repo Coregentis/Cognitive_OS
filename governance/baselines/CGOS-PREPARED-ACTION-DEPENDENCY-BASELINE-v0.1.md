@@ -170,3 +170,52 @@ Forbidden categories:
 ### K5. Interface Skeleton Decision
 
 `CGOS_PREPARED_ACTION_INTERFACE_SKELETON_DEFINED`
+
+## L. Minimal Prepared-Action Scaffold Planning
+
+### L1. Planning Objective
+
+Define the smallest safe prepared-action scaffold that Cognitive_OS may
+expose next, while remaining projection-safe, draft-only, non-executing,
+non-approving, non-dispatching, non-provider, and non-queueing.
+
+### L2. File-Level Scaffold Target Map
+
+| File | Current role | Minimal next scaffold allowed? | Boundary |
+|---|---|---|---|
+| `runtime/core/prepared-action-types.ts` | neutral prepared-action interface surface | yes; extend type surface only if still neutral | no behavior, no product naming, no execution semantics |
+| `runtime/core/prepared-action-contract.ts` | projection-safe prepared-action validation helpers | yes; extend validation / projection-safe helpers only | no side effects, no dispatch, no approval, no queue |
+| `tests/runtime/prepared-action-contract.test.mjs` | contract-level regression coverage for prepared-action interfaces | yes; expand harness / regression coverage | negative-boundary and projection-safe checks only |
+| `runtime/core/projection-types.ts` | active shipped projection-safe runtime contracts | no by default | remain unchanged unless a strictly necessary neutral alias is justified later |
+| `runtime/core/projection-service.ts` | active deterministic projection-safe service for shipped surfaces | no for behaviorful prepared-action logic | must not take prepared-action runtime behavior in the next scaffold wave |
+| `runtime/core/runtime-types.ts` | global neutral runtime object taxonomy | maybe, only if a neutral non-behavioral cross-reference is strictly required | no behavior, no product naming, no execution semantics |
+| `runtime/core/runtime-orchestrator.ts` | executable minimal runtime orchestration | no | must remain untouched in the next prepared-action scaffold wave |
+
+### L3. Allowed vs Forbidden Scaffold Scope
+
+| Candidate scaffold | Allowed now? | Boundary |
+|---|---|---|
+| projection-safe envelope constructor | yes, if side-effect-free | constructor only, no runtime state mutation, no execution semantics |
+| validation helper expansion | yes | validation-only and projection-safe |
+| non-behavioral mapper | yes | neutral mapping only, no policy or execution meaning |
+| evidence-ref linkage helper | yes | reference-only and projection-safe |
+| risk summary formatter | yes | explanatory only |
+| confirmation requirement formatter | yes | descriptive only, not approval control |
+| execution eligibility logic | no | not allowed until a later neutral upstream design/implementation wave |
+| dispatch/provider bridge | no | out of scope |
+| queue insertion bridge | no | out of scope |
+| approval control path | no | out of scope |
+| runtime state mutation | no | out of scope |
+
+### L4. Downstream Consumption Handoff
+
+Downstream products may only consume a minimal projection-safe prepared-action
+scaffold after Cognitive_OS exposes it explicitly.
+Downstream products must not infer execution, approval, dispatch,
+provider/channel send, or queue semantics from it.
+Downstream products must not import runtime-private state or bypass contract
+helpers.
+
+### L5. Recommended Next Step
+
+`CGOS_MINIMAL_PREPARED_ACTION_SCAFFOLD_READY`
