@@ -110,3 +110,63 @@ semantics from prepared-action projections.
 ## J. Recommended Next Step
 
 `CGOS_PREPARED_ACTION_DEPENDENCY_READY_FOR_DESIGN`
+
+## K. Prepared-Action Design Baseline and Neutral Interface Skeleton
+
+### K1. Design Objective
+
+Define neutral prepared-action interface surfaces for projection-safe
+downstream consumption, without introducing execution, approval, dispatch,
+provider/channel send, queue semantics, or runtime behavior.
+
+### K2. Design Surface
+
+| Surface | Purpose | Boundary |
+|---|---|---|
+| `PreparedActionProjection` | top-level projection-safe prepared-action envelope | draft-only, non-executing |
+| `PreparedActionIntentSummary` | bounded summary of a possible future action | not execution or dispatch |
+| `PreparedActionRiskSummary` | bounded risk and boundary narration | explanatory only |
+| `PreparedActionEvidenceSufficiency` | bounded sufficiency posture | not approval or eligibility grant |
+| `PreparedActionMissingInformation` | bounded missing-information list | gap visibility only |
+| `PreparedActionConfirmationRequirement` | bounded confirmation requirement summary | not approval control |
+| `PreparedActionBoundaryPosture` | explicit non-executing and non-queueing posture | no provider/channel, no queue, no execution |
+| `PreparedActionSafeEvidenceRef` | projection-safe evidence reference shape | references only |
+
+### K3. Neutral Field Rules
+
+Allowed categories:
+
+- `summary`
+- `risk_summary`
+- `evidence_sufficiency`
+- `missing_information`
+- `confirmation_requirement`
+- `boundary_posture`
+- `safe_evidence_refs`
+- `runtime_private_fields_omitted`
+- `non_executing_posture`
+
+Forbidden categories:
+
+- `execution_result`
+- `dispatch_result`
+- `approval_result`
+- `provider_channel_result`
+- `queue_state`
+- `runtime_private_payload`
+- `raw_vsl`
+- `raw_psg`
+- `raw_trace`
+
+### K4. Downstream-Safe Semantics
+
+- Prepared action is draft-only.
+- Prepared action is projection-safe.
+- Prepared action may describe a possible future action.
+- Prepared action must not imply execution eligibility as a granted capability.
+- Prepared action may express confirmation requirement only as a requirement
+  summary, not as an approval control.
+
+### K5. Interface Skeleton Decision
+
+`CGOS_PREPARED_ACTION_INTERFACE_SKELETON_DEFINED`

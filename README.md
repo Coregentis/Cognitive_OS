@@ -67,10 +67,10 @@ Downstream consumers may consume projection-safe continuity summaries,
 pending-review summaries below queue semantics, and continuity snapshots
 without accessing runtime-private internals.
 
-Cognitive_OS has opened a neutral prepared-action dependency planning line for
-projection-safe action-preparation semantics. This is not product
-implementation, not execution, not approval, not dispatch, and not
-provider/channel operation.
+Cognitive_OS now defines a neutral prepared-action interface skeleton for
+projection-safe action-preparation semantics. This is interface-first only and
+does not implement execution, approval, dispatch, provider/channel
+operations, or queue behavior.
 
 ## What Does Not Belong Here
 

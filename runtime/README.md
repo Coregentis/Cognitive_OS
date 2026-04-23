@@ -172,3 +172,9 @@ The available neutral surfaces are lifecycle continuity projections, pending
 review projections, and continuity snapshot projections.
 Full durable persistence, execution, approval, queue, schema, and MPLP
 changes remain out of scope.
+
+## Prepared-Action Interface Skeleton
+
+Prepared-action surfaces are currently neutral interface skeletons only.
+They exist to define projection-safe downstream consumption boundaries and are
+not executable runtime behaviors.

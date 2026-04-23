@@ -4,10 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- opened neutral prepared-action dependency planning for projection-safe
-  action-preparation semantics, including existing asset inventory, contract
-  requirements, runtime boundary requirements, downstream consumption
-  handoff, and MPLP candidate/backlog posture; no schema change, no runtime
+- defined a neutral prepared-action design baseline and interface skeleton,
+  including projection-safe prepared-action types, contract helpers, and
+  contract-level tests; no schema change, no runtime behavior
   implementation, no product-specific naming, no provider/channel execution,
   no approve/reject/dispatch/execute, no queue implementation, and no MPLP
   change
