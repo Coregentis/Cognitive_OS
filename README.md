@@ -67,6 +67,11 @@ Downstream consumers may consume projection-safe continuity summaries,
 pending-review summaries below queue semantics, and continuity snapshots
 without accessing runtime-private internals.
 
+Cognitive_OS has opened a neutral prepared-action dependency planning line for
+projection-safe action-preparation semantics. This is not product
+implementation, not execution, not approval, not dispatch, and not
+provider/channel operation.
+
 ## What Does Not Belong Here
 
 This repository is not the place for product-specific or application-specific implementation.
