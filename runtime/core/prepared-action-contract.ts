@@ -1,9 +1,28 @@
-import type {
-  PreparedActionProjection,
-  PreparedActionSafeEvidenceRef,
+import { createHash } from "node:crypto";
+
+import {
+  PREPARED_ACTION_DEFAULT_NON_EXECUTING_POSTURE,
+  type CreatePreparedActionBoundaryPostureInput,
+  type CreatePreparedActionConfirmationRequirementInput,
+  type CreatePreparedActionEvidenceSufficiencyInput,
+  type CreatePreparedActionIntentSummaryInput,
+  type CreatePreparedActionMissingInformationInput,
+  type CreatePreparedActionProjectionInput,
+  type CreatePreparedActionRiskSummaryInput,
+  type PreparedActionBoundaryPosture,
+  type PreparedActionConfirmationRequirement,
+  type PreparedActionEvidenceSufficiency,
+  type PreparedActionIntentSummary,
+  type PreparedActionMissingInformation,
+  type PreparedActionProjection,
+  type PreparedActionRiskSummary,
+  type PreparedActionSafeEvidenceRef,
+  type PreparedActionSafeEvidenceRefInput,
 } from "./prepared-action-types.ts";
 
 type PreparedActionRecord = Record<string, unknown>;
+
+const DEFAULT_CREATED_AT = "1970-01-01T00:00:00.000Z";
 
 export const FORBIDDEN_PREPARED_ACTION_RAW_KEYS = [
   "raw_vsl",
@@ -31,6 +50,33 @@ const FORBIDDEN_PREPARED_ACTION_POSITIVE_PHRASES = [
   "dispatch-ready",
 ] as const;
 
+function stable_stringify(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `[${value.map((entry) => stable_stringify(entry)).join(",")}]`;
+  }
+
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value).sort(([left], [right]) =>
+      left.localeCompare(right)
+    );
+    return `{${entries
+      .map(([key, nested]) => `${JSON.stringify(key)}:${stable_stringify(nested)}`)
+      .join(",")}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
+function deterministic_id(prefix: string, seed: string): string {
+  return `${prefix}_${createHash("sha1").update(seed).digest("hex").slice(0, 16)}`;
+}
+
+function created_at_or_default(value: unknown): string {
+  return typeof value === "string" && value.trim().length > 0
+    ? value.trim()
+    : DEFAULT_CREATED_AT;
+}
+
 function as_record(value: unknown): PreparedActionRecord {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
@@ -41,6 +87,43 @@ function as_record(value: unknown): PreparedActionRecord {
 
 function is_non_empty_string(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+function assert_prepared_action_boundary(value: unknown): void {
+  const errors = [
+    ...collect_forbidden_key_errors(value),
+    ...collect_forbidden_phrase_errors(value),
+  ];
+
+  if (errors.length > 0) {
+    throw new Error([...new Set(errors)].join("; "));
+  }
+}
+
+function require_string(value: unknown, field_name: string): string {
+  if (!is_non_empty_string(value)) {
+    throw new Error(`${field_name} is required`);
+  }
+
+  return value.trim();
+}
+
+function require_string_array(value: unknown, field_name: string): string[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`${field_name} must be an array`);
+  }
+
+  return value.map((entry, index) =>
+    require_string(entry, `${field_name}[${index}]`)
+  );
+}
+
+function normalize_non_executing_posture(value: unknown): string {
+  if (value === undefined) {
+    return PREPARED_ACTION_DEFAULT_NON_EXECUTING_POSTURE;
+  }
+
+  return require_string(value, "non_executing_posture");
 }
 
 function collect_forbidden_key_errors(
@@ -153,6 +236,239 @@ function validate_safe_evidence_refs(
   });
 
   return results;
+}
+
+function normalize_safe_evidence_ref_input(
+  value: PreparedActionSafeEvidenceRefInput,
+  index: number
+): PreparedActionSafeEvidenceRef {
+  if (typeof value === "string") {
+    return {
+      evidence_ref: require_string(value, `safe_evidence_refs[${index}]`),
+    };
+  }
+
+  const record = as_record(value);
+  const allowed_keys = ["evidence_ref", "evidence_label"];
+  const unexpected_keys = Object.keys(record).filter(
+    (key) => !allowed_keys.includes(key)
+  );
+
+  if (unexpected_keys.length > 0) {
+    throw new Error(
+      `safe_evidence_refs[${index}] must remain reference-only`
+    );
+  }
+
+  return {
+    evidence_ref: require_string(
+      record.evidence_ref,
+      `safe_evidence_refs[${index}].evidence_ref`
+    ),
+    evidence_label:
+      record.evidence_label === undefined
+        ? undefined
+        : require_string(
+            record.evidence_label,
+            `safe_evidence_refs[${index}].evidence_label`
+          ),
+  };
+}
+
+function normalize_safe_evidence_refs_input(
+  value: PreparedActionSafeEvidenceRefInput[] | undefined
+): PreparedActionSafeEvidenceRef[] {
+  if (value === undefined) {
+    return [];
+  }
+
+  if (!Array.isArray(value)) {
+    throw new Error("safe_evidence_refs must be an array");
+  }
+
+  return value.map((entry, index) =>
+    normalize_safe_evidence_ref_input(entry, index)
+  );
+}
+
+export function createPreparedActionIntentSummary(
+  input: CreatePreparedActionIntentSummaryInput
+): PreparedActionIntentSummary {
+  assert_prepared_action_boundary(input);
+
+  return {
+    action_label: require_string(input.action_label, "action_label"),
+    action_summary: require_string(input.action_summary, "action_summary"),
+    non_executing_posture: normalize_non_executing_posture(
+      input.non_executing_posture
+    ),
+  };
+}
+
+export function createPreparedActionRiskSummary(
+  input: CreatePreparedActionRiskSummaryInput
+): PreparedActionRiskSummary {
+  assert_prepared_action_boundary(input);
+
+  return {
+    risk_summary: require_string(input.risk_summary, "risk_summary"),
+    boundary_summary: require_string(
+      input.boundary_summary,
+      "boundary_summary"
+    ),
+    non_executing_posture: normalize_non_executing_posture(
+      input.non_executing_posture
+    ),
+  };
+}
+
+export function createPreparedActionEvidenceSufficiency(
+  input: CreatePreparedActionEvidenceSufficiencyInput
+): PreparedActionEvidenceSufficiency {
+  assert_prepared_action_boundary(input);
+
+  if (
+    input.sufficiency_state !== "insufficient" &&
+    input.sufficiency_state !== "partial" &&
+    input.sufficiency_state !== "sufficient"
+  ) {
+    throw new Error("sufficiency_state is required");
+  }
+
+  return {
+    sufficiency_state: input.sufficiency_state,
+    sufficiency_summary: require_string(
+      input.sufficiency_summary,
+      "sufficiency_summary"
+    ),
+    runtime_private_fields_omitted: true,
+  };
+}
+
+export function createPreparedActionMissingInformation(
+  input: CreatePreparedActionMissingInformationInput
+): PreparedActionMissingInformation {
+  assert_prepared_action_boundary(input);
+
+  return {
+    missing_information_summary: require_string(
+      input.missing_information_summary,
+      "missing_information_summary"
+    ),
+    missing_information_items: require_string_array(
+      input.missing_information_items,
+      "missing_information_items"
+    ),
+    runtime_private_fields_omitted: true,
+  };
+}
+
+export function createPreparedActionConfirmationRequirement(
+  input: CreatePreparedActionConfirmationRequirementInput
+): PreparedActionConfirmationRequirement {
+  assert_prepared_action_boundary(input);
+
+  if (typeof input.confirmation_required !== "boolean") {
+    throw new Error("confirmation_required is required");
+  }
+
+  return {
+    confirmation_required: input.confirmation_required,
+    confirmation_summary: require_string(
+      input.confirmation_summary,
+      "confirmation_summary"
+    ),
+    runtime_private_fields_omitted: true,
+    non_executing_posture: normalize_non_executing_posture(
+      input.non_executing_posture
+    ),
+  };
+}
+
+export function createPreparedActionBoundaryPosture(
+  input: CreatePreparedActionBoundaryPostureInput = {}
+): PreparedActionBoundaryPosture {
+  assert_prepared_action_boundary(input);
+
+  return {
+    non_executing_posture: normalize_non_executing_posture(
+      input.non_executing_posture
+    ),
+    provider_channel_execution_available: false,
+    approval_dispatch_execution_available: false,
+    queue_available: false,
+    runtime_private_fields_omitted: true,
+  };
+}
+
+export function createPreparedActionProjection(
+  input: CreatePreparedActionProjectionInput
+): PreparedActionProjection {
+  assert_prepared_action_boundary(input);
+
+  const created_at = created_at_or_default(input.created_at);
+  const intent_summary = createPreparedActionIntentSummary(input.intent_summary);
+  const risk_summary = createPreparedActionRiskSummary(input.risk_summary);
+  const evidence_sufficiency = createPreparedActionEvidenceSufficiency(
+    input.evidence_sufficiency
+  );
+  const missing_information = createPreparedActionMissingInformation(
+    input.missing_information
+  );
+  const confirmation_requirement = createPreparedActionConfirmationRequirement(
+    input.confirmation_requirement
+  );
+  const boundary_posture = createPreparedActionBoundaryPosture(
+    input.boundary_posture ?? {
+      non_executing_posture:
+        confirmation_requirement.non_executing_posture ||
+        risk_summary.non_executing_posture ||
+        intent_summary.non_executing_posture,
+    }
+  );
+  const safe_evidence_refs = normalize_safe_evidence_refs_input(
+    input.safe_evidence_refs
+  );
+
+  const prepared_action_id =
+    typeof input.prepared_action_id === "string" &&
+    input.prepared_action_id.trim().length > 0
+      ? input.prepared_action_id.trim()
+      : deterministic_id(
+          "prepared_action",
+          stable_stringify({
+            project_id: input.project_id,
+            intent_summary,
+            risk_summary,
+            evidence_sufficiency,
+            missing_information,
+            confirmation_requirement,
+            boundary_posture,
+            safe_evidence_refs,
+            created_at,
+          })
+        );
+
+  const projection: PreparedActionProjection = {
+    prepared_action_id,
+    project_id: require_string(input.project_id, "project_id"),
+    intent_summary,
+    risk_summary,
+    evidence_sufficiency,
+    missing_information,
+    confirmation_requirement,
+    boundary_posture,
+    safe_evidence_refs,
+    runtime_private_fields_omitted: true,
+    created_at,
+  };
+
+  const validation = validate_prepared_action_projection(projection);
+  if (!validation.ok) {
+    throw new Error(validation.errors.join("; "));
+  }
+
+  return projection;
 }
 
 export function validate_prepared_action_projection(

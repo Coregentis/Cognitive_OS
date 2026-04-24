@@ -175,9 +175,7 @@ changes remain out of scope.
 
 ## Prepared-Action Interface Skeleton
 
-Prepared-action surfaces are currently neutral interface skeletons only.
-They exist to define projection-safe downstream consumption boundaries and are
-not executable runtime behaviors.
-Prepared-action work is now scoped to minimal neutral scaffold planning only.
-Execution, approval, dispatch, provider/channel, queue, and runtime state
-mutation remain out of scope.
+Prepared-action surfaces now include a minimal neutral scaffold limited to
+projection-safe draft construction and helper formatting. Execution,
+approval, dispatch, provider/channel, queue, and runtime state mutation
+remain out of scope.

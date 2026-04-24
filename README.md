@@ -67,9 +67,10 @@ Downstream consumers may consume projection-safe continuity summaries,
 pending-review summaries below queue semantics, and continuity snapshots
 without accessing runtime-private internals.
 
-Cognitive_OS has advanced prepared-action to minimal scaffold planning for
-projection-safe downstream consumption. The next allowed step remains neutral
-scaffolding only, not runtime behavior.
+Cognitive_OS now provides a minimal prepared-action scaffold for
+projection-safe downstream consumption. This scaffold is draft-only,
+non-executing, non-approving, non-dispatching, non-provider, and
+non-queueing.
 
 ## What Does Not Belong Here
 

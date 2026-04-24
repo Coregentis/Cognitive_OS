@@ -24,10 +24,17 @@ export const PREPARED_ACTION_NON_CAPABILITY_LINES = [
   "Prepared action is not autonomous operation.",
 ] as const;
 
+export const PREPARED_ACTION_DEFAULT_NON_EXECUTING_POSTURE =
+  "Prepared action remains draft-only, projection-safe, and non-executing." as const;
+
 export interface PreparedActionSafeEvidenceRef {
   evidence_ref: string;
   evidence_label?: string;
 }
+
+export type PreparedActionSafeEvidenceRefInput =
+  | string
+  | PreparedActionSafeEvidenceRef;
 
 export interface PreparedActionIntentSummary {
   action_label: string;
@@ -80,4 +87,64 @@ export interface PreparedActionProjection {
   safe_evidence_refs: PreparedActionSafeEvidenceRef[];
   runtime_private_fields_omitted: true;
   created_at: string;
+}
+
+export type PreparedActionEvidenceSufficiencyState =
+  PreparedActionEvidenceSufficiency["sufficiency_state"];
+
+export interface CreatePreparedActionIntentSummaryInput {
+  action_label: string;
+  action_summary: string;
+  non_executing_posture?: string;
+}
+
+export interface CreatePreparedActionRiskSummaryInput {
+  risk_summary: string;
+  boundary_summary: string;
+  non_executing_posture?: string;
+}
+
+export interface CreatePreparedActionEvidenceSufficiencyInput {
+  sufficiency_state: PreparedActionEvidenceSufficiencyState;
+  sufficiency_summary: string;
+}
+
+export interface CreatePreparedActionMissingInformationInput {
+  missing_information_summary: string;
+  missing_information_items: string[];
+}
+
+export interface CreatePreparedActionConfirmationRequirementInput {
+  confirmation_required: boolean;
+  confirmation_summary: string;
+  non_executing_posture?: string;
+}
+
+export interface CreatePreparedActionBoundaryPostureInput {
+  non_executing_posture?: string;
+}
+
+export interface CreatePreparedActionProjectionInput {
+  prepared_action_id?: string;
+  project_id: string;
+  intent_summary:
+    | PreparedActionIntentSummary
+    | CreatePreparedActionIntentSummaryInput;
+  risk_summary:
+    | PreparedActionRiskSummary
+    | CreatePreparedActionRiskSummaryInput;
+  evidence_sufficiency:
+    | PreparedActionEvidenceSufficiency
+    | CreatePreparedActionEvidenceSufficiencyInput;
+  missing_information:
+    | PreparedActionMissingInformation
+    | CreatePreparedActionMissingInformationInput;
+  confirmation_requirement:
+    | PreparedActionConfirmationRequirement
+    | CreatePreparedActionConfirmationRequirementInput;
+  boundary_posture?:
+    | PreparedActionBoundaryPosture
+    | CreatePreparedActionBoundaryPostureInput;
+  safe_evidence_refs?: PreparedActionSafeEvidenceRefInput[];
+  created_at?: string;
 }
