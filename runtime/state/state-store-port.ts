@@ -16,30 +16,62 @@ export const WORKFORCE_OBJECT_TYPES = [
 
 export type WorkforceObjectType = (typeof WORKFORCE_OBJECT_TYPES)[number];
 
-export interface WorkforceStateRecord extends RuntimeObjectRecord {
-  object_type: WorkforceObjectType;
+export const PERSISTED_RUNTIME_STATE_OBJECT_TYPES = [
+  ...WORKFORCE_OBJECT_TYPES,
+  "cell-runtime-scope",
+  "cell-summary-runtime-record",
+  "management-directive-record",
+  "delivery-return-record",
+  "approval-request-record",
+] as const;
+
+export type PersistedRuntimeStateObjectType =
+  (typeof PERSISTED_RUNTIME_STATE_OBJECT_TYPES)[number];
+
+export interface PersistedRuntimeStateRecord extends RuntimeObjectRecord {
+  object_type: PersistedRuntimeStateObjectType;
   project_id: string;
 }
 
+export interface WorkforceStateRecord extends PersistedRuntimeStateRecord {
+  object_type: WorkforceObjectType;
+}
+
 export interface StateStoreListFilter {
-  object_type?: WorkforceObjectType;
+  object_type?: PersistedRuntimeStateObjectType;
   project_id?: string;
   status?: string;
 }
 
 export interface StateStorePort {
-  save(record: WorkforceStateRecord): WorkforceStateRecord;
-  load(object_id: string): WorkforceStateRecord | undefined;
-  list(filter?: StateStoreListFilter): WorkforceStateRecord[];
+  save(record: PersistedRuntimeStateRecord): PersistedRuntimeStateRecord;
+  load(object_id: string): PersistedRuntimeStateRecord | undefined;
+  list(filter?: StateStoreListFilter): PersistedRuntimeStateRecord[];
   delete(object_id: string): boolean;
   exists(object_id: string): boolean;
   clear(): void;
+}
+
+export function is_persisted_runtime_state_object_type(
+  value: CoregentisObjectType | string
+): value is PersistedRuntimeStateObjectType {
+  return PERSISTED_RUNTIME_STATE_OBJECT_TYPES.includes(
+    value as PersistedRuntimeStateObjectType
+  );
 }
 
 export function is_workforce_object_type(
   value: CoregentisObjectType | string
 ): value is WorkforceObjectType {
   return WORKFORCE_OBJECT_TYPES.includes(value as WorkforceObjectType);
+}
+
+export function assert_persisted_runtime_state_object_type(
+  value: CoregentisObjectType | string
+): asserts value is PersistedRuntimeStateObjectType {
+  if (!is_persisted_runtime_state_object_type(value)) {
+    throw new Error(`Unsupported persisted runtime state object type: ${value}`);
+  }
 }
 
 export function assert_workforce_object_type(
@@ -50,20 +82,20 @@ export function assert_workforce_object_type(
   }
 }
 
-export function assert_workforce_record(
+export function assert_persisted_runtime_state_record(
   record: RuntimeObjectRecord
-): asserts record is WorkforceStateRecord {
-  assert_workforce_object_type(record.object_type);
+): asserts record is PersistedRuntimeStateRecord {
+  assert_persisted_runtime_state_object_type(record.object_type);
 
   if (typeof record.project_id !== "string" || record.project_id.length < 1) {
     throw new Error(
-      `Workforce record ${record.object_id} is missing required project_id`
+      `Persisted runtime state record ${record.object_id} is missing required project_id`
     );
   }
 }
 
 export function matches_state_store_filter(
-  record: WorkforceStateRecord,
+  record: PersistedRuntimeStateRecord,
   filter?: StateStoreListFilter
 ): boolean {
   if (!filter) {
@@ -83,4 +115,11 @@ export function matches_state_store_filter(
   }
 
   return true;
+}
+
+export function assert_workforce_record(
+  record: RuntimeObjectRecord
+): asserts record is WorkforceStateRecord {
+  assert_persisted_runtime_state_record(record);
+  assert_workforce_object_type(record.object_type);
 }

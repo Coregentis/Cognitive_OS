@@ -84,6 +84,73 @@ function createPreferenceRecord() {
   });
 }
 
+function createOperationalUnitStateRecord() {
+  return createBaseRecord({
+    object_id: "00000000-0000-4000-8000-200000000060",
+    object_type: "cell-runtime-scope",
+    status: "active",
+    scope_name: "Bounded Runtime Scope",
+    scope_summary: "One bounded operational unit state.",
+    scope_mode: "multi_scope_bounded",
+  });
+}
+
+function createOperationalUnitSummaryRecord() {
+  return createBaseRecord({
+    object_id: "00000000-0000-4000-8000-200000000061",
+    object_type: "cell-summary-runtime-record",
+    status: "current",
+    cell_runtime_scope_id: "00000000-0000-4000-8000-200000000060",
+    summary_headline: "One bounded operational summary.",
+    summary_delivery_posture: "attention",
+    active_work_item_count: 2,
+    blocked_work_item_count: 1,
+    continuity_hint: "Continuity remains bounded and current.",
+    summary_mode: "bounded_runtime_private",
+  });
+}
+
+function createDirectiveRecord() {
+  return createBaseRecord({
+    object_id: "00000000-0000-4000-8000-200000000062",
+    object_type: "management-directive-record",
+    status: "active",
+    cell_runtime_scope_id: "00000000-0000-4000-8000-200000000060",
+    management_record_kind: "directive",
+    directive_summary: "Keep the bounded scope review-first.",
+    directive_priority: "review_first",
+    approval_posture: "operator_required",
+  });
+}
+
+function createDeliveryReturnRecord() {
+  return createBaseRecord({
+    object_id: "00000000-0000-4000-8000-200000000063",
+    object_type: "delivery-return-record",
+    status: "ready_for_review",
+    cell_runtime_scope_id: "00000000-0000-4000-8000-200000000060",
+    management_record_kind: "delivery_return",
+    completed_summary: "One bounded delivery item completed.",
+    blocked_summary: "One bounded delivery item still blocked.",
+    next_directive_needed: true,
+    requested_follow_up: "Clarify the next bounded review step.",
+  });
+}
+
+function createApprovalRequestRecord() {
+  return createBaseRecord({
+    object_id: "00000000-0000-4000-8000-200000000064",
+    object_type: "approval-request-record",
+    status: "pending",
+    cell_runtime_scope_id: "00000000-0000-4000-8000-200000000060",
+    management_record_kind: "approval_request",
+    request_kind: "approval",
+    request_summary: "Bounded approval request for the next review step.",
+    requested_decision: "review_and_confirm",
+    urgency: "high",
+  });
+}
+
 test("[workforce] in-memory state adapters persist typed records", () => {
   const stateStore = new InMemoryStateStore();
   const workerStore = new WorkerStore(stateStore);
@@ -106,6 +173,46 @@ test("[workforce] in-memory state adapters persist typed records", () => {
   );
 });
 
+test("[workforce] in-memory state adapters now persist bounded multi-scope and management-family records", () => {
+  const stateStore = new InMemoryStateStore();
+
+  stateStore.save(createOperationalUnitStateRecord());
+  stateStore.save(createOperationalUnitSummaryRecord());
+  stateStore.save(createDirectiveRecord());
+  stateStore.save(createDeliveryReturnRecord());
+  stateStore.save(createApprovalRequestRecord());
+
+  assert.equal(
+    stateStore.load("00000000-0000-4000-8000-200000000060")?.object_type,
+    "cell-runtime-scope"
+  );
+  assert.equal(
+    stateStore.load("00000000-0000-4000-8000-200000000061")?.object_type,
+    "cell-summary-runtime-record"
+  );
+  assert.equal(
+    stateStore.list({
+      object_type: "management-directive-record",
+      project_id: projectId,
+    }).length,
+    1
+  );
+  assert.equal(
+    stateStore.list({
+      object_type: "delivery-return-record",
+      project_id: projectId,
+    }).length,
+    1
+  );
+  assert.equal(
+    stateStore.list({
+      object_type: "approval-request-record",
+      project_id: projectId,
+    }).length,
+    1
+  );
+});
+
 test("[workforce] SQLite state adapter restores records across reopen", () => {
   const tempRoot = mkdtempSync(join(tmpdir(), "cgos-workforce-state-"));
   const databasePath = join(tempRoot, "workforce.sqlite");
@@ -121,6 +228,11 @@ test("[workforce] SQLite state adapter restores records across reopen", () => {
     initialObjectiveStore.save(createObjectiveRecord());
     initialMemoryStore.save(createMemoryRecord());
     initialPreferenceStore.save(createPreferenceRecord());
+    initialStore.save(createOperationalUnitStateRecord());
+    initialStore.save(createOperationalUnitSummaryRecord());
+    initialStore.save(createDirectiveRecord());
+    initialStore.save(createDeliveryReturnRecord());
+    initialStore.save(createApprovalRequestRecord());
     initialStore.close();
 
     const reopenedStore = new SQLiteStateStore(databasePath);
@@ -147,6 +259,35 @@ test("[workforce] SQLite state adapter restores records across reopen", () => {
       reopenedPreferenceStore.load("00000000-0000-4000-8000-200000000050")
         ?.preference_summary,
       "Default to neutral naming"
+    );
+    assert.equal(
+      reopenedStore.load("00000000-0000-4000-8000-200000000060")?.object_type,
+      "cell-runtime-scope"
+    );
+    assert.equal(
+      reopenedStore.load("00000000-0000-4000-8000-200000000061")?.object_type,
+      "cell-summary-runtime-record"
+    );
+    assert.equal(
+      reopenedStore.list({
+        object_type: "management-directive-record",
+        project_id: projectId,
+      }).length,
+      1
+    );
+    assert.equal(
+      reopenedStore.list({
+        object_type: "delivery-return-record",
+        project_id: projectId,
+      }).length,
+      1
+    );
+    assert.equal(
+      reopenedStore.list({
+        object_type: "approval-request-record",
+        project_id: projectId,
+      }).length,
+      1
     );
     assert.equal(reopenedStore.exists("00000000-0000-4000-8000-200000000050"), true);
     assert.equal(reopenedStore.delete("00000000-0000-4000-8000-200000000050"), true);

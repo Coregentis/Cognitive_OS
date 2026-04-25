@@ -97,6 +97,26 @@ These remain bounded:
 - no raw runtime-private exposure
 - no product-specific naming
 
+## V1.9 Wave 2 Runtime Readiness Extension
+
+The runtime core now also exposes a neutral readiness foundation for later
+downstream projection-contract work:
+
+- `RuntimeActionClass` policy classification and readiness metadata
+- projection-safe operational-unit and multi-scope runtime state summaries
+- projection-safe task, review, artifact, action, learning, drift, and
+  suggested-next-action summaries
+- scoped learning isolation with bounded same-scope recall and
+  global-candidate visibility
+
+This remains bounded:
+
+- no provider/channel execution
+- no approve/reject/dispatch/execute behavior
+- no product UI
+- no full runtime completion
+- no claim that SoloCrew V2.0 is ready by this wave alone
+
 ## Why This Is A Skeleton And Not Full Runtime Implementation
 
 This phase is still skeleton-first and baseline-first by design.

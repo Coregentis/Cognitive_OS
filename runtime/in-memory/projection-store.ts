@@ -1,4 +1,5 @@
 import type {
+  RuntimeStateProjection,
   RuntimeContinuitySnapshotProjection,
   RuntimeLifecycleContinuityProjection,
   RuntimePendingReviewProjection,
@@ -36,6 +37,12 @@ function clone_continuity_snapshot_projection(
   return structuredClone(projection);
 }
 
+function clone_runtime_state_projection(
+  projection: RuntimeStateProjection
+): RuntimeStateProjection {
+  return structuredClone(projection);
+}
+
 export class InMemoryProjectionStore {
   private readonly summaries = new Map<
     string,
@@ -56,6 +63,10 @@ export class InMemoryProjectionStore {
   private readonly continuity_snapshot_projections = new Map<
     string,
     Map<string, RuntimeContinuitySnapshotProjection>
+  >();
+  private readonly runtime_state_projections = new Map<
+    string,
+    Map<string, RuntimeStateProjection>
   >();
 
   put_projection_summary(
@@ -235,5 +246,43 @@ export class InMemoryProjectionStore {
     return [
       ...(this.continuity_snapshot_projections.get(project_id)?.values() ?? []),
     ].map((projection) => clone_continuity_snapshot_projection(projection));
+  }
+
+  put_runtime_state_projection(
+    project_id: string,
+    projection: RuntimeStateProjection
+  ): RuntimeStateProjection {
+    if (projection.project_id !== project_id) {
+      throw new Error(
+        "Runtime state projection project_id must match storage project_id."
+      );
+    }
+
+    const project_projections =
+      this.runtime_state_projections.get(project_id) ??
+      new Map<string, RuntimeStateProjection>();
+    const persisted = clone_runtime_state_projection(projection);
+
+    project_projections.set(persisted.state_projection_id, persisted);
+    this.runtime_state_projections.set(project_id, project_projections);
+
+    return clone_runtime_state_projection(persisted);
+  }
+
+  get_runtime_state_projection(
+    project_id: string,
+    state_projection_id: string
+  ): RuntimeStateProjection | undefined {
+    const projection =
+      this.runtime_state_projections.get(project_id)?.get(state_projection_id);
+    return projection ? clone_runtime_state_projection(projection) : undefined;
+  }
+
+  list_runtime_state_projections(
+    project_id: string
+  ): RuntimeStateProjection[] {
+    return [...(this.runtime_state_projections.get(project_id)?.values() ?? [])].map(
+      (projection) => clone_runtime_state_projection(projection)
+    );
   }
 }

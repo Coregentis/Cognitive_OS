@@ -5,16 +5,16 @@ import Database from "better-sqlite3";
 
 import type { RuntimeObjectRecord } from "../core/runtime-types";
 import {
-  assert_workforce_record,
+  assert_persisted_runtime_state_record,
   matches_state_store_filter,
+  type PersistedRuntimeStateRecord,
   type StateStoreListFilter,
   type StateStorePort,
-  type WorkforceStateRecord,
 } from "./state-store-port.ts";
 
 function clone_state_record(
-  record: WorkforceStateRecord
-): WorkforceStateRecord {
+  record: PersistedRuntimeStateRecord
+): PersistedRuntimeStateRecord {
   return structuredClone(record);
 }
 
@@ -46,8 +46,8 @@ export class SQLiteStateStore implements StateStorePort {
     `);
   }
 
-  save(record: WorkforceStateRecord): WorkforceStateRecord {
-    assert_workforce_record(record as RuntimeObjectRecord);
+  save(record: PersistedRuntimeStateRecord): PersistedRuntimeStateRecord {
+    assert_persisted_runtime_state_record(record as RuntimeObjectRecord);
 
     const persisted = clone_state_record(record);
     const updated_at = new Date().toISOString();
@@ -91,7 +91,7 @@ export class SQLiteStateStore implements StateStorePort {
     return clone_state_record(persisted);
   }
 
-  load(object_id: string): WorkforceStateRecord | undefined {
+  load(object_id: string): PersistedRuntimeStateRecord | undefined {
     const row = this.db
       .prepare(
         `
@@ -106,12 +106,12 @@ export class SQLiteStateStore implements StateStorePort {
       return undefined;
     }
 
-    const record = JSON.parse(row.payload) as WorkforceStateRecord;
-    assert_workforce_record(record as RuntimeObjectRecord);
+    const record = JSON.parse(row.payload) as PersistedRuntimeStateRecord;
+    assert_persisted_runtime_state_record(record as RuntimeObjectRecord);
     return clone_state_record(record);
   }
 
-  list(filter?: StateStoreListFilter): WorkforceStateRecord[] {
+  list(filter?: StateStoreListFilter): PersistedRuntimeStateRecord[] {
     const clauses: string[] = [];
     const params: Record<string, string> = {};
 
@@ -145,10 +145,10 @@ export class SQLiteStateStore implements StateStorePort {
       .all(params) as Array<{ payload: string }>;
 
     return rows
-      .map((row) => JSON.parse(row.payload) as WorkforceStateRecord)
+      .map((row) => JSON.parse(row.payload) as PersistedRuntimeStateRecord)
       .filter((record) => matches_state_store_filter(record, filter))
       .map((record) => {
-        assert_workforce_record(record as RuntimeObjectRecord);
+        assert_persisted_runtime_state_record(record as RuntimeObjectRecord);
         return clone_state_record(record);
       });
   }

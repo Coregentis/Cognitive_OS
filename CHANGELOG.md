@@ -4,6 +4,16 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- implemented a neutral V1.9 Wave 2 runtime-readiness foundation for
+  downstream projection-contract work, adding projection-safe runtime state
+  summaries across multiple operational scopes, bounded action-class
+  classification, runtime artifact summaries, scoped learning isolation,
+  drift-impact recommendation summaries, suggested next actions, expanded
+  state-store coverage for existing multi-scope and management-family runtime
+  records, and runtime tests; this does not make SoloCrew V2.0 ready by
+  itself, does not implement product UI, does not implement
+  provider/channel execution, does not implement payment/trading/purchase
+  behavior, and does not change MPLP
 - implemented a minimal execution-boundary scaffold for projection-safe
   downstream consumption, extending neutral execution-boundary helpers and
   contract-level tests while keeping the surface non-executing,

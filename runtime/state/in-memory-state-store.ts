@@ -1,35 +1,35 @@
 import type { RuntimeObjectRecord } from "../core/runtime-types";
 import {
-  assert_workforce_record,
+  assert_persisted_runtime_state_record,
   matches_state_store_filter,
+  type PersistedRuntimeStateRecord,
   type StateStoreListFilter,
   type StateStorePort,
-  type WorkforceStateRecord,
 } from "./state-store-port.ts";
 
 function clone_state_record(
-  record: WorkforceStateRecord
-): WorkforceStateRecord {
+  record: PersistedRuntimeStateRecord
+): PersistedRuntimeStateRecord {
   return structuredClone(record);
 }
 
 export class InMemoryStateStore implements StateStorePort {
-  private readonly records = new Map<string, WorkforceStateRecord>();
+  private readonly records = new Map<string, PersistedRuntimeStateRecord>();
 
-  save(record: WorkforceStateRecord): WorkforceStateRecord {
-    assert_workforce_record(record as RuntimeObjectRecord);
+  save(record: PersistedRuntimeStateRecord): PersistedRuntimeStateRecord {
+    assert_persisted_runtime_state_record(record as RuntimeObjectRecord);
 
     const persisted = clone_state_record(record);
     this.records.set(persisted.object_id, persisted);
     return clone_state_record(persisted);
   }
 
-  load(object_id: string): WorkforceStateRecord | undefined {
+  load(object_id: string): PersistedRuntimeStateRecord | undefined {
     const record = this.records.get(object_id);
     return record ? clone_state_record(record) : undefined;
   }
 
-  list(filter?: StateStoreListFilter): WorkforceStateRecord[] {
+  list(filter?: StateStoreListFilter): PersistedRuntimeStateRecord[] {
     return [...this.records.values()]
       .filter((record) => matches_state_store_filter(record, filter))
       .map((record) => clone_state_record(record));

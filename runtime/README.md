@@ -90,6 +90,23 @@ The execution result is now more inspectable and audit-oriented, including:
   - bounded export error reporting
   - frozen-truth export summary
 
+## V1.9 Wave 2 Runtime Readiness Foundation
+
+This runtime tree now also includes a neutral runtime-readiness foundation for:
+
+- runtime state projection across multiple operational scopes
+- neutral action-class classification
+- runtime artifact summary and recent-artifact history surfaces
+- scoped learning isolation and learning summaries
+- drift-impact summaries with bounded continuation recommendations
+- projection-safe suggested next actions
+
+This is an upstream runtime-readiness wave only.
+It does not make SoloCrew V2.0 ready by itself.
+It does not implement downstream projection contracts or product UI.
+It does not implement provider/channel execution.
+It remains a neutral Cognitive_OS runtime foundation layer.
+
 ## Current Gate-Oriented Verification Commands
 
 The canonical repository-visible command surface is the `package.json` runtime scripts.

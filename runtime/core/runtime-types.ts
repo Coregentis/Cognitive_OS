@@ -414,7 +414,39 @@ export interface RuntimePolicySnapshot {
   matched_rule_ids: string[];
   confirm_required: boolean;
   suppressed: boolean;
+  action_class: RuntimeActionClass;
+  allowed: boolean;
+  requires_confirmation: boolean;
+  blocked: boolean;
+  readiness_status: RuntimeActionReadinessStatus;
+  reason: string;
+  evidence_refs: string[];
+  risk_notes: string[];
   notes: string[];
+}
+
+export type RuntimeActionClass =
+  | "auto_local"
+  | "reviewable_local"
+  | "external_draft"
+  | "limited_external_dispatch"
+  | "forbidden_irreversible";
+
+export type RuntimeActionReadinessStatus =
+  | "ready"
+  | "needs_review"
+  | "blocked"
+  | "deferred";
+
+export interface RuntimeActionClassEvaluation {
+  action_class: RuntimeActionClass;
+  allowed: boolean;
+  requires_confirmation: boolean;
+  blocked: boolean;
+  readiness_status: RuntimeActionReadinessStatus;
+  reason: string;
+  evidence_refs: string[];
+  risk_notes: string[];
 }
 
 export type RuntimeAelOutcome =

@@ -1,4 +1,8 @@
-import type { WorkforceStateRecord, StateStorePort } from "./state-store-port.ts";
+import type {
+  PersistedRuntimeStateRecord,
+  StateStorePort,
+  WorkforceStateRecord,
+} from "./state-store-port.ts";
 import { assert_workforce_object_type } from "./state-store-port.ts";
 
 export interface PreferenceProfileRecord extends WorkforceStateRecord {
@@ -7,7 +11,7 @@ export interface PreferenceProfileRecord extends WorkforceStateRecord {
 }
 
 function assert_preference_profile_record(
-  record: WorkforceStateRecord
+  record: PersistedRuntimeStateRecord
 ): asserts record is PreferenceProfileRecord {
   assert_workforce_object_type(record.object_type);
 
