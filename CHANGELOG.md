@@ -4,6 +4,13 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- opened neutral execution-boundary dependency planning for projection-safe
+  human-confirmed transition semantics, including existing asset inventory,
+  contract requirements, runtime boundary requirements, downstream
+  consumption handoff, and MPLP candidate/backlog posture; no schema change,
+  no runtime implementation, no product-specific naming, no
+  provider/channel execution, no approve/reject/dispatch/execute
+  automation, no queue implementation, and no MPLP change
 - implemented a minimal prepared-action scaffold for projection-safe
   downstream consumption, extending neutral prepared-action helpers and
   contract-level tests while keeping the surface draft-only,

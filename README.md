@@ -72,6 +72,11 @@ projection-safe downstream consumption. This scaffold is draft-only,
 non-executing, non-approving, non-dispatching, non-provider, and
 non-queueing.
 
+Cognitive_OS has opened a neutral execution-boundary dependency planning line
+for projection-safe human-confirmed transition semantics. This is not product
+implementation, not execution, not approval automation, not dispatch, and
+not provider/channel operation.
+
 ## What Does Not Belong Here
 
 This repository is not the place for product-specific or application-specific implementation.
