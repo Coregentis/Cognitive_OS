@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- defined a neutral execution-boundary design baseline and interface
+  skeleton, including projection-safe execution-boundary types, contract
+  helpers, and contract-level tests; no schema change, no runtime behavior
+  implementation, no product-specific naming, no provider/channel execution,
+  no approve/reject/dispatch/execute automation, no queue implementation,
+  and no MPLP change
 - opened neutral execution-boundary dependency planning for projection-safe
   human-confirmed transition semantics, including existing asset inventory,
   contract requirements, runtime boundary requirements, downstream

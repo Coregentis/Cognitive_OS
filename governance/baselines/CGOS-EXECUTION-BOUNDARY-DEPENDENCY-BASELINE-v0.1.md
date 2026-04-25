@@ -125,3 +125,63 @@ Expected boundary:
 ## J. Recommended Next Step
 
 `CGOS_EXECUTION_BOUNDARY_DEPENDENCY_READY_FOR_DESIGN`
+
+## K. Execution-Boundary Design Baseline and Neutral Interface Skeleton
+
+### K1. Design Objective
+
+Define neutral execution-boundary interface surfaces for projection-safe
+downstream consumption, without introducing execution, approval automation,
+dispatch, provider/channel send, queue semantics, or runtime behavior.
+
+### K2. Design Surface
+
+| Surface | Purpose | Boundary |
+|---|---|---|
+| `ExecutionBoundaryProjection` | top-level projection-safe execution-boundary envelope | explanatory, non-executing |
+| `ExecutionBoundaryRequirementSummary` | bounded summary of a possible future human-confirmed transition requirement | requirement-only and non-approving |
+| `ExecutionBoundaryRiskWarning` | bounded warning about execution-boundary and side-effect posture | explanatory only |
+| `ExecutionBoundaryPreflightChecklist` | bounded preflight checklist for human-visible preparation | checklist-only and non-authoritative |
+| `ExecutionBoundaryAcknowledgmentRequirement` | bounded acknowledgment requirement summary | not an authoritative confirmation record |
+| `ExecutionBoundaryTransitionPosture` | explicit non-executing, non-dispatching, non-provider, non-queueing posture | posture only, no capability grant |
+| `ExecutionBoundarySafeEvidenceRef` | projection-safe evidence reference shape | references only |
+
+### K3. Neutral Field Rules
+
+Allowed categories:
+
+- `requirement_summary`
+- `risk_warning`
+- `preflight_checklist`
+- `acknowledgment_requirement`
+- `transition_posture`
+- `safe_evidence_refs`
+- `runtime_private_fields_omitted`
+- `non_executing_posture`
+
+Forbidden categories:
+
+- `execution_result`
+- `dispatch_result`
+- `approval_result`
+- `provider_channel_result`
+- `queue_state`
+- `runtime_private_payload`
+- `raw_vsl`
+- `raw_psg`
+- `raw_trace`
+- `authoritative_transition_state`
+
+### K4. Downstream-Safe Semantics
+
+- Execution boundary is explanatory and draft-like.
+- Execution boundary is projection-safe.
+- Execution boundary may describe a possible future human-confirmed
+  transition.
+- Execution boundary must not imply execution permission is granted.
+- Execution boundary may express acknowledgment requirement only as a
+  requirement summary, not as an authoritative confirmation record.
+
+### K5. Interface Skeleton Decision
+
+`CGOS_EXECUTION_BOUNDARY_INTERFACE_SKELETON_DEFINED`
