@@ -77,10 +77,9 @@ for projection-safe human-confirmed transition semantics. This is not product
 implementation, not execution, not approval automation, not dispatch, and
 not provider/channel operation.
 
-Cognitive_OS now defines a neutral execution-boundary interface skeleton for
-projection-safe human-confirmed transition semantics. This is interface-first
-only and does not implement execution, approval automation, dispatch,
-provider/channel operations, or queue behavior.
+Cognitive_OS has advanced execution-boundary from dependency planning to
+implementation planning for a minimal neutral scaffold. This remains
+interface-first, projection-safe, and non-executing.
 
 ## What Does Not Belong Here
 

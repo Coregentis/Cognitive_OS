@@ -185,3 +185,8 @@ remain out of scope.
 Execution-boundary surfaces are currently neutral interface skeletons only.
 They exist to define projection-safe downstream consumption boundaries and
 are not executable runtime behaviors.
+
+Execution-boundary work is now planned for a minimal neutral scaffold
+limited to projection-safe envelope construction and validation helpers.
+Execution, approval automation, dispatch, provider/channel, queue, and
+runtime state mutation remain out of scope.

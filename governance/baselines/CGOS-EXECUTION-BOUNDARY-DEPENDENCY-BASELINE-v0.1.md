@@ -185,3 +185,65 @@ Forbidden categories:
 ### K5. Interface Skeleton Decision
 
 `CGOS_EXECUTION_BOUNDARY_INTERFACE_SKELETON_DEFINED`
+
+## L. Execution-Boundary Implementation Planning
+
+### L1. Planning Objective
+
+Define the smallest safe implementation slice for execution-boundary within
+Cognitive_OS while keeping the surface projection-safe, non-executing,
+non-approving, non-dispatching, non-provider, and non-queueing.
+
+### L2. File-Level Implementation Slice Map
+
+| File | Current role | Planned next role | Allowed in next implementation wave? |
+|---|---|---|---|
+| `runtime/core/execution-boundary-types.ts` | neutral interface skeleton | extend type surface only | yes |
+| `runtime/core/execution-boundary-contract.ts` | projection-safe validation and contract helper surface | extend validation helpers only and optionally add harness-safe non-behavioral scaffold | yes |
+| `tests/runtime/execution-boundary-contract.test.mjs` | contract-level regression harness | expand harness coverage | yes |
+| `runtime/core/runtime-types.ts` | global runtime taxonomy | must remain untouched | no |
+| `runtime/core/confirm-service.ts` | runtime confirm-gate behavior | must remain untouched | no |
+| `runtime/core/runtime-orchestrator.ts` | executable orchestration surface | must remain untouched | no |
+
+### L3. Minimal Scaffold Allowed vs Forbidden Scope
+
+| Candidate scaffold | Allowed now? | Boundary |
+|---|---|---|
+| projection-safe execution-boundary envelope constructor | yes | allowed only if side-effect-free and projection-safe |
+| validation helper expansion | yes | validation-only and projection-safe |
+| non-behavioral mapper | yes | neutral mapping only and no runtime mutation |
+| evidence-ref linkage helper | yes | reference-only and projection-safe |
+| risk warning formatter | yes | explanatory only |
+| preflight checklist formatter | yes | human-visible only |
+| acknowledgment requirement formatter | yes | requirement-only and non-authoritative |
+| authoritative confirmation-required transition state | no | not allowed yet |
+| authoritative acknowledgment capture | no | not allowed yet |
+| execution eligibility engine | no | not allowed |
+| dispatch/provider bridge | no | out of scope |
+| queue insertion bridge | no | out of scope |
+| runtime state mutation | no | out of scope |
+
+### L4. Test / Harness Expansion Plan
+
+| Test surface | Purpose | Required next |
+|---|---|---|
+| execution-boundary contract tests | verify scaffold helpers and envelope constructor behavior | add minimal-scaffold helper coverage only |
+| projection-safe contract compatibility | keep execution-boundary aligned with existing projection-safe patterns | add compatibility assertions against established omission and boundary posture rules |
+| forbidden field rejection | preserve raw, execution, provider, queue, and authoritative-transition rejection | expand negative fixtures only as needed |
+| non-capability wording regression | preserve non-executing, non-provider, and non-queueing wording | add wording regression checks for any new helper surface |
+| product-specific naming regression | keep changed source files neutral | preserve negative assertions |
+| runtime-private omission regression | preserve `runtime_private_fields_omitted` truthfulness | add omission checks for any new constructor/helper output |
+| authoritative transition-state rejection | preserve explicit rejection of authoritative fields | keep rejection tests mandatory |
+
+### L5. Downstream Handoff Contract
+
+Downstream product repositories may only consume a minimal projection-safe
+execution-boundary scaffold after Cognitive_OS exposes it explicitly.
+Downstream products must not infer execution, dispatch, provider/channel
+send, queue semantics, or authoritative confirmation state from it.
+Downstream products must not import runtime-private state or bypass contract
+helpers.
+
+### L6. Recommended Implementation Posture
+
+`CGOS_EXECUTION_BOUNDARY_READY_FOR_MINIMAL_SCAFFOLD`
