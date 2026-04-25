@@ -4,12 +4,11 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- advanced execution-boundary from dependency planning to implementation
-  planning for a minimal neutral scaffold, defining file-level slice
-  mapping, runtime-safe scaffold boundaries, test/harness expansion, and
-  downstream handoff contract; no schema change, no runtime behavior
-  implementation, no product-specific naming, no provider/channel execution,
-  no approve/reject/dispatch/execute automation, no queue implementation,
+- implemented a minimal execution-boundary scaffold for projection-safe
+  downstream consumption, extending neutral execution-boundary helpers and
+  contract-level tests while keeping the surface non-executing,
+  non-approving, non-dispatching, non-provider, and non-queueing; no schema
+  change, no runtime behavior implementation, no product-specific naming,
   and no MPLP change
 - defined a neutral execution-boundary design baseline and interface
   skeleton, including projection-safe execution-boundary types, contract

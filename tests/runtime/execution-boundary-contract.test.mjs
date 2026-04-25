@@ -9,11 +9,17 @@ import {
 import {
   FORBIDDEN_EXECUTION_BOUNDARY_EXECUTION_KEYS,
   FORBIDDEN_EXECUTION_BOUNDARY_RAW_KEYS,
+  createExecutionBoundaryAcknowledgmentRequirement,
+  createExecutionBoundaryPreflightChecklist,
+  createExecutionBoundaryProjection,
+  createExecutionBoundaryRequirementSummary,
+  createExecutionBoundaryRiskWarning,
+  createExecutionBoundaryTransitionPosture,
   is_execution_boundary_projection,
   validate_execution_boundary_projection,
 } from "../../runtime/core/execution-boundary-contract.ts";
 
-function createExecutionBoundaryProjection(overrides = {}) {
+function createExecutionBoundaryProjectionFixture(overrides = {}) {
   return {
     execution_boundary_id: "execution_boundary_01",
     project_id: "project_01",
@@ -81,20 +87,132 @@ test("[runtime] execution-boundary contract exports the required neutral design 
     /not execution/i
   );
   assert.equal(typeof validate_execution_boundary_projection, "function");
+  assert.equal(typeof createExecutionBoundaryProjection, "function");
 });
 
-test("[runtime] execution-boundary contract validates a projection-safe neutral envelope", () => {
-  const projection = createExecutionBoundaryProjection();
+test("[runtime] execution-boundary scaffold creates a valid projection-safe neutral envelope", () => {
+  const projection = createExecutionBoundaryProjection({
+    execution_boundary_id: undefined,
+    project_id: "project_01",
+    requirement_summary: {
+      requirement_summary:
+        "Possible future human-confirmed transition remains below execution semantics.",
+    },
+    risk_warning: {
+      risk_warning:
+        "Risk warning remains explanatory only and does not authorize side effects.",
+    },
+    preflight_checklist: {
+      preflight_checklist: [
+        "confirm bounded operator-visible context",
+        "review bounded safe evidence refs",
+      ],
+    },
+    acknowledgment_requirement: {
+      acknowledgment_required: true,
+      acknowledgment_requirement:
+        "Acknowledgment requirement remains a bounded requirement summary only.",
+    },
+    safe_evidence_refs: [
+      {
+        evidence_ref: "evidence_ref_01",
+        evidence_label: "bounded evidence reference",
+      },
+    ],
+  });
   const result = validate_execution_boundary_projection(projection);
 
   assert.equal(result.ok, true);
   assert.deepEqual(result.errors, []);
   assert.equal(is_execution_boundary_projection(projection), true);
+  assert.match(projection.execution_boundary_id, /^execution_boundary_/);
+  assert.equal(projection.transition_posture.queue_available, false);
+  assert.equal(
+    projection.transition_posture.authoritative_transition_state_available,
+    false
+  );
+});
+
+test("[runtime] execution-boundary scaffold helpers produce neutral non-authoritative output", () => {
+  const requirement = createExecutionBoundaryRequirementSummary({
+    requirement_summary:
+      "Possible future human-confirmed transition remains below execution semantics.",
+  });
+  const risk = createExecutionBoundaryRiskWarning({
+    risk_warning:
+      "Risk warning remains explanatory only and does not authorize side effects.",
+  });
+  const checklist = createExecutionBoundaryPreflightChecklist({
+    preflight_checklist: [
+      "confirm bounded operator-visible context",
+      "review bounded safe evidence refs",
+    ],
+  });
+  const acknowledgment = createExecutionBoundaryAcknowledgmentRequirement({
+    acknowledgment_required: true,
+    acknowledgment_requirement:
+      "Acknowledgment requirement remains a bounded requirement summary only.",
+  });
+  const posture = createExecutionBoundaryTransitionPosture();
+
+  assert.match(requirement.non_executing_posture, /projection-safe/i);
+  assert.match(risk.non_executing_posture, /non-executing/i);
+  assert.equal(checklist.runtime_private_fields_omitted, true);
+  assert.equal(acknowledgment.runtime_private_fields_omitted, true);
+  assert.equal(posture.provider_channel_execution_available, false);
+  assert.equal(posture.approval_dispatch_execution_available, false);
+  assert.equal(posture.queue_available, false);
+  assert.equal(posture.authoritative_transition_state_available, false);
+});
+
+test("[runtime] execution-boundary scaffold keeps safe_evidence_refs reference-only", () => {
+  const projection = createExecutionBoundaryProjection({
+    project_id: "project_01",
+    requirement_summary: {
+      requirement_summary:
+        "Possible future human-confirmed transition remains below execution semantics.",
+    },
+    risk_warning: {
+      risk_warning:
+        "Risk warning remains explanatory only and does not authorize side effects.",
+    },
+    preflight_checklist: {
+      preflight_checklist: [
+        "confirm bounded operator-visible context",
+        "review bounded safe evidence refs",
+      ],
+    },
+    acknowledgment_requirement: {
+      acknowledgment_required: true,
+      acknowledgment_requirement:
+        "Acknowledgment requirement remains a bounded requirement summary only.",
+    },
+    safe_evidence_refs: [
+      "evidence_ref_01",
+      {
+        evidence_ref: "evidence_ref_02",
+        evidence_label: "bounded evidence reference",
+      },
+    ],
+  });
+
+  assert.deepEqual(projection.safe_evidence_refs, [
+    { evidence_ref: "evidence_ref_01" },
+    {
+      evidence_ref: "evidence_ref_02",
+      evidence_label: "bounded evidence reference",
+    },
+  ]);
+  assert.deepEqual(Object.keys(projection.safe_evidence_refs[0]), ["evidence_ref"]);
+  assert.deepEqual(
+    Object.keys(projection.safe_evidence_refs[1]),
+    ["evidence_ref", "evidence_label"]
+  );
 });
 
 test("[runtime] execution-boundary contract requires runtime_private_fields_omitted", () => {
   const result = validate_execution_boundary_projection({
-    ...createExecutionBoundaryProjection(),
+    ...createExecutionBoundaryProjectionFixture(),
     runtime_private_fields_omitted: false,
   });
 
@@ -104,7 +222,7 @@ test("[runtime] execution-boundary contract requires runtime_private_fields_omit
 
 test("[runtime] execution-boundary contract rejects forbidden raw runtime-private fields", () => {
   const result = validate_execution_boundary_projection({
-    ...createExecutionBoundaryProjection(),
+    ...createExecutionBoundaryProjectionFixture(),
     nested: {
       raw_vsl: { forbidden: true },
     },
@@ -117,7 +235,7 @@ test("[runtime] execution-boundary contract rejects forbidden raw runtime-privat
 
 test("[runtime] execution-boundary contract rejects forbidden execution queue and authoritative transition fields", () => {
   const result = validate_execution_boundary_projection({
-    ...createExecutionBoundaryProjection(),
+    ...createExecutionBoundaryProjectionFixture(),
     nested: {
       dispatch_result: "forbidden",
       queue_state: "forbidden",
@@ -136,7 +254,7 @@ test("[runtime] execution-boundary contract rejects forbidden execution queue an
 });
 
 test("[runtime] execution-boundary contract preserves projection-safe posture and rejects positive capability wording", () => {
-  const validProjection = createExecutionBoundaryProjection();
+  const validProjection = createExecutionBoundaryProjectionFixture();
   const validResult = validate_execution_boundary_projection(validProjection);
   const validSurface = JSON.stringify(validProjection);
 
@@ -145,7 +263,7 @@ test("[runtime] execution-boundary contract preserves projection-safe posture an
   assert.match(validSurface, /non-executing/i);
 
   const invalidResult = validate_execution_boundary_projection({
-    ...createExecutionBoundaryProjection(),
+    ...createExecutionBoundaryProjectionFixture(),
     risk_warning: {
       risk_warning: "provider/channel execution available after review.",
       non_executing_posture:
@@ -155,6 +273,9 @@ test("[runtime] execution-boundary contract preserves projection-safe posture an
 
   assert.equal(invalidResult.ok, false);
   assert.match(invalidResult.errors.join(" "), /forbidden capability wording/i);
+  assert.doesNotMatch(validSurface, /provider\/channel execution available/i);
+  assert.doesNotMatch(validSurface, /approve\/reject\/dispatch\/execute available/i);
+  assert.doesNotMatch(validSurface, /queue implementation available/i);
 });
 
 test("[runtime] execution-boundary changed files stay free of product-specific naming", () => {

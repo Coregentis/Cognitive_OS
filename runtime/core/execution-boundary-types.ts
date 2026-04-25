@@ -1,6 +1,6 @@
-// Neutral execution-boundary surfaces are interface-first only in this wave.
-// They are projection-safe, non-executing, non-approving, non-dispatching,
-// non-provider, and non-queueing.
+// Neutral execution-boundary surfaces now include a minimal scaffold in this
+// wave. They remain projection-safe, non-executing, non-approving,
+// non-dispatching, non-provider, and non-queueing.
 
 export const EXECUTION_BOUNDARY_DESIGN_SURFACES = [
   "ExecutionBoundaryProjection",
@@ -30,6 +30,10 @@ export interface ExecutionBoundarySafeEvidenceRef {
   evidence_ref: string;
   evidence_label?: string;
 }
+
+export type ExecutionBoundarySafeEvidenceRefInput =
+  | string
+  | ExecutionBoundarySafeEvidenceRef;
 
 export interface ExecutionBoundaryRequirementSummary {
   requirement_summary: string;
@@ -73,4 +77,50 @@ export interface ExecutionBoundaryProjection {
   safe_evidence_refs: ExecutionBoundarySafeEvidenceRef[];
   runtime_private_fields_omitted: true;
   created_at: string;
+}
+
+export interface CreateExecutionBoundaryRequirementSummaryInput {
+  requirement_summary: string;
+  non_executing_posture?: string;
+}
+
+export interface CreateExecutionBoundaryRiskWarningInput {
+  risk_warning: string;
+  non_executing_posture?: string;
+}
+
+export interface CreateExecutionBoundaryPreflightChecklistInput {
+  preflight_checklist: string[];
+}
+
+export interface CreateExecutionBoundaryAcknowledgmentRequirementInput {
+  acknowledgment_required: boolean;
+  acknowledgment_requirement: string;
+  non_executing_posture?: string;
+}
+
+export interface CreateExecutionBoundaryTransitionPostureInput {
+  non_executing_posture?: string;
+}
+
+export interface CreateExecutionBoundaryProjectionInput {
+  execution_boundary_id?: string;
+  project_id: string;
+  requirement_summary:
+    | ExecutionBoundaryRequirementSummary
+    | CreateExecutionBoundaryRequirementSummaryInput;
+  risk_warning:
+    | ExecutionBoundaryRiskWarning
+    | CreateExecutionBoundaryRiskWarningInput;
+  preflight_checklist:
+    | ExecutionBoundaryPreflightChecklist
+    | CreateExecutionBoundaryPreflightChecklistInput;
+  acknowledgment_requirement:
+    | ExecutionBoundaryAcknowledgmentRequirement
+    | CreateExecutionBoundaryAcknowledgmentRequirementInput;
+  transition_posture?:
+    | ExecutionBoundaryTransitionPosture
+    | CreateExecutionBoundaryTransitionPostureInput;
+  safe_evidence_refs?: ExecutionBoundarySafeEvidenceRefInput[];
+  created_at?: string;
 }
