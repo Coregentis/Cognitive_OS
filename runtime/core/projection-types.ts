@@ -510,6 +510,23 @@ export type RuntimeSuggestedNextAction = {
   created_at: string;
 };
 
+export type WorkforceProjectionSafeEnvelope = {
+  envelope_version: "0.1";
+  envelope_kind: "workforce_projection_safe_envelope";
+  source_runtime_family: "workforce";
+  project_id: string;
+  scope_ref: string;
+  scope_label: string;
+  scope_status: string;
+  summary_headline?: string;
+  delivery_posture?: "steady" | "attention" | "blocked" | "unknown";
+  safe_evidence_refs: string[];
+  projection_notes: string[];
+  runtime_private_fields_omitted: true;
+  non_executing: true;
+  created_at: string;
+};
+
 export type OperationalUnitRuntimeProjection = {
   operational_unit_id: string;
   project_id: string;
@@ -680,6 +697,18 @@ export type CreateRuntimeSuggestedNextActionInput = {
   created_at?: string;
 };
 
+export type CreateWorkforceProjectionSafeEnvelopeInput = {
+  project_id: string;
+  scope_ref: string;
+  scope_label: string;
+  scope_status: string;
+  summary_headline?: string;
+  delivery_posture?: "steady" | "attention" | "blocked" | "unknown";
+  safe_evidence_refs?: string[];
+  projection_notes?: string[];
+  created_at?: string;
+};
+
 export type CreateOperationalUnitRuntimeProjectionInput = {
   operational_unit_id?: string;
   project_id: string;
@@ -705,15 +734,43 @@ export type CreateRuntimeStateProjectionInput = {
 };
 
 export const FORBIDDEN_PROJECTION_RAW_KEYS = [
+  "authority_class",
+  "primary_layer",
+  "schema_version",
+  "object_type",
+  "registry_classification",
+  "binding_class",
+  "protocol_binding_ref",
+  "temporal",
+  "mutation",
+  "lineage",
+  "governance",
   "raw_vsl",
   "raw_psg",
   "raw_trace",
   "drift_record",
   "learning_candidate",
+  "runtime_object_record",
   "provider_channel_result",
   "product_dto",
   "runtime_store",
+  "runtime_store_layout",
   "runtime_private_object",
+  "cell-runtime-scope",
+  "cell-summary-runtime-record",
+  "management-directive-record",
+  "delivery-return-record",
+  "approval-request-record",
+  "cell_runtime_scope",
+  "cell_summary_runtime_record",
+  "management_directive_record",
+  "delivery_return_record",
+  "approval_request_record",
+  "CellRuntimeScopeRecord",
+  "CellSummaryRuntimeRecord",
+  "ManagementDirectiveRecord",
+  "DeliveryReturnRecord",
+  "ApprovalRequestRecord",
 ] as const;
 
 export const FORBIDDEN_PROJECTION_ACTION_LABELS = [

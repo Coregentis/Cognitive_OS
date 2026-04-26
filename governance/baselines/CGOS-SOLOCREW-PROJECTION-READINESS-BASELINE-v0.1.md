@@ -67,6 +67,12 @@ contract is defined:
 All such inputs remain candidate projection inputs rather than automatic product
 dependencies.
 
+For workforce data, the explicit contract boundary is the
+`WorkforceProjectionSafeEnvelope`. Downstream products may consume only that
+sanitized envelope output. Raw runtime-private workforce records are not
+canonical downstream API, even when older governance records describe bounded
+historical consumption.
+
 ## Forbidden Direct Dependencies
 
 SoloCrew must not directly depend on:
@@ -79,6 +85,11 @@ SoloCrew must not directly depend on:
 - raw `learning-candidate` internal object records
 - raw `drift-record` internal object records
 - raw `conflict-case` internal object records
+- raw `cell-runtime-scope` internal object records
+- raw `cell-summary-runtime-record` internal object records
+- raw `management-directive-record` internal object records
+- raw `delivery-return-record` internal object records
+- raw `approval-request-record` internal object records
 - raw `activation-signal` or `action-unit` object records
 - raw `memory-promotion-record` object records
 - binding-matrix hints as if they were product contracts
@@ -86,6 +97,17 @@ SoloCrew must not directly depend on:
 
 No downstream product may treat current runtime-private objects as stable public
 interfaces.
+
+The current safe workforce handoff is envelope-only:
+
+- `cell-runtime-scope` remains runtime-private
+- `cell-summary-runtime-record` remains runtime-private
+- `management-directive-record` remains runtime-private
+- `delivery-return-record` remains runtime-private
+- `approval-request-record` remains runtime-private
+- none of those objects are MPLP protocol objects
+- none of those objects are MPLP import/export objects
+- no MPLP schema or protocol change is required for this boundary
 
 ## Required Projection Contract Before SoloCrew Consumption
 

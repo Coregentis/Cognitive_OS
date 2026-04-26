@@ -173,6 +173,24 @@ function createContinuitySnapshotProjectionInput(overrides = {}) {
   };
 }
 
+function createWorkforceProjectionSafeEnvelopeInput(overrides = {}) {
+  return {
+    project_id: "00000000-0000-4000-8000-710000000001",
+    scope_ref: "scope_ref_01",
+    scope_label: "Bounded workforce scope",
+    scope_status: "active",
+    summary_headline: "Bounded workforce summary",
+    delivery_posture: "attention",
+    safe_evidence_refs: ["safe_ref_02", "safe_ref_01"],
+    projection_notes: [
+      "Projection-safe workforce envelope.",
+      "Runtime-private fields are omitted.",
+    ],
+    created_at: "2026-04-26T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
 test("[runtime] projection-safe contracts create deterministic state exposure summary", () => {
   const service = new DeterministicProjectionService();
   const input = createStateExposureInput({
@@ -991,6 +1009,124 @@ test("[runtime] projection-safe contracts cross-project revision retrieval retur
       envelope.revision_id
     ),
     undefined
+  );
+});
+
+test("[runtime] workforce projection-safe envelope omits runtime-private authority fields", () => {
+  const service = new DeterministicProjectionService();
+  const envelope = service.create_workforce_projection_safe_envelope(
+    createWorkforceProjectionSafeEnvelopeInput()
+  );
+
+  assert.equal(envelope.envelope_version, "0.1");
+  assert.equal(envelope.envelope_kind, "workforce_projection_safe_envelope");
+  assert.equal(envelope.source_runtime_family, "workforce");
+  assert.equal(envelope.runtime_private_fields_omitted, true);
+  assert.equal(envelope.non_executing, true);
+  assert.deepEqual(envelope.safe_evidence_refs, ["safe_ref_01", "safe_ref_02"]);
+  assert.equal("authority_class" in envelope, false);
+  assert.equal("primary_layer" in envelope, false);
+  assert.equal("schema_version" in envelope, false);
+  assert.equal("object_type" in envelope, false);
+  assert.equal("temporal" in envelope, false);
+  assert.equal("mutation" in envelope, false);
+  assert.equal("lineage" in envelope, false);
+  assert.equal("governance" in envelope, false);
+});
+
+test("[runtime] workforce projection-safe envelope rejects raw runtime-private record fields", () => {
+  const service = new DeterministicProjectionService();
+  const envelope = service.create_workforce_projection_safe_envelope(
+    createWorkforceProjectionSafeEnvelopeInput()
+  );
+
+  for (const forbidden_key of [
+    "authority_class",
+    "primary_layer",
+    "schema_version",
+    "object_type",
+    "binding_class",
+    "protocol_binding_ref",
+    "temporal",
+    "mutation",
+    "lineage",
+    "governance",
+    "runtime_object_record",
+    "runtime_store_layout",
+    "runtime_private_object",
+  ]) {
+    assert.deepEqual(
+      service.validate_workforce_projection_safe_envelope({
+        ...envelope,
+        [forbidden_key]: "forbidden",
+      }),
+      {
+        valid: false,
+        errors: [`forbidden raw key at envelope.${forbidden_key}`],
+      }
+    );
+  }
+});
+
+test("[runtime] workforce projection-safe envelope keeps workforce records private-only", () => {
+  const service = new DeterministicProjectionService();
+  const envelope = service.create_workforce_projection_safe_envelope(
+    createWorkforceProjectionSafeEnvelopeInput()
+  );
+
+  for (const forbidden_key of [
+    "cell-runtime-scope",
+    "cell-summary-runtime-record",
+    "management-directive-record",
+    "delivery-return-record",
+    "approval-request-record",
+    "cell_runtime_scope",
+    "cell_summary_runtime_record",
+    "management_directive_record",
+    "delivery_return_record",
+    "approval_request_record",
+    "CellRuntimeScopeRecord",
+    "CellSummaryRuntimeRecord",
+    "ManagementDirectiveRecord",
+    "DeliveryReturnRecord",
+    "ApprovalRequestRecord",
+  ]) {
+    assert.deepEqual(
+      service.validate_workforce_projection_safe_envelope({
+        ...envelope,
+        nested: {
+          [forbidden_key]: {
+            object_id: "raw_object_01",
+          },
+        },
+      }),
+      {
+        valid: false,
+        errors: [`forbidden raw key at envelope.nested.${forbidden_key}`],
+      }
+    );
+  }
+});
+
+test("[runtime] workforce projection-safe envelope requires omission and non-execution markers", () => {
+  const service = new DeterministicProjectionService();
+  const envelope = service.create_workforce_projection_safe_envelope(
+    createWorkforceProjectionSafeEnvelopeInput()
+  );
+
+  assert.deepEqual(
+    service.validate_workforce_projection_safe_envelope({
+      ...envelope,
+      runtime_private_fields_omitted: false,
+      non_executing: false,
+    }),
+    {
+      valid: false,
+      errors: [
+        "non_executing must be true",
+        "runtime_private_fields_omitted must be true",
+      ],
+    }
   );
 });
 

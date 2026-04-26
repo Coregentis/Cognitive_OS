@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- clarified the workforce downstream-consumption boundary so raw
+  runtime-private workforce records are compatibility/history/research context
+  only and downstream products may consume workforce data only through a neutral
+  projection-safe envelope; added envelope contract tests; no MPLP schema or
+  protocol change, no product-specific runtime law, and no provider/channel or
+  dispatch semantics
 - implemented a neutral V1.9 Wave 2 runtime-readiness foundation for
   downstream projection-contract work, adding projection-safe runtime state
   summaries across multiple operational scopes, bounded action-class

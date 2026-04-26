@@ -4,6 +4,7 @@ import {
   FORBIDDEN_PROJECTION_ACTION_LABELS,
   FORBIDDEN_PROJECTION_RAW_KEYS,
   type CreateOperationalUnitRuntimeProjectionInput,
+  type CreateWorkforceProjectionSafeEnvelopeInput,
   type CreateRuntimeContinuitySnapshotProjectionInput,
   type CreateRuntimeEvidenceInsufficiencyDetailInput,
   type CreateRuntimeEvidencePostureSummaryInput,
@@ -53,6 +54,7 @@ import {
   type RuntimeStateProjection,
   type RuntimeSuggestedNextAction,
   type RuntimeTaskSummary,
+  type WorkforceProjectionSafeEnvelope,
   type ScopedLearningCandidate,
 } from "./projection-types.ts";
 import {
@@ -1599,6 +1601,31 @@ export class DeterministicProjectionService {
     };
   }
 
+  create_workforce_projection_safe_envelope(
+    input: CreateWorkforceProjectionSafeEnvelopeInput
+  ): WorkforceProjectionSafeEnvelope {
+    const created_at = created_at_or_default(input.created_at);
+    const envelope: WorkforceProjectionSafeEnvelope = {
+      envelope_version: "0.1",
+      envelope_kind: "workforce_projection_safe_envelope",
+      source_runtime_family: "workforce",
+      project_id: read_required_string(input.project_id, "project_id"),
+      scope_ref: read_required_string(input.scope_ref, "scope_ref"),
+      scope_label: read_required_string(input.scope_label, "scope_label"),
+      scope_status: read_required_string(input.scope_status, "scope_status"),
+      summary_headline: read_optional_string(input.summary_headline),
+      delivery_posture: input.delivery_posture ?? "unknown",
+      safe_evidence_refs: read_string_array(input.safe_evidence_refs),
+      projection_notes: read_string_array(input.projection_notes),
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+      created_at,
+    };
+
+    assert_valid_result(this.validate_workforce_projection_safe_envelope(envelope));
+    return envelope;
+  }
+
   create_operational_unit_runtime_projection(
     input: CreateOperationalUnitRuntimeProjectionInput
   ): OperationalUnitRuntimeProjection {
@@ -1738,6 +1765,79 @@ export class DeterministicProjectionService {
 
     assert_valid_result(this.validate_runtime_state_projection(projection));
     return projection;
+  }
+
+  validate_workforce_projection_safe_envelope(envelope: unknown): ValidationResult {
+    const errors = [
+      ...collect_forbidden_raw_key_errors(envelope, "envelope"),
+      ...collect_forbidden_action_label_errors(envelope, "envelope"),
+      ...collect_forbidden_direct_action_errors(envelope, "envelope"),
+      ...collect_forbidden_runtime_semantic_errors(envelope),
+    ];
+
+    if (!envelope || typeof envelope !== "object" || Array.isArray(envelope)) {
+      errors.push("envelope must be an object");
+      return {
+        valid: false,
+        errors: [...new Set(errors)].sort(),
+      };
+    }
+
+    const candidate = envelope as Record<string, unknown>;
+    validate_required_string(candidate, "project_id", errors);
+    validate_required_string(candidate, "scope_ref", errors);
+    validate_required_string(candidate, "scope_label", errors);
+    validate_required_string(candidate, "scope_status", errors);
+
+    if (candidate.envelope_version !== "0.1") {
+      errors.push("envelope_version must be 0.1");
+    }
+
+    if (candidate.envelope_kind !== "workforce_projection_safe_envelope") {
+      errors.push("envelope_kind must be workforce_projection_safe_envelope");
+    }
+
+    if (candidate.source_runtime_family !== "workforce") {
+      errors.push("source_runtime_family must be workforce");
+    }
+
+    if (candidate.runtime_private_fields_omitted !== true) {
+      errors.push("runtime_private_fields_omitted must be true");
+    }
+
+    if (candidate.non_executing !== true) {
+      errors.push("non_executing must be true");
+    }
+
+    if (
+      candidate.delivery_posture !== undefined &&
+      !["steady", "attention", "blocked", "unknown"].includes(
+        String(candidate.delivery_posture)
+      )
+    ) {
+      errors.push("delivery_posture must be steady, attention, blocked, or unknown");
+    }
+
+    validate_safe_evidence_refs(
+      candidate.safe_evidence_refs,
+      "safe_evidence_refs",
+      errors
+    );
+
+    if (!Array.isArray(candidate.projection_notes)) {
+      errors.push("projection_notes must be an array");
+    } else if (
+      candidate.projection_notes.some(
+        (note) => typeof note !== "string" || note.trim().length === 0
+      )
+    ) {
+      errors.push("projection_notes must contain only non-empty strings");
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors: [...new Set(errors)].sort(),
+    };
   }
 
   validate_evidence_insufficiency_detail(detail: unknown): ValidationResult {

@@ -82,6 +82,11 @@ projection-safe downstream consumption. This scaffold remains
 non-executing, non-approving, non-dispatching, non-provider, and
 non-queueing.
 
+Cognitive_OS also freezes the workforce downstream-consumption boundary:
+raw runtime-private workforce records are not downstream public APIs.
+Downstream consumers may consume workforce data only through the neutral
+`WorkforceProjectionSafeEnvelope`, which omits runtime-private fields.
+
 ## What Does Not Belong Here
 
 This repository is not the place for product-specific or application-specific implementation.

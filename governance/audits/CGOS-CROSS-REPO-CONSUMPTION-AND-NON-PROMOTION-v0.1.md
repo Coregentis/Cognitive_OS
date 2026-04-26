@@ -21,9 +21,18 @@ The governing order remains:
 This order is not optional.
 It is the current cross-repo authority boundary.
 
-## 1. What SoloCrew Currently Consumes From `Cognitive_OS`
+## 1. What Downstream Products May Consume From `Cognitive_OS`
 
-SoloCrew currently consumes bounded runtime-private workforce truth from `Cognitive_OS`, including:
+Current and future downstream products may consume workforce data only through
+an explicit projection-safe envelope. Raw runtime-private workforce records are
+not canonical downstream APIs.
+
+Historical downstream consumption language in this record is therefore
+reclassified as compatibility / history / research context. It records why the
+boundary existed, but it must not be used as the current or future dependency
+model.
+
+The runtime-private workforce records affected by this clarification are:
 
 - `cell-runtime-scope`
 - `cell-summary-runtime-record`
@@ -31,22 +40,39 @@ SoloCrew currently consumes bounded runtime-private workforce truth from `Cognit
 - `delivery-return-record`
 - `approval-request-record`
 
-SoloCrew consumes these as:
+Downstream consumption must instead use a neutral projection-safe envelope that
+exposes only bounded fields such as:
 
-- downstream inputs only
-- adapted inputs only
-- product-projection inputs only
-- non-executable inspection inputs only
+- `envelope_version`
+- `envelope_kind`
+- `source_runtime_family`
+- `scope_ref`
+- `scope_label`
+- `scope_status`
+- `summary_headline`
+- `delivery_posture`
+- `safe_evidence_refs`
+- `projection_notes`
+- `runtime_private_fields_omitted: true`
 
-Current paired downstream use is acceptable only because the objects remain:
+The envelope must not expose:
 
-- runtime-private upstream
-- bounded and explicit in authority class
-- non-exportable as protocol artifacts
+- `authority_class`
+- `primary_layer`
+- runtime `schema_version` truth
+- raw runtime `object_type` identity
+- registry classification
+- binding class
+- protocol-binding internals
+- temporal, mutation, lineage, or governance internals
+- raw store layout
+- raw `RuntimeObjectRecord`
+- raw runtime-private workforce record payloads
 
 ## 2. What Remains `Cognitive_OS`-Private Runtime Truth
 
-The following remain `Cognitive_OS`-private even when downstream products read or adapt them:
+The following remain `Cognitive_OS`-private. Downstream products may not read or
+adapt these as canonical API fields:
 
 - object identity and authority class
 - schema truth
@@ -55,7 +81,7 @@ The following remain `Cognitive_OS`-private even when downstream products read o
 - runtime typing and frozen-truth loading classification
 - runtime-side continuity, policy, persistence, and governance implications
 
-Downstream use does not transfer ownership of that truth.
+Projection-safe envelope use does not transfer ownership of that truth.
 
 ## 3. What Remains Intentionally Partial Or Asymmetric Today
 
@@ -120,8 +146,9 @@ Promotion would require separate upstream judgment in the correct repository.
 
 | Category | Current Location Of Truth | Current Rule |
 | --- | --- | --- |
-| runtime-private workforce objects | `Cognitive_OS` | keep runtime-private, non-exportable, and downstream-consumable only in bounded form |
-| downstream inspection and summary surfaces | SoloCrew | may adapt current runtime-private truth into product projections without claiming runtime ownership |
+| runtime-private workforce objects | `Cognitive_OS` | keep runtime-private, non-exportable, and not downstream public API |
+| workforce projection-safe envelope | `Cognitive_OS` | only current canonical downstream consumption boundary for workforce data |
+| downstream inspection and summary surfaces | downstream products | may adapt projection-safe envelope output into product projections without claiming runtime ownership |
 | protocol-envelope candidates | MPLP candidate backlog only | do not imply promotion from `Cognitive_OS` or SoloCrew usage |
 | current asymmetry in management-object-family maturity | `Cognitive_OS` closure/governance truth | name it explicitly; do not silently overstate normalization |
 
@@ -133,5 +160,7 @@ If a future continuation would:
 - treat runtime-private records as public protocol objects
 - use downstream product success as proof of protocol promotion
 - collapse product and runtime ownership into one layer
+- treat historical bounded runtime-private consumption as the current canonical
+  dependency model
 
 then the continuation should pause and be reclassified before proceeding.
