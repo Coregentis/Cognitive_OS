@@ -22,70 +22,51 @@ These surfaces together define the active `v0.1` foundation baseline stream.
 
 ## Current Runtime Surface Status
 
-Cognitive_OS currently includes a projection-safe, non-executing projection
-revision runtime surface with evidence insufficiency support.
+Cognitive_OS is no longer documentation-only. It now has a governed neutral
+runtime/projection foundation that remains below product implementation and
+below a full platform release claim.
 
-This surface is release-gated as a runtime capability surface, but it is not
-an independent Cognitive_OS V1.2 release. Cognitive_OS version assignment
-remains pending a separate versioning decision.
-The selected line is the projection-revision-runtime RC capability line, not a
-full Cognitive_OS platform release.
+Current architecture stack:
 
-Current status:
+1. `schemas/`, `registry/`, and `bindings/` preserve Cognitive_OS object,
+   relationship, export, MPLP object/semantic binding, and Kernel Duty binding
+   posture.
+2. `runtime/core/` provides the neutral runtime core services and runtime
+   object types.
+3. `runtime/core/mplp-module-posture.ts` and
+   `runtime/core/kernel-duty-runtime-posture.ts` define neutral MPLP module and
+   Kernel Duty posture contracts.
+4. `runtime/core/projection-safe-*.ts` files implement the Projection layer as
+   a safety envelope and downstream adapter boundary. There is no separate
+   top-level `projection/` directory; projection-safe behavior lives in
+   runtime/core contracts, builders, helpers, fixtures, and handoff governance.
+5. `runtime/fixtures/projection-safe-downstream-handoff-fixture.ts`,
+   `governance/handoffs/`, and `handoffs/` define downstream-neutral product
+   projection consumption posture.
 
-- Runtime surface implemented and hardened.
-- Runtime tests passing.
-- Downstream evidence reviewed through neutral, projection-safe boundaries.
-- Release-readiness gate complete.
-- Independent versioning decision complete.
-- Projection-revision-runtime RC tag/release/seal executed.
-- Durable lifecycle continuity dependency planning open.
-- No schema change.
-- No MPLP protocol law change.
-- No downstream product dependency.
-- No provider/channel execution.
-- No approve/reject/dispatch/execute.
-- No queue implementation.
+Current hardening status:
 
-Active governance references:
+- Strict module/duty/projection E2E tests now cover representative runtime
+  object records through binding service, module posture, Kernel Duty posture,
+  projection-safe envelopes, evidence refs, omission markers, version refs,
+  state/snapshot posture, transaction/export posture, error/insufficiency
+  posture, and downstream handoff.
+- These tests prove upstream projection-safe consumption readiness for the
+  current baseline. They do not claim full production implementation of every
+  MPLP module or Kernel Duty.
+- SoloCrew V2.2 remains paused until owner authorization starts product
+  implementation against the accepted handoff.
+- No MPLP schema or protocol change is included.
+- No provider dispatch, channel dispatch, marketplace implementation,
+  autonomous execution, product paid-readiness claim, MPLP certification, or
+  MPLP endorsement is included.
 
-- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/gates/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-GATE-v0.1.md)`
-- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-SCOPE-AND-BOUNDARY-v0.1.md)`
-- `[CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/audits/CGOS-PROJECTION-REVISION-RUNTIME-RELEASE-PLANNING-AUDIT-v0.1.md)`
-- `[CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/releases/CGOS-INDEPENDENT-VERSIONING-DECISION-RECORD-v0.1.md)`
-- `[CGOS-DURABLE-LIFECYCLE-CONTINUITY-DEPENDENCY-BASELINE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/baselines/CGOS-DURABLE-LIFECYCLE-CONTINUITY-DEPENDENCY-BASELINE-v0.1.md)`
+Active current governance references:
 
-Current dependency planning line:
-
-Cognitive_OS now includes an interface-first durable lifecycle continuity
-scaffold for projection-safe lifecycle history, pending review summaries below
-queue semantics, and continuity snapshots. This is not full durable
-persistence and does not add execution, queue, approval, schema, or MPLP
-changes.
-Verification is now recorded.
-Downstream consumers may consume projection-safe continuity summaries,
-pending-review summaries below queue semantics, and continuity snapshots
-without accessing runtime-private internals.
-
-Cognitive_OS now provides a minimal prepared-action scaffold for
-projection-safe downstream consumption. This scaffold is draft-only,
-non-executing, non-approving, non-dispatching, non-provider, and
-non-queueing.
-
-Cognitive_OS has opened a neutral execution-boundary dependency planning line
-for projection-safe human-confirmed transition semantics. This is not product
-implementation, not execution, not approval automation, not dispatch, and
-not provider/channel operation.
-
-Cognitive_OS now provides a minimal execution-boundary scaffold for
-projection-safe downstream consumption. This scaffold remains
-non-executing, non-approving, non-dispatching, non-provider, and
-non-queueing.
-
-Cognitive_OS also freezes the workforce downstream-consumption boundary:
-raw runtime-private workforce records are not downstream public APIs.
-Downstream consumers may consume workforce data only through the neutral
-`WorkforceProjectionSafeEnvelope`, which omits runtime-private fields.
+- `[CGOS-CURRENT-ARCHITECTURE-BASELINE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/baselines/CGOS-CURRENT-ARCHITECTURE-BASELINE-v0.1.md)`
+- `[CGOS-ARCHITECTURE-CONSISTENCY-LAYERING-PROJECTION-E2E-AUDIT-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/audits/CGOS-ARCHITECTURE-CONSISTENCY-LAYERING-PROJECTION-E2E-AUDIT-v0.1.md)`
+- `[CGOS-KERNEL-DUTY-BINDING-BASELINE-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/baselines/CGOS-KERNEL-DUTY-BINDING-BASELINE-v0.1.md)`
+- `[CGOS-SOLOCREW-V2.2-CONSUMPTION-HANDOFF-v0.1.md](/Users/jasonwang/Documents/AI_Dev/Coregentis/Cognitive_OS/governance/handoffs/CGOS-SOLOCREW-V2.2-CONSUMPTION-HANDOFF-v0.1.md)`
 
 ## What Does Not Belong Here
 
@@ -109,14 +90,14 @@ Application-specific projection and product development must live in separate re
 
 This repository preserves the following order:
 
-`MPLP Protocol Constitution -> Coregentis Cognitive OS -> Product Projections -> TracePilot`
+`MPLP Protocol Constitution -> Coregentis Cognitive OS -> Product Projections`
 
 This means:
 
 - MPLP remains the upstream protocol constitution
 - `Cognitive_OS` remains the mother-runtime foundation layer
-- product projections remain downstream
-- TracePilot remains downstream of product-projection rules rather than part of this repository’s active authority surface
+- product projections remain downstream and must consume Cognitive_OS posture
+  instead of redefining protocol or runtime law
 
 ## Repository Neutrality
 

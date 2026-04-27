@@ -3,10 +3,11 @@
 ## Document Control
 
 - Document ID: `CGOS-ASSET-INVENTORY-AND-GAP-ANALYSIS-v0.1`
-- Status: `Execution-Governance Baseline`
+- Status: `Historical / Superseded Baseline`
 - Authority: `Coregentis Pre-Execution Research Output`
 - Scope: `Asset inventory, reuse classification, gap analysis, and architectural risk control for pre-implementation governance only`
 - Phase Constraint: `This document does not authorize product implementation, TracePilot runtime implementation, or runtime shortcutting`
+- Supersession Note: `This document records the early documentation-only repository phase. It is retained for traceability, but its current-state inventory is superseded by governance/baselines/CGOS-CURRENT-ARCHITECTURE-BASELINE-v0.1.md and governance/audits/CGOS-ARCHITECTURE-CONSISTENCY-LAYERING-PROJECTION-E2E-AUDIT-v0.1.md. Cognitive_OS is no longer documentation-only.`
 
 ## Executive Summary
 

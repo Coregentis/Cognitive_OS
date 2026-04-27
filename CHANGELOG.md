@@ -4,6 +4,30 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- completed drift, strict E2E, and documentation convergence for the current
+  Cognitive_OS architecture baseline, adding strict module/duty/projection E2E
+  tests, strict state/snapshot/transaction/error E2E tests, strict downstream
+  handoff E2E tests, and negative boundary E2E tests; clarified that the
+  Projection layer is implemented as runtime/core safety-envelope and handoff
+  surfaces rather than a top-level projection directory; kept SoloCrew paused,
+  made no MPLP change, added no product-specific runtime law, and made no
+  release/tag/package claim
+- added the architecture consistency, layering, projection, and E2E coverage
+  audit, concluding that Cognitive_OS was mostly consistent with minor drift
+  but required strict E2E hardening before SoloCrew could proceed
+- added the Cognitive_OS -> SoloCrew V2.2 consumption handoff baseline and
+  manifest, defining downstream consumption of projection-safe posture without
+  starting SoloCrew implementation
+- wired projection-safe runtime posture into a downstream-neutral handoff
+  fixture, including state/snapshot, transaction/export, and
+  error/insufficiency posture helpers; no full production implementation,
+  product-specific law, dispatch, marketplace, or MPLP change
+- added module and Kernel Duty posture contracts plus default posture fixtures
+  for all MPLP 10 Modules and 11 Kernel Duties, while preserving explicit
+  safe deferrals and avoiding full implementation claims
+- added neutral Kernel Duty binding and binding-layer relationship governance,
+  clarifying that object/semantic binding and Kernel Duty responsibility
+  binding are complementary layers
 - clarified the workforce downstream-consumption boundary so raw
   runtime-private workforce records are compatibility/history/research context
   only and downstream products may consume workforce data only through a neutral
