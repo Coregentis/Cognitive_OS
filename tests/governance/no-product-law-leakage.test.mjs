@@ -12,6 +12,11 @@ const postureContractFiles = [
   "runtime/core/default-kernel-duty-posture.ts",
   "runtime/core/projection-safe-envelope.ts",
   "runtime/core/projection-binding-consumption.ts",
+  "runtime/core/projection-safe-runtime-envelope-builder.ts",
+  "runtime/core/state-snapshot-posture.ts",
+  "runtime/core/transaction-export-posture.ts",
+  "runtime/core/error-insufficiency-posture.ts",
+  "runtime/fixtures/projection-safe-downstream-handoff-fixture.ts",
 ];
 
 const forbiddenTerms = [
