@@ -1,0 +1,55 @@
+version: "0.1"
+status: "handoff_baseline"
+authority_order:
+  - MPLP
+  - Cognitive_OS
+  - SoloCrew
+source:
+  cognitive_os_head: "b8668f28e3dddc580fac1d2df18c2a5ee7aa384a"
+  solocrew_head_inspected: "72a9f79054051527b9a28aa7c4435bf80d148d94"
+  mplp_protocol_head_inspected: "0cf0477938340a443614d03d9fb51ac764b960c7"
+  upstream_contracts:
+    - "runtime/core/projection-safe-envelope.ts"
+    - "runtime/core/projection-safe-runtime-envelope-builder.ts"
+    - "runtime/core/state-snapshot-posture.ts"
+    - "runtime/core/transaction-export-posture.ts"
+    - "runtime/core/error-insufficiency-posture.ts"
+    - "runtime/fixtures/projection-safe-downstream-handoff-fixture.ts"
+required_module_postures:
+  - "Context"
+  - "Core"
+  - "Trace"
+  - "Plan"
+  - "Confirm"
+required_kernel_duties:
+  - "KD-02"
+  - "KD-05"
+  - "KD-08"
+  - "KD-09"
+  - "KD-10"
+  - "KD-11"
+solocrew_may_own:
+  - "product workspace UX shell"
+  - "product-local labels"
+  - "product-local history display"
+solocrew_must_not_own:
+  - "Context law"
+  - "Plan law"
+  - "Confirm law"
+  - "Trace law"
+  - "Core law"
+  - "State Sync law"
+  - "Transaction law"
+  - "Security omission law"
+  - "Observability evidence law"
+  - "Protocol versioning posture"
+  - "Object/export binding semantics"
+required_boundaries:
+  non_executing: true
+  no_autonomous_execution: true
+  no_provider_dispatch: true
+  no_channel_dispatch: true
+  no_marketplace_implementation: true
+  no_mplp_certification: true
+  no_mplp_endorsement: true
+next_allowed_solocrew_task: "SOLOCREW-V2.2-IMPL-01-WORKSPACE-SESSION-CONTINUITY-WITH-CGOS-CONSUMPTION"
