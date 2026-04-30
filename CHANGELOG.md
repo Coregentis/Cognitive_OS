@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- fixed TypeScript strictness issue blocking generated handoff bundle readiness;
+  no package/export implementation, no package publish, no
+  schema/registry/binding change
 - implemented internal projection-safe public DTO module for neutral operator
   review loop handoff; no package export map, no package publish, no
   schema/registry/binding change

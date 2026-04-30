@@ -223,7 +223,11 @@ function isMissingList(values: readonly unknown[] | undefined): boolean {
 }
 
 function refOrMissing(value: string | undefined, fallback: string): string {
-  return isMissingRef(value) ? fallback : value;
+  if (value === undefined || value.trim().length === 0) {
+    return fallback;
+  }
+
+  return value;
 }
 
 function statusOrBlocked<T extends string>(
