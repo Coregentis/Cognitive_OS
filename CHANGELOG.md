@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- designed projection-safe export boundary for neutral operator review loop
+  handoff bundle; planning only, no package/export implementation, no package
+  publish, no schema/registry/binding change
 - assessed package/import handoff feasibility for neutral operator review loop
   projection-safe output; planning only, no package/export implementation, no
   package publish, no downstream product semantic promotion
