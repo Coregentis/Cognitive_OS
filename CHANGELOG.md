@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- planned neutral operator review loop surface from SoloCrew V3.0 downstream
+  evidence; planning only, no runtime implementation, no schema/registry/binding
+  change
 - completed drift, strict E2E, and documentation convergence for the current
   Cognitive_OS architecture baseline, adding strict module/duty/projection E2E
   tests, strict state/snapshot/transaction/error E2E tests, strict downstream
