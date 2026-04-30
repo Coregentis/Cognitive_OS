@@ -4,27 +4,29 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
-- planned neutral operator review loop surface from SoloCrew V3.0 downstream
-  evidence; planning only, no runtime implementation, no schema/registry/binding
-  change
+- implemented neutral operator review loop contract family and projection-safe
+  handoff fixture; no schema/registry/binding change, no downstream semantics,
+  no external execution
+- planned neutral operator review loop surface from accepted downstream evidence;
+  planning only, no runtime implementation, no schema/registry/binding change
 - completed drift, strict E2E, and documentation convergence for the current
   Cognitive_OS architecture baseline, adding strict module/duty/projection E2E
   tests, strict state/snapshot/transaction/error E2E tests, strict downstream
   handoff E2E tests, and negative boundary E2E tests; clarified that the
   Projection layer is implemented as runtime/core safety-envelope and handoff
-  surfaces rather than a top-level projection directory; kept SoloCrew paused,
+  surfaces rather than a top-level projection directory; kept consumer work paused,
   made no MPLP change, added no product-specific runtime law, and made no
   release/tag/package claim
 - added the architecture consistency, layering, projection, and E2E coverage
   audit, concluding that Cognitive_OS was mostly consistent with minor drift
-  but required strict E2E hardening before SoloCrew could proceed
-- added the Cognitive_OS -> SoloCrew V2.2 consumption handoff baseline and
+  but required strict E2E hardening before consumer work could proceed
+- added the Cognitive_OS -> downstream consumption handoff baseline and
   manifest, defining downstream consumption of projection-safe posture without
-  starting SoloCrew implementation
+  starting consumer implementation
 - wired projection-safe runtime posture into a downstream-neutral handoff
   fixture, including state/snapshot, transaction/export, and
   error/insufficiency posture helpers; no full production implementation,
-  product-specific law, dispatch, marketplace, or MPLP change
+  product-specific law, external routing, catalog behavior, or MPLP change
 - added module and Kernel Duty posture contracts plus default posture fixtures
   for all MPLP 10 Modules and 11 Kernel Duties, while preserving explicit
   safe deferrals and avoiding full implementation claims
@@ -43,7 +45,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
   classification, runtime artifact summaries, scoped learning isolation,
   drift-impact recommendation summaries, suggested next actions, expanded
   state-store coverage for existing multi-scope and management-family runtime
-  records, and runtime tests; this does not make SoloCrew V2.0 ready by
+  records, and runtime tests; this does not make a consumer release ready by
   itself, does not implement product UI, does not implement
   provider/channel execution, does not implement payment/trading/purchase
   behavior, and does not change MPLP
@@ -104,7 +106,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
   seal/execution record; no runtime source change, no schema change, no MPLP
   change, no Cognitive_OS v1.2 declaration, no full platform release claim,
   no provider/channel execution, no approve/reject/dispatch/execute, no queue
-  implementation, and no protocol certification claim
+  implementation, and no formal assurance claim
 - executed projection-revision-runtime RC validation and seal authorization
   checks, adding validation execution record, forbidden-claim verification,
   release notes final review, seal authorization decision, and authorization
@@ -138,7 +140,7 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
   and release gate; no schema change, no MPLP protocol law change, no
   product-specific naming, no provider/channel execution, no
   approve/reject/dispatch/execute, no queue implementation, no tag/release,
-  and no protocol certification claim
+  and no formal assurance claim
 - recorded neutral downstream evidence review for projection revision and
   evidence insufficiency runtime surfaces, including generic downstream usage
   signals and candidate follow-up review notes, without schema change, MPLP
@@ -251,5 +253,5 @@ Not implied by this planned entry:
 - full trace export
 - full MPLP artifact export completeness
 - full MPLP interoperability guarantee
-- TracePilot runtime
+- legacy product runtime
 - product / projection / DTO / UI implementation
