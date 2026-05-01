@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- planned Cognitive_OS package export governance boundary for future
+  projection-safe downstream imports; planning only, no package export map, no
+  package publish, no dependency claim, no schema/registry/binding change
 - implemented internal deterministic projection-safe handoff bundle builder for
   neutral operator review loop DTOs; no package export map, no package publish,
   no schema/registry/binding change
