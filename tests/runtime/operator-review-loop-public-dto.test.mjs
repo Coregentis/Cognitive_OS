@@ -200,12 +200,20 @@ test("[runtime] public operator review loop DTO module avoids positive capabilit
   assert.match(source, /no_autonomy/u);
 });
 
-test("[runtime] package boundary remains unimplemented for public DTO module", () => {
+test("[runtime] package boundary exposes only approved public DTO surfaces", () => {
   const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
+  const approvedExports = {
+    "./runtime/public/operator-review-loop-dto":
+      "./runtime/public/operator-review-loop-dto.ts",
+    "./runtime/public/operator-review-loop-handoff-bundle":
+      "./runtime/public/operator-review-loop-handoff-bundle.ts",
+  };
 
   assert.equal(packageJson.private, true);
-  assert.equal(Object.hasOwn(packageJson, "exports"), false);
+  assert.deepEqual(packageJson.exports, approvedExports);
   assert.equal(Object.hasOwn(packageJson, "main"), false);
   assert.equal(Object.hasOwn(packageJson, "types"), false);
   assert.equal(Object.hasOwn(packageJson, "files"), false);
+  assert.equal(Object.hasOwn(packageJson, "bin"), false);
+  assert.equal(Object.hasOwn(packageJson, "publishConfig"), false);
 });

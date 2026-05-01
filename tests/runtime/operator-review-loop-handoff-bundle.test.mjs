@@ -18,6 +18,13 @@ const packageJsonPath = "package.json";
 const bundleSource = readFileSync(bundleSourcePath, "utf8");
 const testSource = readFileSync(testSourcePath, "utf8");
 
+const approvedPackageExports = {
+  "./runtime/public/operator-review-loop-dto":
+    "./runtime/public/operator-review-loop-dto.ts",
+  "./runtime/public/operator-review-loop-handoff-bundle":
+    "./runtime/public/operator-review-loop-handoff-bundle.ts",
+};
+
 const meta = {
   contract_version: "operator-review-loop-dto-contract-v0.1",
   runtime_contract_version:
@@ -573,12 +580,14 @@ test("[runtime] operator review loop handoff bundle changed files stay neutral",
   }
 });
 
-test("[runtime] operator review loop handoff bundle package boundary remains closed", () => {
+test("[runtime] operator review loop handoff bundle package boundary remains narrow", () => {
   const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 
   assert.equal(packageJson.private, true);
-  assert.equal(Object.hasOwn(packageJson, "exports"), false);
+  assert.deepEqual(packageJson.exports, approvedPackageExports);
   assert.equal(Object.hasOwn(packageJson, "main"), false);
   assert.equal(Object.hasOwn(packageJson, "types"), false);
   assert.equal(Object.hasOwn(packageJson, "files"), false);
+  assert.equal(Object.hasOwn(packageJson, "bin"), false);
+  assert.equal(Object.hasOwn(packageJson, "publishConfig"), false);
 });

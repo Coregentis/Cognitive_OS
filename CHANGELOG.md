@@ -4,6 +4,10 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- implemented minimal private-package export map for the two approved
+  projection-safe runtime/public surfaces; no package publication, no dependency
+  migration, no schema/registry/binding change, no runtime public
+  implementation change, no downstream import migration
 - audited minimal package export implementation readiness for projection-safe
   public surfaces; readiness audit only, no package export map, no package
   publish, no dependency migration, no schema/registry/binding change
