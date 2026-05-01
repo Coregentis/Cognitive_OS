@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added CGOS public surface candidate plan based on SoloCrew legacy bridge usage
+  map; planning only, no package/export/runtime/schema/registry/binding change,
+  no SoloCrew/MPLP modification
 - verified minimal private-package export map post-implementation; no export
   widening, no package publication, no downstream migration, no
   MPLP/schema/registry/binding change
