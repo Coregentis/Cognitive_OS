@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- verified minimal private-package export map post-implementation; no export
+  widening, no package publication, no downstream migration, no
+  MPLP/schema/registry/binding change
 - implemented minimal private-package export map for the two approved
   projection-safe runtime/public surfaces; no package publication, no dependency
   migration, no schema/registry/binding change, no runtime public
