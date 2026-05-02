@@ -5,7 +5,11 @@
   "type": "module",
   "exports": {
     "./runtime/public/operator-review-loop-dto": "./runtime/public/operator-review-loop-dto.ts",
-    "./runtime/public/operator-review-loop-handoff-bundle": "./runtime/public/operator-review-loop-handoff-bundle.ts"
+    "./runtime/public/operator-review-loop-handoff-bundle": "./runtime/public/operator-review-loop-handoff-bundle.ts",
+    "./runtime/public/runtime-readiness-status-dto": "./runtime/public/runtime-readiness-status-dto.ts",
+    "./runtime/public/runtime-projection-summary-dto": "./runtime/public/runtime-projection-summary-dto.ts",
+    "./runtime/public/runtime-execution-event-dto": "./runtime/public/runtime-execution-event-dto.ts",
+    "./runtime/public/runtime-objective-continuity-dto": "./runtime/public/runtime-objective-continuity-dto.ts"
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0"

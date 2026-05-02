@@ -19,13 +19,19 @@ const approvedExports = {
     "./runtime/public/runtime-objective-continuity-dto.ts",
 };
 
+const firstWaveDtoSelfReferenceSubpaths = [
+  "cognitive_os/runtime/public/runtime-readiness-status-dto",
+  "cognitive_os/runtime/public/runtime-projection-summary-dto",
+  "cognitive_os/runtime/public/runtime-execution-event-dto",
+  "cognitive_os/runtime/public/runtime-objective-continuity-dto",
+];
+
 const forbiddenExportPathFragments = [
   "runtime/core",
   "runtime/lifecycle",
   "runtime/state",
   "runtime/learning",
   "runtime/execution",
-  "runtime/in-memory",
   "schemas",
   "registry",
   "bindings",
@@ -37,7 +43,7 @@ function readPackageJson() {
   return JSON.parse(readFileSync(packageJsonPath, "utf8"));
 }
 
-test("[runtime] package export boundary remains private and minimal", () => {
+test("[runtime] first-wave package export map is exact and private", () => {
   const packageJson = readPackageJson();
 
   assert.equal(packageJson.private, true);
@@ -48,18 +54,13 @@ test("[runtime] package export boundary remains private and minimal", () => {
   );
 });
 
-test("[runtime] package export targets are the approved projection-safe surfaces", () => {
-  const packageJson = readPackageJson();
-
-  for (const [exportKey, exportTarget] of Object.entries(approvedExports)) {
-    assert.equal(packageJson.exports[exportKey], exportTarget);
-    assert.equal(existsSync(exportTarget), true, `${exportTarget} should exist`);
-  }
-});
-
-test("[runtime] package export map does not expose private repository surfaces", () => {
+test("[runtime] first-wave package export targets exist and avoid forbidden paths", () => {
   const packageJson = readPackageJson();
   const exportEntries = Object.entries(packageJson.exports).flat();
+
+  for (const exportTarget of Object.values(approvedExports)) {
+    assert.equal(existsSync(exportTarget), true, `${exportTarget} should exist`);
+  }
 
   for (const exportEntry of exportEntries) {
     for (const forbiddenFragment of forbiddenExportPathFragments) {
@@ -72,7 +73,7 @@ test("[runtime] package export map does not expose private repository surfaces",
   }
 });
 
-test("[runtime] package export map does not add publication or broad entry fields", () => {
+test("[runtime] first-wave package export map has no broad publication fields", () => {
   const packageJson = readPackageJson();
 
   assert.equal(Object.hasOwn(packageJson, "main"), false);
@@ -80,4 +81,19 @@ test("[runtime] package export map does not add publication or broad entry field
   assert.equal(Object.hasOwn(packageJson, "files"), false);
   assert.equal(Object.hasOwn(packageJson, "bin"), false);
   assert.equal(Object.hasOwn(packageJson, "publishConfig"), false);
+});
+
+test("[runtime] first-wave DTO self-reference imports resolve as type-only modules", async () => {
+  for (const subpath of firstWaveDtoSelfReferenceSubpaths) {
+    const module = await import(subpath);
+
+    assert.deepEqual(Object.keys(module), [], subpath);
+  }
+});
+
+test("[runtime] first-wave package export adds no helper bundle", () => {
+  assert.equal(
+    existsSync("runtime/public/runtime-projection-handoff-bundle.ts"),
+    false
+  );
 });

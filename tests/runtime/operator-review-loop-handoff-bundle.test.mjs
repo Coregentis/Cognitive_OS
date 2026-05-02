@@ -23,6 +23,14 @@ const approvedPackageExports = {
     "./runtime/public/operator-review-loop-dto.ts",
   "./runtime/public/operator-review-loop-handoff-bundle":
     "./runtime/public/operator-review-loop-handoff-bundle.ts",
+  "./runtime/public/runtime-readiness-status-dto":
+    "./runtime/public/runtime-readiness-status-dto.ts",
+  "./runtime/public/runtime-projection-summary-dto":
+    "./runtime/public/runtime-projection-summary-dto.ts",
+  "./runtime/public/runtime-execution-event-dto":
+    "./runtime/public/runtime-execution-event-dto.ts",
+  "./runtime/public/runtime-objective-continuity-dto":
+    "./runtime/public/runtime-objective-continuity-dto.ts",
 };
 
 const meta = {
@@ -585,6 +593,10 @@ test("[runtime] operator review loop handoff bundle package boundary remains nar
 
   assert.equal(packageJson.private, true);
   assert.deepEqual(packageJson.exports, approvedPackageExports);
+  assert.deepEqual(
+    Object.keys(packageJson.exports).sort(),
+    Object.keys(approvedPackageExports).sort()
+  );
   assert.equal(Object.hasOwn(packageJson, "main"), false);
   assert.equal(Object.hasOwn(packageJson, "types"), false);
   assert.equal(Object.hasOwn(packageJson, "files"), false);

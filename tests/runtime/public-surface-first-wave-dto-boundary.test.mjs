@@ -154,6 +154,14 @@ const approvedExports = {
     "./runtime/public/operator-review-loop-dto.ts",
   "./runtime/public/operator-review-loop-handoff-bundle":
     "./runtime/public/operator-review-loop-handoff-bundle.ts",
+  "./runtime/public/runtime-readiness-status-dto":
+    "./runtime/public/runtime-readiness-status-dto.ts",
+  "./runtime/public/runtime-projection-summary-dto":
+    "./runtime/public/runtime-projection-summary-dto.ts",
+  "./runtime/public/runtime-execution-event-dto":
+    "./runtime/public/runtime-execution-event-dto.ts",
+  "./runtime/public/runtime-objective-continuity-dto":
+    "./runtime/public/runtime-objective-continuity-dto.ts",
 };
 
 function readSource(filePath) {
@@ -262,21 +270,15 @@ test("[runtime] first-wave public DTO files stay product-neutral", () => {
   }
 });
 
-test("[runtime] package export map remains unchanged", () => {
+test("[runtime] package export map exposes exactly approved first-wave DTOs", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.equal(packageJson.private, true);
   assert.deepEqual(packageJson.exports, approvedExports);
-
-  const serializedExports = JSON.stringify(packageJson.exports);
-  for (const dtoPathFragment of [
-    "runtime-readiness-status-dto",
-    "runtime-projection-summary-dto",
-    "runtime-execution-event-dto",
-    "runtime-objective-continuity-dto",
-  ]) {
-    assert.equal(serializedExports.includes(dtoPathFragment), false, dtoPathFragment);
-  }
+  assert.deepEqual(
+    Object.keys(packageJson.exports).sort(),
+    Object.keys(approvedExports).sort()
+  );
 });
 
 test("[runtime] first-wave helper bundle file is absent", () => {

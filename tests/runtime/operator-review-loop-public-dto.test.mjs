@@ -207,10 +207,22 @@ test("[runtime] package boundary exposes only approved public DTO surfaces", () 
       "./runtime/public/operator-review-loop-dto.ts",
     "./runtime/public/operator-review-loop-handoff-bundle":
       "./runtime/public/operator-review-loop-handoff-bundle.ts",
+    "./runtime/public/runtime-readiness-status-dto":
+      "./runtime/public/runtime-readiness-status-dto.ts",
+    "./runtime/public/runtime-projection-summary-dto":
+      "./runtime/public/runtime-projection-summary-dto.ts",
+    "./runtime/public/runtime-execution-event-dto":
+      "./runtime/public/runtime-execution-event-dto.ts",
+    "./runtime/public/runtime-objective-continuity-dto":
+      "./runtime/public/runtime-objective-continuity-dto.ts",
   };
 
   assert.equal(packageJson.private, true);
   assert.deepEqual(packageJson.exports, approvedExports);
+  assert.deepEqual(
+    Object.keys(packageJson.exports).sort(),
+    Object.keys(approvedExports).sort()
+  );
   assert.equal(Object.hasOwn(packageJson, "main"), false);
   assert.equal(Object.hasOwn(packageJson, "types"), false);
   assert.equal(Object.hasOwn(packageJson, "files"), false);
