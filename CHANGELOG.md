@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- audited CGOS public surface first-wave implementation readiness; audit only,
+  no DTO/runtime/public creation, no package/export/runtime/schema/registry/
+  binding change, no SoloCrew/MPLP modification
 - added CGOS public surface first-wave field design; design only, no
   package/export/runtime/schema/registry/binding change, no SoloCrew/MPLP
   modification
