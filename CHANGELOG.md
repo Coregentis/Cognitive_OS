@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- verified first-wave CGOS public DTO package exports; verification only, no
+  package export map change, no DTO/runtime/helper/schema/registry/binding
+  change, no package publication, no SoloCrew/MPLP modification
 - exported first-wave type-only CGOS public DTO surfaces through private
   package export map; preserved existing operator review loop exports, no
   package publication, no DTO/runtime/helper/schema/registry/binding change,
