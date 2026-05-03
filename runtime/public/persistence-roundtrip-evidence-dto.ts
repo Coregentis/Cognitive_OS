@@ -1,0 +1,84 @@
+// DTO/evidence implementation only.
+// Not package-exported yet.
+// No runtime behavior.
+// No storage write.
+// No mutation writeback.
+// No dispatch authority.
+// No package publication.
+
+export type RuntimePublicSurfaceContractVersion = string;
+
+export type RuntimePublicSurfaceRuntimeContractVersion = string;
+
+export type RuntimePublicSurfaceCompatibilityProfile = string;
+
+export type RuntimePublicSurfaceVersionRefDto = {
+  ref_kind: "protocol" | "binding" | "runtime" | "contract" | "bundle";
+  ref_id: string;
+  ref_version: string;
+};
+
+export type RuntimePublicSurfaceVersionRefs = {
+  protocol_version_refs: readonly RuntimePublicSurfaceVersionRefDto[];
+  binding_version_refs: readonly RuntimePublicSurfaceVersionRefDto[];
+  runtime_version_refs: readonly RuntimePublicSurfaceVersionRefDto[];
+  contract_version_refs?: readonly RuntimePublicSurfaceVersionRefDto[];
+  bundle_version_refs?: readonly RuntimePublicSurfaceVersionRefDto[];
+};
+
+export type RuntimePublicSurfaceEvidenceRefDto = {
+  evidence_ref: string;
+  evidence_kind?: string;
+  summary?: string;
+};
+
+export type RuntimePublicSurfaceOmissionMarkerDto = {
+  marker: string;
+  reason: string;
+};
+
+export type PersistenceRoundtripOutcomeDto =
+  | "not_evaluated"
+  | "completed"
+  | "blocked"
+  | "deferred"
+  | "unsupported";
+
+export type PersistenceRoundtripPathDto = {
+  roundtrip_path_ref: string;
+  path_posture: "summary_only" | "evidence_only" | "blocked" | "deferred";
+  path_summary: string;
+  runtime_private_fields_omitted: true;
+};
+
+export type PersistenceRoundtripBoundaryProfile = {
+  contract_version: RuntimePublicSurfaceContractVersion;
+  runtime_contract_version: RuntimePublicSurfaceRuntimeContractVersion;
+  compatibility_profile: RuntimePublicSurfaceCompatibilityProfile;
+  evidence_safe: true;
+  runtime_private_payload_omitted: true;
+  non_executing: true;
+  no_storage_write: true;
+  no_mutation_writeback: true;
+  no_package_publish: true;
+  no_certification_or_endorsement: true;
+};
+
+export type PersistenceRoundtripEvidenceDto = {
+  roundtrip_evidence_id: string;
+  contract_version: RuntimePublicSurfaceContractVersion;
+  runtime_contract_version: RuntimePublicSurfaceRuntimeContractVersion;
+  compatibility_profile: RuntimePublicSurfaceCompatibilityProfile;
+  source_runtime_surface_ref: string;
+  source_commit_ref: string;
+  roundtrip_outcome: PersistenceRoundtripOutcomeDto;
+  roundtrip_mode: "summary_only" | "evidence_only" | "deferred";
+  pre_state_ref: string;
+  post_state_ref: string;
+  roundtrip_path: PersistenceRoundtripPathDto;
+  safe_evidence_refs: readonly RuntimePublicSurfaceEvidenceRefDto[];
+  version_refs: RuntimePublicSurfaceVersionRefs;
+  omission_markers: readonly RuntimePublicSurfaceOmissionMarkerDto[];
+  runtime_private_fields_omitted: true;
+  boundary_flags: PersistenceRoundtripBoundaryProfile;
+};
