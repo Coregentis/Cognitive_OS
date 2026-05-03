@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added CGOS second-wave public surface field design and implementation
+  readiness wave; planning/readiness only, no package/export/runtime/schema/
+  registry/binding change, no SoloCrew/MPLP modification
 - added CGOS second-wave public surface candidate and readiness wave;
   planning/readiness only, no package/export/runtime/schema/registry/binding
   change, no SoloCrew/MPLP modification
