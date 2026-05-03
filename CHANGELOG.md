@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- analyzed runtime-session and worker-lifecycle public surface strategy;
+  analysis only, no package/export/runtime/schema/registry/binding change, no
+  SoloCrew/MPLP modification
 - verified second-wave CGOS public DTO package exports and assessed downstream
   readiness; verification/readiness only, no package export map change, no
   DTO/runtime/helper/schema/registry/binding change, no SoloCrew/MPLP
