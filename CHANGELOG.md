@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added third-wave runtime-session and worker-lifecycle field design and
+  implementation readiness; planning/readiness only, no package/export/runtime/
+  schema/registry/binding change, no SoloCrew/MPLP modification
 - analyzed runtime-session and worker-lifecycle public surface strategy;
   analysis only, no package/export/runtime/schema/registry/binding change, no
   SoloCrew/MPLP modification
