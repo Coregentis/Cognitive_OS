@@ -229,6 +229,18 @@ const approvedExports = {
     "./runtime/public/runtime-execution-event-dto.ts",
   "./runtime/public/runtime-objective-continuity-dto":
     "./runtime/public/runtime-objective-continuity-dto.ts",
+  "./runtime/public/state-port-summary-dto":
+    "./runtime/public/state-port-summary-dto.ts",
+  "./runtime/public/persistence-roundtrip-evidence-dto":
+    "./runtime/public/persistence-roundtrip-evidence-dto.ts",
+  "./runtime/public/memory-preference-summary-dto":
+    "./runtime/public/memory-preference-summary-dto.ts",
+  "./runtime/public/learning-correction-evidence-dto":
+    "./runtime/public/learning-correction-evidence-dto.ts",
+  "./runtime/public/runtime-action-request-summary-dto":
+    "./runtime/public/runtime-action-request-summary-dto.ts",
+  "./runtime/public/runtime-dispatch-boundary-evidence-dto":
+    "./runtime/public/runtime-dispatch-boundary-evidence-dto.ts",
 };
 
 const secondWaveExportFragments = [
@@ -339,7 +351,7 @@ test("[runtime] second-wave public DTO files stay product-neutral", () => {
   }
 });
 
-test("[runtime] package exports remain first-wave exact with no second-wave exports", () => {
+test("[runtime] package exports include approved second-wave DTOs exactly", () => {
   const packageJson = JSON.parse(readSource("package.json"));
 
   assert.deepEqual(packageJson.exports, approvedExports);
@@ -347,15 +359,13 @@ test("[runtime] package exports remain first-wave exact with no second-wave expo
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-
-  const exportEntries = Object.entries(packageJson.exports).flat();
+  assert.equal(Object.keys(packageJson.exports).length, 12);
 
   for (const secondWaveFragment of secondWaveExportFragments) {
-    assert.equal(
-      exportEntries.some((entry) => entry.includes(secondWaveFragment)),
-      false,
-      `${secondWaveFragment} must not be package-exported`
-    );
+    const exportKey = `./runtime/public/${secondWaveFragment}`;
+    const exportTarget = `./runtime/public/${secondWaveFragment}.ts`;
+
+    assert.equal(packageJson.exports[exportKey], exportTarget);
   }
 });
 

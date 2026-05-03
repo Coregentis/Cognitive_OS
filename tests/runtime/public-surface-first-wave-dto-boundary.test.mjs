@@ -162,6 +162,18 @@ const approvedExports = {
     "./runtime/public/runtime-execution-event-dto.ts",
   "./runtime/public/runtime-objective-continuity-dto":
     "./runtime/public/runtime-objective-continuity-dto.ts",
+  "./runtime/public/state-port-summary-dto":
+    "./runtime/public/state-port-summary-dto.ts",
+  "./runtime/public/persistence-roundtrip-evidence-dto":
+    "./runtime/public/persistence-roundtrip-evidence-dto.ts",
+  "./runtime/public/memory-preference-summary-dto":
+    "./runtime/public/memory-preference-summary-dto.ts",
+  "./runtime/public/learning-correction-evidence-dto":
+    "./runtime/public/learning-correction-evidence-dto.ts",
+  "./runtime/public/runtime-action-request-summary-dto":
+    "./runtime/public/runtime-action-request-summary-dto.ts",
+  "./runtime/public/runtime-dispatch-boundary-evidence-dto":
+    "./runtime/public/runtime-dispatch-boundary-evidence-dto.ts",
 };
 
 function readSource(filePath) {
@@ -270,7 +282,7 @@ test("[runtime] first-wave public DTO files stay product-neutral", () => {
   }
 });
 
-test("[runtime] package export map exposes exactly approved first-wave DTOs", () => {
+test("[runtime] package export map exposes exactly approved public DTOs", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.equal(packageJson.private, true);
