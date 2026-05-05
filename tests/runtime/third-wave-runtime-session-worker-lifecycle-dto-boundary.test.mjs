@@ -194,6 +194,14 @@ const approvedExports = {
     "./runtime/public/runtime-action-request-summary-dto.ts",
   "./runtime/public/runtime-dispatch-boundary-evidence-dto":
     "./runtime/public/runtime-dispatch-boundary-evidence-dto.ts",
+  "./runtime/public/runtime-session-summary-dto":
+    "./runtime/public/runtime-session-summary-dto.ts",
+  "./runtime/public/runtime-session-evidence-dto":
+    "./runtime/public/runtime-session-evidence-dto.ts",
+  "./runtime/public/worker-lifecycle-summary-dto":
+    "./runtime/public/worker-lifecycle-summary-dto.ts",
+  "./runtime/public/worker-lifecycle-evidence-dto":
+    "./runtime/public/worker-lifecycle-evidence-dto.ts",
 };
 
 function readSource(filePath) {
@@ -305,7 +313,7 @@ test("[runtime] third-wave DTO files stay product-neutral", () => {
   }
 });
 
-test("[runtime] package exports remain the approved twelve without third-wave DTOs", () => {
+test("[runtime] package exports include approved third-wave DTOs exactly", () => {
   const packageJson = JSON.parse(readSource("package.json"));
 
   assert.deepEqual(packageJson.exports, approvedExports);
@@ -313,16 +321,13 @@ test("[runtime] package exports remain the approved twelve without third-wave DT
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 12);
+  assert.equal(Object.keys(packageJson.exports).length, 16);
 
   for (const dtoFile of thirdWaveDtoFiles) {
     const exportKey = `./runtime/public/${dtoFile.fragment}`;
+    const exportTarget = `./runtime/public/${dtoFile.fragment}.ts`;
 
-    assert.equal(
-      Object.hasOwn(packageJson.exports, exportKey),
-      false,
-      `${exportKey} must not be exported yet`
-    );
+    assert.equal(packageJson.exports[exportKey], exportTarget);
   }
 });
 

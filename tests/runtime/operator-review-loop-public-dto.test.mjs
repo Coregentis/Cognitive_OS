@@ -227,6 +227,14 @@ test("[runtime] package boundary exposes only approved public DTO surfaces", () 
       "./runtime/public/runtime-action-request-summary-dto.ts",
     "./runtime/public/runtime-dispatch-boundary-evidence-dto":
       "./runtime/public/runtime-dispatch-boundary-evidence-dto.ts",
+    "./runtime/public/runtime-session-summary-dto":
+      "./runtime/public/runtime-session-summary-dto.ts",
+    "./runtime/public/runtime-session-evidence-dto":
+      "./runtime/public/runtime-session-evidence-dto.ts",
+    "./runtime/public/worker-lifecycle-summary-dto":
+      "./runtime/public/worker-lifecycle-summary-dto.ts",
+    "./runtime/public/worker-lifecycle-evidence-dto":
+      "./runtime/public/worker-lifecycle-evidence-dto.ts",
   };
 
   assert.equal(packageJson.private, true);

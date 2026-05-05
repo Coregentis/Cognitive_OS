@@ -39,13 +39,38 @@ const approvedExports = {
     "./runtime/public/worker-lifecycle-evidence-dto.ts",
 };
 
+const existingApprovedExportKeys = [
+  "./runtime/public/operator-review-loop-dto",
+  "./runtime/public/operator-review-loop-handoff-bundle",
+  "./runtime/public/runtime-readiness-status-dto",
+  "./runtime/public/runtime-projection-summary-dto",
+  "./runtime/public/runtime-execution-event-dto",
+  "./runtime/public/runtime-objective-continuity-dto",
+  "./runtime/public/state-port-summary-dto",
+  "./runtime/public/persistence-roundtrip-evidence-dto",
+  "./runtime/public/memory-preference-summary-dto",
+  "./runtime/public/learning-correction-evidence-dto",
+  "./runtime/public/runtime-action-request-summary-dto",
+  "./runtime/public/runtime-dispatch-boundary-evidence-dto",
+];
+
+const thirdWaveExportFragments = [
+  "runtime-session-summary-dto",
+  "runtime-session-evidence-dto",
+  "worker-lifecycle-summary-dto",
+  "worker-lifecycle-evidence-dto",
+];
+
+const thirdWaveDtoSelfReferenceSubpaths = thirdWaveExportFragments.map(
+  (fragment) => `cognitive_os/runtime/public/${fragment}`
+);
+
 const forbiddenExportPathFragments = [
   "runtime/core",
   "runtime/lifecycle",
   "runtime/state",
   "runtime/learning",
   "runtime/execution",
-  "runtime/in-memory",
   "schemas",
   "registry",
   "bindings",
@@ -57,7 +82,7 @@ function readPackageJson() {
   return JSON.parse(readFileSync(packageJsonPath, "utf8"));
 }
 
-test("[runtime] package export boundary remains private and minimal", () => {
+test("[runtime] third-wave package export map is exact and private", () => {
   const packageJson = readPackageJson();
 
   assert.equal(packageJson.private, true);
@@ -66,18 +91,30 @@ test("[runtime] package export boundary remains private and minimal", () => {
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
+  assert.equal(Object.keys(packageJson.exports).length, 16);
 });
 
-test("[runtime] package export targets are the approved projection-safe surfaces", () => {
+test("[runtime] third-wave package export preserves existing twelve exports", () => {
   const packageJson = readPackageJson();
 
-  for (const [exportKey, exportTarget] of Object.entries(approvedExports)) {
+  for (const exportKey of existingApprovedExportKeys) {
+    assert.equal(packageJson.exports[exportKey], approvedExports[exportKey]);
+  }
+});
+
+test("[runtime] third-wave package export adds all four DTO exports", () => {
+  const packageJson = readPackageJson();
+
+  for (const thirdWaveFragment of thirdWaveExportFragments) {
+    const exportKey = `./runtime/public/${thirdWaveFragment}`;
+    const exportTarget = `./runtime/public/${thirdWaveFragment}.ts`;
+
     assert.equal(packageJson.exports[exportKey], exportTarget);
     assert.equal(existsSync(exportTarget), true, `${exportTarget} should exist`);
   }
 });
 
-test("[runtime] package export map does not expose private repository surfaces", () => {
+test("[runtime] third-wave package export map avoids private surfaces", () => {
   const packageJson = readPackageJson();
   const exportEntries = Object.entries(packageJson.exports).flat();
 
@@ -92,7 +129,7 @@ test("[runtime] package export map does not expose private repository surfaces",
   }
 });
 
-test("[runtime] package export map does not add publication or broad entry fields", () => {
+test("[runtime] third-wave package export map has no publication fields", () => {
   const packageJson = readPackageJson();
 
   assert.equal(Object.hasOwn(packageJson, "main"), false);
@@ -100,4 +137,27 @@ test("[runtime] package export map does not add publication or broad entry field
   assert.equal(Object.hasOwn(packageJson, "files"), false);
   assert.equal(Object.hasOwn(packageJson, "bin"), false);
   assert.equal(Object.hasOwn(packageJson, "publishConfig"), false);
+});
+
+test("[runtime] third-wave DTO self-reference imports resolve as empty modules", async () => {
+  for (const subpath of thirdWaveDtoSelfReferenceSubpaths) {
+    const module = await import(subpath);
+
+    assert.deepEqual(Object.keys(module), [], subpath);
+  }
+});
+
+test("[runtime] third-wave package export adds no helper schema registry or binding", () => {
+  assert.equal(
+    existsSync(
+      "runtime/public/third-wave-runtime-session-worker-lifecycle-helper-bundle.ts"
+    ),
+    false
+  );
+
+  for (const thirdWaveFragment of thirdWaveExportFragments) {
+    assert.equal(existsSync(`schemas/${thirdWaveFragment}.json`), false);
+    assert.equal(existsSync(`registry/${thirdWaveFragment}.json`), false);
+    assert.equal(existsSync(`bindings/${thirdWaveFragment}.ts`), false);
+  }
 });
