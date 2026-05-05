@@ -369,9 +369,7 @@ test("[runtime] package exports include approved second-wave DTOs exactly", () =
   }
 });
 
-test("[runtime] deferred second-wave DTO files and helper bundle are absent", () => {
-  assert.equal(existsSync("runtime/public/runtime-session-summary-dto.ts"), false);
-  assert.equal(existsSync("runtime/public/worker-lifecycle-summary-dto.ts"), false);
+test("[runtime] second-wave helper bundle remains absent", () => {
   assert.equal(
     existsSync("runtime/public/second-wave-public-surface-helper-bundle.ts"),
     false
