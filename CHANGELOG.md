@@ -4,6 +4,10 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- verified third-wave runtime-session and worker-lifecycle DTO/evidence
+  surfaces and assessed package export readiness; verification/readiness only,
+  no package export map change, no DTO/runtime/helper/schema/registry/binding
+  change, no SoloCrew/MPLP modification
 - implemented third-wave type-only CGOS runtime-session and worker-lifecycle
   DTO/evidence surfaces; no package export map change, no helper bundle, no
   runtime behavior, no schema/registry/binding change, no SoloCrew/MPLP
