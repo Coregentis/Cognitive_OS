@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- registered upstream public-surface request candidates from SoloCrew bridge
+  replacement planning; planning only, no DTO/package/export/runtime/schema/
+  registry/binding change, no SoloCrew/MPLP modification
 - verified third-wave runtime-session and worker-lifecycle private package
   exports and downstream spike readiness; verification/readiness only, no
   package export map change, no DTO/runtime/helper/schema/registry/binding
