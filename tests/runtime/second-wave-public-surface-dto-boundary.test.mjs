@@ -249,6 +249,12 @@ const approvedExports = {
     "./runtime/public/worker-lifecycle-summary-dto.ts",
   "./runtime/public/worker-lifecycle-evidence-dto":
     "./runtime/public/worker-lifecycle-evidence-dto.ts",
+  "./runtime/public/runtime-session-behavior-boundary-snapshot-dto":
+    "./runtime/public/runtime-session-behavior-boundary-snapshot-dto.ts",
+  "./runtime/public/state-roundtrip-behavior-result-snapshot-dto":
+    "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
+  "./runtime/public/learning-correction-behavior-result-snapshot-dto":
+    "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
 };
 
 const secondWaveExportFragments = [
@@ -367,7 +373,7 @@ test("[runtime] package exports include approved second-wave DTOs exactly", () =
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 16);
+  assert.equal(Object.keys(packageJson.exports).length, 19);
 
   for (const secondWaveFragment of secondWaveExportFragments) {
     const exportKey = `./runtime/public/${secondWaveFragment}`;

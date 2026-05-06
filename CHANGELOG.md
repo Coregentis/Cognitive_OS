@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- implemented and privately exported three type-only upstream public-surface
+  DTOs; no runtime behavior, no package publication, no SoloCrew/MPLP
+  modification, no bridge replacement or downstream migration claim
 - planned DTO contracts for selected upstream public-surface candidates;
   contract planning only, no DTO/package/export/runtime/schema/registry/
   binding change, no SoloCrew/MPLP modification

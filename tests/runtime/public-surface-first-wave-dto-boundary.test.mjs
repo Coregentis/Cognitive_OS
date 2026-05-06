@@ -182,6 +182,12 @@ const approvedExports = {
     "./runtime/public/worker-lifecycle-summary-dto.ts",
   "./runtime/public/worker-lifecycle-evidence-dto":
     "./runtime/public/worker-lifecycle-evidence-dto.ts",
+  "./runtime/public/runtime-session-behavior-boundary-snapshot-dto":
+    "./runtime/public/runtime-session-behavior-boundary-snapshot-dto.ts",
+  "./runtime/public/state-roundtrip-behavior-result-snapshot-dto":
+    "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
+  "./runtime/public/learning-correction-behavior-result-snapshot-dto":
+    "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
 };
 
 function readSource(filePath) {
