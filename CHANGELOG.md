@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- planned DTO contracts for selected upstream public-surface candidates;
+  contract planning only, no DTO/package/export/runtime/schema/registry/
+  binding change, no SoloCrew/MPLP modification
 - assessed DTO design readiness for selected upstream public-surface field
   designs; readiness only, no DTO/package/export/runtime/schema/registry/
   binding change, no SoloCrew/MPLP modification
