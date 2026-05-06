@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- designed field families for selected upstream public-surface candidates;
+  field design only, no DTO/package/export/runtime/schema/registry/binding
+  change, no SoloCrew/MPLP modification
 - selected upstream public-surface request candidates for neutral field design;
   design selection only, no DTO/package/export/runtime/schema/registry/binding
   change, no SoloCrew/MPLP modification
