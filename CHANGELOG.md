@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- selected upstream public-surface request candidates for neutral field design;
+  design selection only, no DTO/package/export/runtime/schema/registry/binding
+  change, no SoloCrew/MPLP modification
 - registered upstream public-surface request candidates from SoloCrew bridge
   replacement planning; planning only, no DTO/package/export/runtime/schema/
   registry/binding change, no SoloCrew/MPLP modification
