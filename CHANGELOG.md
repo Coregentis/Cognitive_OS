@@ -6,10 +6,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 - recorded operator work-packet projection-safe contract readiness from
   downstream product scope; identifies the missing neutral intent-to-work-packet-to-
-  reviewable-output-to-delivery continuity handoff contract and selects a
-  Cognitive_OS runtime/public implementation wave next, with no DTO source,
-  runtime behavior, package export, schema/registry/binding, product semantic
-  promotion, MPLP change, provider execution, or downstream app implementation
+  reviewable-output-to-delivery continuity handoff contract, records the
+  required MPLP binding / MPGC mapping gate, and selects an MPLP-bound
+  Cognitive_OS projection contract implementation wave next, with no DTO
+  source, runtime behavior, package export, schema/registry/normative binding,
+  product semantic promotion, MPLP change, provider execution, or downstream
+  app implementation
 - implemented and privately exported three type-only upstream public-surface
   DTOs; no runtime behavior, no package publication, no SoloCrew/MPLP
   modification, no bridge replacement or downstream migration claim

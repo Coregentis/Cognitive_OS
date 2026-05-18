@@ -36,8 +36,9 @@ operator intent, work packet formation, assignment, worker activity,
 reviewable output, acceptance state, delivery artifact summary, and continuity
 pointer.
 
-The next allowed wave should therefore be Cognitive_OS runtime/public contract
-implementation, not downstream app implementation.
+The next allowed wave should therefore be an MPLP-bound Cognitive_OS
+runtime/public contract implementation, not a generic runtime contract and not
+downstream app implementation.
 
 ## Neutral Naming Policy
 
@@ -116,7 +117,38 @@ summaries and refs:
 | `projection_safe_envelope` | handoff boundary | safe evidence refs, omission markers, version refs, boundary notices, non-executing flags |
 
 The contract should be deterministic, versioned, evidence-safe,
-runtime-private-payload omitted, and non-executing.
+runtime-private-payload omitted, non-executing, and MPLP-bound through an
+explicit binding / MPGC mapping gate.
+
+## MPLP Binding / MPGC Mapping Gate
+
+Before DTO source is implemented, the future implementation wave must record a
+Cognitive_OS-side binding mapping for every top-level contract component. The
+gate answers which existing MPLP lifecycle semantic families are being
+implemented by Cognitive_OS runtime/projection posture. It does not change MPLP
+schema, protocol law, or normative binding.
+
+Required mapping:
+
+| Neutral contract component | MPLP lifecycle semantic family | Why existing MPLP semantics are sufficient | Explicit non-claims | Candidate / MPGC follow-up |
+| --- | --- | --- | --- | --- |
+| `operator_intent_summary` | Context, Confirm | Context can carry bounded input posture and source refs; Confirm covers clarification-before-action posture. | not raw prompt; not approval; not execution request | none required now |
+| `work_intake_summary` | Context, Plan, Confirm | Context carries intake refs; Plan can represent planned work posture; Confirm covers blocked/deferred clarification. | not product workflow law; not dispatch authority | none required now |
+| `work_packet` / `objective_packet` | Plan, Context, Core | Plan carries objective/work structure; Context carries constraints and source refs; Core can anchor stable runtime object identity. | not business product object; not execution completion | none required now |
+| `assignment_summary` | Role, Collab, Plan | Role covers responsibility posture; Collab covers handoff/coordination posture; Plan links assignment to planned work. | not workforce management law; not provider/channel dispatch | none required now |
+| `worker_activity_summary` | Trace, Role, Collab | Trace carries evidence and activity refs; Role scopes capability/responsibility; Collab covers cooperative work posture. | not raw worker state; not live runtime event stream | none required now |
+| `reviewable_output_summary` | Trace, Confirm, Plan | Trace carries output evidence refs; Confirm covers review posture; Plan links output to expected work. | not proof of completion; not acceptance | none required now |
+| `acceptance_state` | Confirm, Trace | Confirm represents operator judgment posture; Trace records evidence of the decision. | not protocol endorsement; not schema conformance; not irreversible action | none required now |
+| `operator_feedback_summary` | Confirm, Trace, Context | Confirm covers feedback as decision input; Trace records feedback evidence; Context can preserve future interpretation posture. | not training authority; not automatic preference mutation | none required now |
+| `delivery_artifact_summary` | Trace, Plan, Core | Trace carries artifact evidence refs; Plan links artifact to expected output; Core anchors stable artifact identity posture. | not raw artifact payload; not publishing; not storage guarantee | none required now |
+| `continuity_pointer` | Context, Trace, Core | Context carries continuation posture; Trace records source refs; Core anchors stable continuation identity. | not memory-store exposure; not durable service guarantee | none required now |
+| `projection_safe_envelope` | Trace, Core, Context | Trace carries safe evidence refs; Core carries version/object posture; Context carries omission and boundary notices. | not MPLP schema change; not protocol-law reconstruction; not formal assurance | none required now |
+
+Current judgment: existing MPLP lifecycle semantics are sufficient for a
+Cognitive_OS runtime/projection binding record. MPLP-Protocol does not need to
+change for this readiness wave. If future implementation uncovers an
+insufficiency, it must stop before schema/protocol work and open only a
+strictly anonymous candidate/backlog/MPGC note in the protocol repository.
 
 ## Runtime-Private Boundary
 
@@ -172,14 +204,15 @@ Relevant MPLP backlog areas are already non-normative background only:
 - lifecycle governance guide/profile candidates;
 - projection-safe evidence and runtime-private boundary candidates.
 
-The Cognitive_OS contract remains an implementation-layer public projection
-surface, not protocol law.
+The Cognitive_OS contract remains an MPLP-bound implementation-layer public
+projection surface, not protocol law. Binding is expressed as Cognitive_OS
+runtime/projection mapping to existing MPLP lifecycle semantic families.
 
 ## Implementation Readiness Decision
 
 Decision:
 
-`CGOS_OPERATOR_WORK_PACKET_PROJECTION_SAFE_CONTRACT_READY_FOR_RUNTIME_PUBLIC_IMPLEMENTATION`
+`CGOS_OPERATOR_WORK_PACKET_MPLP_BOUND_PROJECTION_CONTRACT_READY_FOR_IMPLEMENTATION`
 
 Rationale:
 
@@ -188,12 +221,14 @@ Rationale:
 - existing public DTOs provide partial posture and evidence components;
 - the full intent-to-reviewable-output-to-delivery continuity handoff is
   missing;
-- downstream app implementation must remain blocked until this contract is
-  implemented, tested, exported if needed, and handed off.
+- each contract component can be mapped to existing MPLP lifecycle semantic
+  families without MPLP schema, protocol-law, or normative binding change;
+- downstream app implementation must remain blocked until this MPLP-bound
+  contract is implemented, tested, exported if needed, and handed off.
 
 The next wave should be:
 
-`Cognitive_OS Runtime Implementation`
+`CGOS-OPERATOR-WORK-PACKET-MPLP-BOUND-PROJECTION-CONTRACT-IMPLEMENTATION`
 
 not:
 
@@ -206,14 +241,19 @@ A future implementation wave may add a type-only runtime/public contract and
 tests if separately authorized. It should:
 
 - implement neutral DTO names only;
+- include the MPLP binding family marker or binding reference for every
+  top-level contract component;
+- fail closed if any component lacks a binding mapping;
 - reuse existing public DTO refs where safe;
 - preserve runtime-private omission markers;
 - include strict forbidden product-term tests;
+- include tests proving the binding mapping does not create schema, protocol
+  law, normative binding, endorsement, or formal assurance claims;
 - include raw-private-payload absence tests;
 - include non-executing, no-dispatch, no-provider, no-tool, no-publishing,
   no-payment, no-autonomy, and no-formal-assurance flags;
-- avoid schema, registry, binding, protocol, package publication, and provider
-  changes unless separately authorized.
+- avoid schema, registry, normative binding, protocol, package publication,
+  and provider changes unless separately authorized.
 
 Potential future file families, subject to separate authorization:
 
@@ -232,13 +272,16 @@ Stop the future implementation if:
 - the contract requires raw prompt, raw trace, store, service, constructor,
   worker-state, provider, dispatcher, or mutable runtime handle exposure;
 - provider/channel/tool execution is needed to satisfy the DTO contract;
-- MPLP schema or protocol law change is treated as a precondition;
+- MPLP schema, normative binding, or protocol law change is treated as a
+  precondition;
+- a top-level component cannot be mapped to existing MPLP lifecycle semantic
+  families without a strictly anonymous candidate/backlog/MPGC follow-up;
 - downstream app implementation starts before public contract tests pass.
 
 ## Final Decision
 
-`CGOS_OPERATOR_WORK_PACKET_PROJECTION_SAFE_CONTRACT_READY_FOR_RUNTIME_PUBLIC_IMPLEMENTATION`
+`CGOS_OPERATOR_WORK_PACKET_MPLP_BOUND_PROJECTION_CONTRACT_READY_FOR_IMPLEMENTATION`
 
 ## Next Allowed Task
 
-`COGNITIVE_OS-OPERATOR-WORK-PACKET-PROJECTION-SAFE-CONTRACT-IMPLEMENTATION`
+`CGOS-OPERATOR-WORK-PACKET-MPLP-BOUND-PROJECTION-CONTRACT-IMPLEMENTATION`
