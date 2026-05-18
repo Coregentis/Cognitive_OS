@@ -4,6 +4,13 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- exception-gated historical runtime-private `cell-*` / `cell_` naming for the
+  tri-repo boundary correction patch; adds tests proving legacy names remain
+  absent from `runtime/public` exports and confined to explicit
+  runtime-private/governance exception files, records the correction decision,
+  and leaves MPLP schema, protocol law, normative binding, operator
+  work-packet contracts, runtime behavior, provider execution, and SoloCrew app
+  implementation unchanged
 - recorded operator work-packet projection-safe contract readiness from
   downstream product scope; identifies the missing neutral intent-to-work-packet-to-
   reviewable-output-to-delivery continuity handoff contract, records the

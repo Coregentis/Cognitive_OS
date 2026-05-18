@@ -207,6 +207,11 @@ const forbiddenAuthorityTerms = [
 const forbiddenProductTerms = [
   "SoloCrew",
   "founder",
+  "secretary",
+  "OPC",
+  "company dashboard",
+  "mission room",
+  "work packet",
   "dashboard",
   "cell",
   "engagement",
@@ -333,6 +338,33 @@ test("[runtime] upstream public-surface DTO source files stay product-neutral an
         `${dtoFile.path} must not include ${term}`
       );
     }
+  }
+});
+
+test("[runtime] upstream public-surface package exports omit legacy runtime-private cell names", () => {
+  const packageJson = readPackageJson();
+  const publicSurfaceText = [
+    JSON.stringify(packageJson.exports, null, 2),
+    ...Object.values(packageJson.exports).map((exportTarget) =>
+      readSource(exportTarget)
+    ),
+  ].join("\n");
+
+  const forbiddenLegacyRuntimePrivateTerms = [
+    "cell-runtime-scope",
+    "cell-summary-runtime-record",
+    "cell_runtime_scope",
+    "cell_summary_runtime_record",
+    "CellRuntimeScopeRecord",
+    "CellSummaryRuntimeRecord",
+  ];
+
+  for (const forbiddenTerm of forbiddenLegacyRuntimePrivateTerms) {
+    assert.equal(
+      publicSurfaceText.includes(forbiddenTerm),
+      false,
+      `${forbiddenTerm} must remain absent from runtime/public exports`
+    );
   }
 });
 
