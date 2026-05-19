@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- completed a non-normative Cognitive_OS-side MPLP binding correction for
+  existing `runtime/public` package surfaces; maps each current public surface
+  to existing MPLP lifecycle semantic families, adds tests for mapping coverage
+  and boundary posture, and leaves runtime behavior, package publication, MPLP
+  schema/protocol/normative binding, SoloCrew app implementation, provider
+  execution, and operator work-packet contracts unchanged
 - exception-gated historical runtime-private `cell-*` / `cell_` naming for the
   tri-repo boundary correction patch; adds tests proving legacy names remain
   absent from `runtime/public` exports and confined to explicit
