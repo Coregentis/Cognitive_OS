@@ -1,0 +1,450 @@
+import {
+  OPERATOR_WORK_PACKET_HANDOFF_COMPATIBILITY_PROFILE,
+  OPERATOR_WORK_PACKET_HANDOFF_CONTRACT_VERSION,
+  OPERATOR_WORK_PACKET_HANDOFF_RUNTIME_CONTRACT_VERSION,
+} from "../../runtime/public/operator-work-packet-handoff-bundle.ts";
+import {
+  OPERATOR_WORK_PACKET_KERNEL_DUTIES,
+} from "../../runtime/public/operator-work-packet-handoff-dto.ts";
+
+export const safeEvidenceRefs = [
+  {
+    evidence_ref: "safe_evidence_ref_fixture_01",
+    evidence_kind: "projection_safe_reference",
+    summary: "Safe evidence reference for the operator work-packet handoff.",
+  },
+];
+
+export const omissionMarkers = [
+  {
+    marker: "runtime_private_payload_omitted",
+    reason: "Only projection-safe refs and summaries are included.",
+  },
+  {
+    marker: "full_runtime_substrates_deferred",
+    reason: "Advanced substrates are represented by refs or omission posture.",
+  },
+];
+
+export const versionRefs = {
+  protocol_version_refs: [
+    {
+      ref_kind: "protocol",
+      ref_id: "MPLP",
+      ref_version: "1.0.0",
+    },
+  ],
+  binding_version_refs: [
+    {
+      ref_kind: "binding",
+      ref_id: "operator-work-packet-non-normative-binding",
+      ref_version: "0.1",
+    },
+  ],
+  runtime_version_refs: [
+    {
+      ref_kind: "runtime",
+      ref_id: "operator-work-packet",
+      ref_version: OPERATOR_WORK_PACKET_HANDOFF_RUNTIME_CONTRACT_VERSION,
+    },
+  ],
+  contract_version_refs: [
+    {
+      ref_kind: "contract",
+      ref_id: "operator-work-packet-handoff-dto",
+      ref_version: OPERATOR_WORK_PACKET_HANDOFF_CONTRACT_VERSION,
+    },
+  ],
+  bundle_version_refs: [
+    {
+      ref_kind: "bundle",
+      ref_id: "operator-work-packet-handoff-bundle",
+      ref_version: "0.1",
+    },
+  ],
+};
+
+const moduleNames = [
+  "Context",
+  "Plan",
+  "Confirm",
+  "Trace",
+  "Role",
+  "Extension",
+  "Dialog",
+  "Collab",
+  "Core",
+  "Network",
+];
+
+export function createBinding(componentRef, requiredModules) {
+  return {
+    binding_ref: `binding_${componentRef}`,
+    component_ref: componentRef,
+    module_mapping: moduleNames.map((moduleName) => ({
+      module_name: moduleName,
+      binding_strength: requiredModules.includes(moduleName)
+        ? "required"
+        : "supportive",
+      rationale: `${moduleName} posture for ${componentRef}.`,
+    })),
+    mpgc_mapping_gate: "satisfied",
+    existing_mplp_semantics_sufficient: true,
+    cognitive_os_side_non_normative: true,
+    no_mplp_schema_change: true,
+    no_mplp_protocol_law_change: true,
+    no_mplp_normative_binding_change: true,
+    no_schema_level_conformance_claim: true,
+    no_certification_claim: true,
+    no_formal_assurance_claim: true,
+    no_endorsement_claim: true,
+    no_regulator_approval_claim: true,
+    no_official_compliance_claim: true,
+  };
+}
+
+export function createKernelDutyPosture() {
+  return {
+    posture_ref: "kernel_duty_posture_fixture_01",
+    duties: OPERATOR_WORK_PACKET_KERNEL_DUTIES.map((duty) => ({
+      duty_id: duty.duty_id,
+      duty_name: duty.duty_name,
+      posture: duty.duty_id === "KD-07" ? "omitted" : "projected",
+      component_refs: ["operator_work_packet_handoff_fixture"],
+      evidence_refs: safeEvidenceRefs,
+      omission_markers: duty.duty_id === "KD-07" ? omissionMarkers : [],
+      projection_safe: true,
+    })),
+    all_kernel_duties_represented: true,
+    posture_values_limited_to_allowed_set: true,
+    no_full_duty_enforcement_claim_without_evidence: true,
+    runtime_private_fields_omitted: true,
+  };
+}
+
+export function createAdvancedRuntimePosture() {
+  return {
+    posture_ref: "advanced_runtime_posture_fixture_01",
+    dialog_ref: "dialog_ref_fixture_01",
+    clarification_ref: "clarification_ref_fixture_01",
+    source_intent_ref: "source_intent_ref_fixture_01",
+    intent_drift_marker: "intent_drift_marker_fixture_01",
+    semantic_loss_marker: "semantic_loss_marker_fixture_01",
+    psg_pointer: "psg_pointer_fixture_01",
+    ael_event_ref: "ael_event_ref_fixture_01",
+    vsl_state_ref: "vsl_state_ref_fixture_01",
+    learning_feedback_ref: "learning_feedback_ref_fixture_01",
+    unavailable_substrate_omission_markers: omissionMarkers,
+    implements_full_dialog_runtime: false,
+    implements_full_ael_runtime: false,
+    implements_full_vsl_runtime: false,
+    implements_full_psg_runtime: false,
+    implements_full_drift_engine: false,
+    implements_full_learning_engine: false,
+    grants_execution_authority: false,
+    grants_training_authority: false,
+    grants_mutation_authority: false,
+    projection_safe_refs_only: true,
+  };
+}
+
+export function createBoundaryProfile() {
+  return {
+    contract_version: OPERATOR_WORK_PACKET_HANDOFF_CONTRACT_VERSION,
+    runtime_contract_version: OPERATOR_WORK_PACKET_HANDOFF_RUNTIME_CONTRACT_VERSION,
+    compatibility_profile: OPERATOR_WORK_PACKET_HANDOFF_COMPATIBILITY_PROFILE,
+    projection_safe: true,
+    deterministic: true,
+    non_execution_boundary: true,
+    non_executing: true,
+    runtime_private_payload_omitted: true,
+    runtime_private_fields_omitted: true,
+    provider_free: true,
+    dispatch_free: true,
+    product_neutral: true,
+    mplp_bound: true,
+    no_provider_dispatch: true,
+    no_channel_dispatch: true,
+    no_tool_invocation: true,
+    no_payment: true,
+    no_publishing: true,
+    no_customer_outreach: true,
+    no_autonomous_external_action: true,
+    no_training_authority: true,
+    no_automatic_mutation: true,
+    no_automatic_writeback_authority: true,
+    no_package_publication: true,
+    no_full_dialog_runtime: true,
+    no_full_ael_runtime: true,
+    no_full_vsl_runtime: true,
+    no_full_psg_runtime: true,
+    no_drift_engine: true,
+    no_learning_engine: true,
+    no_mplp_schema_change: true,
+    no_mplp_protocol_law_change: true,
+    no_mplp_normative_binding_change: true,
+    no_certification_or_endorsement: true,
+  };
+}
+
+export function createProjectionSafeEnvelope(kernelDutyPosture, advancedRuntimePosture) {
+  return {
+    envelope_ref: "projection_safe_envelope_fixture_01",
+    contract_version: OPERATOR_WORK_PACKET_HANDOFF_CONTRACT_VERSION,
+    runtime_contract_version: OPERATOR_WORK_PACKET_HANDOFF_RUNTIME_CONTRACT_VERSION,
+    compatibility_profile: OPERATOR_WORK_PACKET_HANDOFF_COMPATIBILITY_PROFILE,
+    protocol_version_refs: versionRefs.protocol_version_refs,
+    binding_version_refs: versionRefs.binding_version_refs,
+    runtime_version_refs: versionRefs.runtime_version_refs,
+    contract_version_refs: versionRefs.contract_version_refs,
+    bundle_version_refs: versionRefs.bundle_version_refs,
+    safe_evidence_refs: safeEvidenceRefs,
+    omission_markers: omissionMarkers,
+    kernel_duty_posture: kernelDutyPosture,
+    advanced_runtime_posture: advancedRuntimePosture,
+    non_execution_boundary: true,
+    runtime_private_fields_omitted: true,
+    projection_safe: true,
+    no_provider_dispatch: true,
+    no_channel_dispatch: true,
+    no_tool_invocation: true,
+    no_payment: true,
+    no_publishing: true,
+    no_customer_outreach: true,
+    no_autonomous_external_action: true,
+    no_training_authority: true,
+    no_automatic_mutation: true,
+    no_package_publication: true,
+    no_mplp_schema_change: true,
+    no_mplp_protocol_law_change: true,
+    no_mplp_normative_binding_change: true,
+  };
+}
+
+export function createOperatorWorkPacketFixtureInput() {
+  const advancedRuntimePosture = createAdvancedRuntimePosture();
+  const kernelDutyPosture = createKernelDutyPosture();
+
+  return {
+    generated_from_runtime_surface_ref: "operator_work_packet_runtime_surface_fixture",
+    source_commit_ref: "383e5c94af19f60672016869047aaa3289cad495",
+    operator_intent_summary: {
+      intent_summary_ref: "operator_intent_summary_fixture_01",
+      source_intent_ref: "source_intent_ref_fixture_01",
+      summary: "Projection-safe operator intent summary.",
+      dialog_ref: "dialog_ref_fixture_01",
+      clarification_ref: "clarification_ref_fixture_01",
+      clarification_posture: "provided",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("operator_intent_summary", [
+        "Context",
+        "Dialog",
+        "Confirm",
+        "Trace",
+        "Core",
+      ]),
+      raw_prompt_omitted: true,
+      raw_conversation_transcript_omitted: true,
+      runtime_private_fields_omitted: true,
+    },
+    work_intake_summary: {
+      intake_ref: "work_intake_summary_fixture_01",
+      source_intent_ref: "source_intent_ref_fixture_01",
+      dialog_ref: "dialog_ref_fixture_01",
+      clarification_ref: "clarification_ref_fixture_01",
+      intake_posture: "captured",
+      insufficiency_markers: [],
+      intent_drift_marker: "intent_drift_marker_fixture_01",
+      semantic_loss_marker: "semantic_loss_marker_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("work_intake_summary", [
+        "Context",
+        "Plan",
+        "Confirm",
+        "Trace",
+        "Dialog",
+        "Core",
+      ]),
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    work_packet_summary: {
+      packet_ref: "work_packet_summary_fixture_01",
+      source_intent_ref: "source_intent_ref_fixture_01",
+      objective_summary: "Projection-safe objective summary.",
+      constraints_summary: "Projection-safe constraints summary.",
+      expected_output_posture: "reviewable_output_expected",
+      semantic_loss_marker: "semantic_loss_marker_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      kernel_duty_posture_refs: ["kernel_duty_posture_fixture_01"],
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("work_packet_summary", [
+        "Context",
+        "Plan",
+        "Trace",
+        "Core",
+      ]),
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    assignment_summary: {
+      assignment_ref: "assignment_summary_fixture_01",
+      packet_ref: "work_packet_summary_fixture_01",
+      assigned_unit_refs: ["coordination_unit_ref_fixture_01"],
+      assigned_capability_refs: ["capability_ref_fixture_01"],
+      coordination_scope: "coordination_scope_fixture_01",
+      assignment_status: "assigned",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("assignment_summary", [
+        "Role",
+        "Collab",
+        "Plan",
+        "Trace",
+        "Core",
+      ]),
+      runtime_private_worker_state_omitted: true,
+      no_dispatch_authority: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    worker_activity_summary: {
+      activity_summary_ref: "worker_activity_summary_fixture_01",
+      packet_ref: "work_packet_summary_fixture_01",
+      worker_ref: "worker_ref_fixture_01",
+      capability_refs: ["capability_ref_fixture_01"],
+      activity_refs: ["activity_ref_fixture_01"],
+      activity_status: "review_ready",
+      ael_event_ref: "ael_event_ref_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("worker_activity_summary", [
+        "Role",
+        "Collab",
+        "Trace",
+        "Extension",
+        "Network",
+        "Core",
+      ]),
+      runtime_private_omission_markers: omissionMarkers,
+      no_provider_dispatch: true,
+      no_tool_invocation: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    reviewable_output_summary: {
+      output_ref: "reviewable_output_summary_fixture_01",
+      packet_ref: "work_packet_summary_fixture_01",
+      output_summary: "Projection-safe reviewable output summary.",
+      review_posture: "review_ready",
+      insufficiency_flags: [],
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("reviewable_output_summary", [
+        "Plan",
+        "Confirm",
+        "Trace",
+        "Core",
+      ]),
+      raw_output_payload_omitted_unless_projection_safe_summary: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    acceptance_state: {
+      acceptance_ref: "acceptance_state_fixture_01",
+      state: "not_reviewed",
+      feedback_refs: ["operator_feedback_summary_fixture_01"],
+      operator_judgment_posture: "manual_judgment_required",
+      vsl_state_ref: "vsl_state_ref_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("acceptance_state", [
+        "Confirm",
+        "Trace",
+        "Core",
+      ]),
+      no_protocol_assurance_claim: true,
+      no_autonomous_acceptance: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    operator_feedback_summary: {
+      feedback_ref: "operator_feedback_summary_fixture_01",
+      acceptance_ref: "acceptance_state_fixture_01",
+      correction_preference_influence_posture: "correction_candidate",
+      learning_feedback_ref: "learning_feedback_ref_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("operator_feedback_summary", [
+        "Context",
+        "Confirm",
+        "Trace",
+        "Core",
+      ]),
+      no_training_authority: true,
+      no_automatic_mutation: true,
+      no_automatic_writeback_authority: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    delivery_artifact_summary: {
+      artifact_ref: "delivery_artifact_summary_fixture_01",
+      output_ref: "reviewable_output_summary_fixture_01",
+      artifact_kind_summary: "projection_safe_delivery_artifact_summary",
+      storage_export_posture: "stored_reference_only",
+      vsl_state_ref: "vsl_state_ref_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("delivery_artifact_summary", [
+        "Plan",
+        "Trace",
+        "Extension",
+        "Network",
+        "Core",
+      ]),
+      private_payload_omitted_marker: omissionMarkers[0],
+      no_publishing_authority: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    continuity_pointer: {
+      continuation_ref: "continuity_pointer_fixture_01",
+      source_packet_ref: "work_packet_summary_fixture_01",
+      source_output_ref: "reviewable_output_summary_fixture_01",
+      source_artifact_ref: "delivery_artifact_summary_fixture_01",
+      continuity_posture: "active",
+      vsl_state_ref: "vsl_state_ref_fixture_01",
+      psg_pointer: "psg_pointer_fixture_01",
+      safe_evidence_refs: safeEvidenceRefs,
+      omission_markers: omissionMarkers,
+      mplp_binding: createBinding("continuity_pointer", [
+        "Context",
+        "Trace",
+        "Core",
+      ]),
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+    advanced_runtime_posture: advancedRuntimePosture,
+    kernel_duty_posture: kernelDutyPosture,
+    projection_safe_envelope: createProjectionSafeEnvelope(
+      kernelDutyPosture,
+      advancedRuntimePosture
+    ),
+    boundary_profile: createBoundaryProfile(),
+    version_refs: versionRefs,
+    safe_evidence_refs: safeEvidenceRefs,
+    omission_markers: omissionMarkers,
+    validation_summary: {
+      validation_summary_ref: "operator_work_packet_validation_fixture_01",
+      validation_status: "valid",
+      validation_notes: ["Projection-safe fixture validates expected boundary posture."],
+      missing_required_refs: [],
+      boundary_flags_verified: true,
+      runtime_private_fields_omitted: true,
+      non_executing: true,
+    },
+  };
+}

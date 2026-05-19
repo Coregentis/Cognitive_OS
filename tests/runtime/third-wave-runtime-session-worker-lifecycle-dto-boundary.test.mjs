@@ -208,6 +208,10 @@ const approvedExports = {
     "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
   "./runtime/public/learning-correction-behavior-result-snapshot-dto":
     "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
+  "./runtime/public/operator-work-packet-handoff-dto":
+    "./runtime/public/operator-work-packet-handoff-dto.ts",
+  "./runtime/public/operator-work-packet-handoff-bundle":
+    "./runtime/public/operator-work-packet-handoff-bundle.ts",
 };
 
 function readSource(filePath) {
@@ -327,7 +331,7 @@ test("[runtime] package exports include approved third-wave DTOs exactly", () =>
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 19);
+  assert.equal(Object.keys(packageJson.exports).length, 21);
 
   for (const dtoFile of thirdWaveDtoFiles) {
     const exportKey = `./runtime/public/${dtoFile.fragment}`;

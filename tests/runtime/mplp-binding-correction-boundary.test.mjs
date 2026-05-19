@@ -5,6 +5,8 @@ import test from "node:test";
 
 const correctionRecordPath =
   "governance/audits/CGOS-MPLP-BINDING-CORRECTION-PATCH-v0.1.md";
+const operatorWorkPacketRecordPath =
+  "governance/audits/CGOS-OPERATOR-WORK-PACKET-MPLP-BOUND-PROJECTION-CONTRACT-IMPLEMENTATION-v0.1.md";
 
 const allowedLifecycleFamilies = new Set([
   "Context",
@@ -15,6 +17,19 @@ const allowedLifecycleFamilies = new Set([
   "Collab",
   "Core",
   "Extension",
+  "Network",
+]);
+
+const allowedMplpModules = new Set([
+  "Context",
+  "Plan",
+  "Confirm",
+  "Trace",
+  "Role",
+  "Extension",
+  "Dialog",
+  "Collab",
+  "Core",
   "Network",
 ]);
 
@@ -90,6 +105,12 @@ const allowedNoAuthorityFlags = [
   "no_channel_dispatch",
   "no_tool_invocation",
   "no_payment",
+  "no_publishing",
+  "no_customer_outreach",
+  "no_autonomous_external_action",
+  "no_training_authority",
+  "no_automatic_mutation",
+  "no_automatic_writeback_authority",
   "no_public_publishing",
   "no_package_publish",
 ];
@@ -113,6 +134,17 @@ function extractBindingMap() {
   );
 
   assert.ok(match, "binding map block should exist");
+
+  return JSON.parse(match[1]);
+}
+
+function extractOperatorWorkPacketBindingMap() {
+  const source = readSource(operatorWorkPacketRecordPath);
+  const match = source.match(
+    /<!-- CGOS_OPERATOR_WORK_PACKET_BINDING_MAP_START -->\s*```json\s*([\s\S]*?)\s*```\s*<!-- CGOS_OPERATOR_WORK_PACKET_BINDING_MAP_END -->/u
+  );
+
+  assert.ok(match, "operator work-packet binding map block should exist");
 
   return JSON.parse(match[1]);
 }
@@ -163,20 +195,23 @@ test("[runtime] MPLP binding correction record exists and preserves no-change fl
 test("[runtime] every package-exported public surface has a binding mapping", () => {
   const packageJson = readPackageJson();
   const bindingMap = extractBindingMap();
+  const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
 
   const runtimePublicExports = Object.keys(packageJson.exports).filter(
     (exportKey) => exportKey.startsWith("./runtime/public/")
   );
-  const mappedExports = bindingMap.public_surface_bindings.map(
-    (entry) => entry.package_export
-  );
+  const allBindingEntries = [
+    ...bindingMap.public_surface_bindings,
+    ...operatorWorkPacketBindingMap.public_surface_bindings,
+  ];
+  const mappedExports = allBindingEntries.map((entry) => entry.package_export);
 
   assert.deepEqual(
     [...mappedExports].sort(),
     [...runtimePublicExports].sort()
   );
 
-  for (const entry of bindingMap.public_surface_bindings) {
+  for (const entry of allBindingEntries) {
     assert.equal(
       normalizeRepoPath(packageJson.exports[entry.package_export]),
       normalizeRepoPath(entry.file_path)
@@ -190,16 +225,25 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
 
 test("[runtime] binding mappings use only allowed MPLP lifecycle families", () => {
   const bindingMap = extractBindingMap();
+  const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const allBindingEntries = [
+    ...bindingMap.public_surface_bindings,
+    ...operatorWorkPacketBindingMap.public_surface_bindings,
+  ];
 
   assert.deepEqual(
     new Set(bindingMap.allowed_lifecycle_families),
     allowedLifecycleFamilies
   );
+  assert.deepEqual(
+    new Set(operatorWorkPacketBindingMap.allowed_lifecycle_families),
+    allowedMplpModules
+  );
 
-  for (const entry of bindingMap.public_surface_bindings) {
+  for (const entry of allBindingEntries) {
     for (const family of entry.surface_families) {
       assert.equal(
-        allowedLifecycleFamilies.has(family),
+        allowedMplpModules.has(family),
         true,
         `${entry.package_export} uses unsupported family ${family}`
       );
@@ -210,7 +254,7 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
 
       for (const family of component.families) {
         assert.equal(
-          allowedLifecycleFamilies.has(family),
+          allowedMplpModules.has(family),
           true,
           `${entry.package_export}.${component.name} uses unsupported family ${family}`
         );
@@ -221,8 +265,15 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
 
 test("[runtime] binding entries avoid product terms and positive assurance claims", () => {
   const bindingMap = extractBindingMap();
-  const mappingEntriesText = JSON.stringify(bindingMap.public_surface_bindings);
-  const fullMapText = JSON.stringify(bindingMap);
+  const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const mappingEntriesText = JSON.stringify([
+    ...bindingMap.public_surface_bindings,
+    ...operatorWorkPacketBindingMap.public_surface_bindings,
+  ]);
+  const fullMapText = JSON.stringify([
+    bindingMap,
+    operatorWorkPacketBindingMap,
+  ]);
 
   for (const pattern of forbiddenProductPatterns) {
     assert.doesNotMatch(mappingEntriesText, pattern, pattern.source);
@@ -273,19 +324,19 @@ test("[runtime] runtime/public still omits runtime-private payload and authority
   }
 });
 
-test("[runtime] binding correction creates no operator work-packet public contract", () => {
-  const publicFiles = listFiles("runtime/public");
-  const forbiddenWorkPacketFiles = [
-    "runtime/public/operator-work-packet-handoff-dto.ts",
-    "runtime/public/operator-work-packet-handoff-bundle.ts",
-  ];
-
-  for (const filePath of forbiddenWorkPacketFiles) {
-    assert.equal(existsSync(filePath), false, filePath);
-  }
-
-  assert.deepEqual(
-    publicFiles.filter((filePath) => /operator-work-packet/u.test(filePath)),
-    []
+test("[runtime] binding correction record remains historical and delegates new work-packet mapping to implementation record", () => {
+  const historicalSource = readSource(correctionRecordPath);
+  const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const mappedExports = operatorWorkPacketBindingMap.public_surface_bindings.map(
+    (entry) => entry.package_export
   );
+
+  assert.match(
+    historicalSource,
+    /No operator work-packet contract was introduced\./u
+  );
+  assert.deepEqual(mappedExports.sort(), [
+    "./runtime/public/operator-work-packet-handoff-bundle",
+    "./runtime/public/operator-work-packet-handoff-dto",
+  ]);
 });

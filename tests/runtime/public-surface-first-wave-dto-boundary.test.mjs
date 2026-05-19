@@ -188,6 +188,10 @@ const approvedExports = {
     "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
   "./runtime/public/learning-correction-behavior-result-snapshot-dto":
     "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
+  "./runtime/public/operator-work-packet-handoff-dto":
+    "./runtime/public/operator-work-packet-handoff-dto.ts",
+  "./runtime/public/operator-work-packet-handoff-bundle":
+    "./runtime/public/operator-work-packet-handoff-bundle.ts",
 };
 
 function readSource(filePath) {
@@ -296,7 +300,7 @@ test("[runtime] first-wave public DTO files stay product-neutral", () => {
   }
 });
 
-test("[runtime] package export map exposes exactly approved public DTOs", () => {
+test("[runtime] package export map exposes exactly approved public DTO and helper surfaces", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.equal(packageJson.private, true);

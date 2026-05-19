@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- implemented the MPLP-bound operator work-packet projection-safe contract and
+  deterministic helper; includes projection-safe refs/markers for Dialog,
+  Intent Drift, Semantic Loss, PSG, AEL, VSL, Learning, and Kernel Duties, with
+  no runtime behavior beyond deterministic DTO/helper validation, no provider
+  execution, no worker execution bridge, no SoloCrew app implementation, no
+  MPLP schema/protocol/normative binding change, and no package publication
 - completed a non-normative Cognitive_OS-side MPLP binding correction for
   existing `runtime/public` package surfaces; maps each current public surface
   to existing MPLP lifecycle semantic families, adds tests for mapping coverage

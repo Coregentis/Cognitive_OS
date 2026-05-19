@@ -368,11 +368,11 @@ test("[runtime] upstream public-surface package exports omit legacy runtime-priv
   }
 });
 
-test("[runtime] upstream public-surface package exports preserve prior surfaces and add three DTOs", () => {
+test("[runtime] upstream public-surface package exports preserve prior surfaces and add operator work-packet surfaces", () => {
   const packageJson = readPackageJson();
 
   assert.equal(packageJson.private, true);
-  assert.equal(Object.keys(packageJson.exports).length, 19);
+  assert.equal(Object.keys(packageJson.exports).length, 21);
 
   for (const exportKey of existingSixteenExports) {
     assert.equal(
