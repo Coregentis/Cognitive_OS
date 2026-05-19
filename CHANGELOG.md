@@ -4,6 +4,11 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- recorded the Cognitive_OS -> SoloCrew projection consumption handoff for the
+  operator work-packet public contract; downstream app implementation remains
+  outside this wave, with no runtime behavior change, no provider execution, no
+  worker execution bridge, no MPLP schema/protocol/normative binding change,
+  and no package publication
 - implemented the MPLP-bound operator work-packet projection-safe contract and
   deterministic helper; includes projection-safe refs/markers for Dialog,
   Intent Drift, Semantic Loss, PSG, AEL, VSL, Learning, and Kernel Duties, with
