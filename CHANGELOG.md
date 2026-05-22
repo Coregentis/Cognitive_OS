@@ -4,6 +4,12 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- audited MPLP full-schema binding conformance and SoloCrew Personal MVP v1.0
+  backpropagation; records that existing public operator work-packet/review
+  surfaces are reusable but full SoloCrew P0 shell should wait for a neutral
+  public memory/continuity/direction-change contract, with no runtime behavior,
+  package export, MPLP schema/protocol/normative binding, SoloCrew product
+  implementation, provider execution, or worker execution bridge change
 - recorded the Cognitive_OS -> SoloCrew projection consumption handoff for the
   operator work-packet public contract; downstream app implementation remains
   outside this wave, with no runtime behavior change, no provider execution, no
