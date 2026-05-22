@@ -4,6 +4,14 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- audited Cognitive_OS as an MPLP vendor-free runtime against the full current
+  MPLP schema truth and SoloCrew downstream consumption; records that the
+  runtime is 10-module-centered with additional posture, all 11 kernel duties
+  are represented but not fully implemented, SoloCrew consumes public contracts
+  only partially, and the next wave should add a neutral public
+  memory/continuity/direction-change contract with no runtime behavior, package
+  export, MPLP schema/protocol/normative binding, SoloCrew product, provider,
+  model, tool, or worker execution change
 - audited MPLP full-schema binding conformance and SoloCrew Personal MVP v1.0
   backpropagation; records that existing public operator work-packet/review
   surfaces are reusable but full SoloCrew P0 shell should wait for a neutral
