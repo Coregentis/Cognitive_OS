@@ -221,6 +221,8 @@ test("[runtime] package boundary exposes only approved public DTO surfaces", () 
       "./runtime/public/persistence-roundtrip-evidence-dto.ts",
     "./runtime/public/memory-preference-summary-dto":
       "./runtime/public/memory-preference-summary-dto.ts",
+    "./runtime/public/memory-continuity-review-dto":
+      "./runtime/public/memory-continuity-review-dto.ts",
     "./runtime/public/learning-correction-evidence-dto":
       "./runtime/public/learning-correction-evidence-dto.ts",
     "./runtime/public/runtime-action-request-summary-dto":
@@ -241,10 +243,10 @@ test("[runtime] package boundary exposes only approved public DTO surfaces", () 
       "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
     "./runtime/public/learning-correction-behavior-result-snapshot-dto":
       "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
-  "./runtime/public/operator-work-packet-handoff-dto":
-    "./runtime/public/operator-work-packet-handoff-dto.ts",
-  "./runtime/public/operator-work-packet-handoff-bundle":
-    "./runtime/public/operator-work-packet-handoff-bundle.ts",
+    "./runtime/public/operator-work-packet-handoff-dto":
+      "./runtime/public/operator-work-packet-handoff-dto.ts",
+    "./runtime/public/operator-work-packet-handoff-bundle":
+      "./runtime/public/operator-work-packet-handoff-bundle.ts",
   };
 
   assert.equal(packageJson.private, true);

@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a neutral public projection-safe memory/continuity/direction-change
+  review contract for downstream products, without runtime-private
+  VSL/PSG/AEL/drift/learning exposure and without SoloCrew product semantics
 - audited Cognitive_OS as an MPLP vendor-free runtime against the full current
   MPLP schema truth and SoloCrew downstream consumption; records that the
   runtime is 10-module-centered with additional posture, all 11 kernel duties

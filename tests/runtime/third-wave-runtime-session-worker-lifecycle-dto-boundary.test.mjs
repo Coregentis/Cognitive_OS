@@ -188,6 +188,8 @@ const approvedExports = {
     "./runtime/public/persistence-roundtrip-evidence-dto.ts",
   "./runtime/public/memory-preference-summary-dto":
     "./runtime/public/memory-preference-summary-dto.ts",
+  "./runtime/public/memory-continuity-review-dto":
+    "./runtime/public/memory-continuity-review-dto.ts",
   "./runtime/public/learning-correction-evidence-dto":
     "./runtime/public/learning-correction-evidence-dto.ts",
   "./runtime/public/runtime-action-request-summary-dto":
@@ -331,7 +333,7 @@ test("[runtime] package exports include approved third-wave DTOs exactly", () =>
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 21);
+  assert.equal(Object.keys(packageJson.exports).length, 22);
 
   for (const dtoFile of thirdWaveDtoFiles) {
     const exportKey = `./runtime/public/${dtoFile.fragment}`;

@@ -7,6 +7,8 @@ const correctionRecordPath =
   "governance/audits/CGOS-MPLP-BINDING-CORRECTION-PATCH-v0.1.md";
 const operatorWorkPacketRecordPath =
   "governance/audits/CGOS-OPERATOR-WORK-PACKET-MPLP-BOUND-PROJECTION-CONTRACT-IMPLEMENTATION-v0.1.md";
+const memoryContinuityReviewRecordPath =
+  "governance/audits/CGOS-PERSONAL-MVP-PUBLIC-MEMORY-CONTINUITY-CONTRACT-v0.1.md";
 
 const allowedLifecycleFamilies = new Set([
   "Context",
@@ -149,6 +151,17 @@ function extractOperatorWorkPacketBindingMap() {
   return JSON.parse(match[1]);
 }
 
+function extractMemoryContinuityReviewBindingMap() {
+  const source = readSource(memoryContinuityReviewRecordPath);
+  const match = source.match(
+    /<!-- CGOS_MEMORY_CONTINUITY_REVIEW_BINDING_MAP_START -->\s*```json\s*([\s\S]*?)\s*```\s*<!-- CGOS_MEMORY_CONTINUITY_REVIEW_BINDING_MAP_END -->/u
+  );
+
+  assert.ok(match, "memory continuity review binding map block should exist");
+
+  return JSON.parse(match[1]);
+}
+
 function listFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -196,6 +209,8 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
   const packageJson = readPackageJson();
   const bindingMap = extractBindingMap();
   const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const memoryContinuityReviewBindingMap =
+    extractMemoryContinuityReviewBindingMap();
 
   const runtimePublicExports = Object.keys(packageJson.exports).filter(
     (exportKey) => exportKey.startsWith("./runtime/public/")
@@ -203,6 +218,7 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
   const allBindingEntries = [
     ...bindingMap.public_surface_bindings,
     ...operatorWorkPacketBindingMap.public_surface_bindings,
+    ...memoryContinuityReviewBindingMap.public_surface_bindings,
   ];
   const mappedExports = allBindingEntries.map((entry) => entry.package_export);
 
@@ -226,9 +242,12 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
 test("[runtime] binding mappings use only allowed MPLP lifecycle families", () => {
   const bindingMap = extractBindingMap();
   const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const memoryContinuityReviewBindingMap =
+    extractMemoryContinuityReviewBindingMap();
   const allBindingEntries = [
     ...bindingMap.public_surface_bindings,
     ...operatorWorkPacketBindingMap.public_surface_bindings,
+    ...memoryContinuityReviewBindingMap.public_surface_bindings,
   ];
 
   assert.deepEqual(
@@ -237,6 +256,10 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
   );
   assert.deepEqual(
     new Set(operatorWorkPacketBindingMap.allowed_lifecycle_families),
+    allowedMplpModules
+  );
+  assert.deepEqual(
+    new Set(memoryContinuityReviewBindingMap.allowed_lifecycle_families),
     allowedMplpModules
   );
 
@@ -266,13 +289,17 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
 test("[runtime] binding entries avoid product terms and positive assurance claims", () => {
   const bindingMap = extractBindingMap();
   const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const memoryContinuityReviewBindingMap =
+    extractMemoryContinuityReviewBindingMap();
   const mappingEntriesText = JSON.stringify([
     ...bindingMap.public_surface_bindings,
     ...operatorWorkPacketBindingMap.public_surface_bindings,
+    ...memoryContinuityReviewBindingMap.public_surface_bindings,
   ]);
   const fullMapText = JSON.stringify([
     bindingMap,
     operatorWorkPacketBindingMap,
+    memoryContinuityReviewBindingMap,
   ]);
 
   for (const pattern of forbiddenProductPatterns) {
@@ -327,9 +354,15 @@ test("[runtime] runtime/public still omits runtime-private payload and authority
 test("[runtime] binding correction record remains historical and delegates new work-packet mapping to implementation record", () => {
   const historicalSource = readSource(correctionRecordPath);
   const operatorWorkPacketBindingMap = extractOperatorWorkPacketBindingMap();
+  const memoryContinuityReviewBindingMap =
+    extractMemoryContinuityReviewBindingMap();
   const mappedExports = operatorWorkPacketBindingMap.public_surface_bindings.map(
     (entry) => entry.package_export
   );
+  const memoryMappedExports =
+    memoryContinuityReviewBindingMap.public_surface_bindings.map(
+      (entry) => entry.package_export
+    );
 
   assert.match(
     historicalSource,
@@ -338,5 +371,8 @@ test("[runtime] binding correction record remains historical and delegates new w
   assert.deepEqual(mappedExports.sort(), [
     "./runtime/public/operator-work-packet-handoff-bundle",
     "./runtime/public/operator-work-packet-handoff-dto",
+  ]);
+  assert.deepEqual(memoryMappedExports.sort(), [
+    "./runtime/public/memory-continuity-review-dto",
   ]);
 });
