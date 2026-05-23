@@ -170,6 +170,8 @@ const approvedExports = {
     "./runtime/public/memory-preference-summary-dto.ts",
   "./runtime/public/memory-continuity-review-dto":
     "./runtime/public/memory-continuity-review-dto.ts",
+  "./runtime/public/personal-mvp-runtime-backbone-dto":
+    "./runtime/public/personal-mvp-runtime-backbone-dto.ts",
   "./runtime/public/learning-correction-evidence-dto":
     "./runtime/public/learning-correction-evidence-dto.ts",
   "./runtime/public/runtime-action-request-summary-dto":

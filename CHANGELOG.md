@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added Personal MVP runtime backbone vertical slice for AEL activity, VSL
+  continuity, PSG memory summary, Learning feedback, and direction-change
+  confirmation projections, preserving non-execution boundaries
 - added a neutral public projection-safe memory/continuity/direction-change
   review contract for downstream products, without runtime-private
   VSL/PSG/AEL/drift/learning exposure and without SoloCrew product semantics

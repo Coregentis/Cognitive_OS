@@ -372,7 +372,7 @@ test("[runtime] upstream public-surface package exports preserve prior surfaces 
   const packageJson = readPackageJson();
 
   assert.equal(packageJson.private, true);
-  assert.equal(Object.keys(packageJson.exports).length, 22);
+  assert.equal(Object.keys(packageJson.exports).length, 23);
 
   for (const exportKey of existingSixteenExports) {
     assert.equal(

@@ -14,6 +14,7 @@
     "./runtime/public/persistence-roundtrip-evidence-dto": "./runtime/public/persistence-roundtrip-evidence-dto.ts",
     "./runtime/public/memory-preference-summary-dto": "./runtime/public/memory-preference-summary-dto.ts",
     "./runtime/public/memory-continuity-review-dto": "./runtime/public/memory-continuity-review-dto.ts",
+    "./runtime/public/personal-mvp-runtime-backbone-dto": "./runtime/public/personal-mvp-runtime-backbone-dto.ts",
     "./runtime/public/learning-correction-evidence-dto": "./runtime/public/learning-correction-evidence-dto.ts",
     "./runtime/public/runtime-action-request-summary-dto": "./runtime/public/runtime-action-request-summary-dto.ts",
     "./runtime/public/runtime-dispatch-boundary-evidence-dto": "./runtime/public/runtime-dispatch-boundary-evidence-dto.ts",
