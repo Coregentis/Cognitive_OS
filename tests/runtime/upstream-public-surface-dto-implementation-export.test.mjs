@@ -372,7 +372,7 @@ test("[runtime] upstream public-surface package exports preserve prior surfaces 
   const packageJson = readPackageJson();
 
   assert.equal(packageJson.private, true);
-  assert.equal(Object.keys(packageJson.exports).length, 24);
+  assert.equal(Object.keys(packageJson.exports).length, 26);
 
   for (const exportKey of existingSixteenExports) {
     assert.equal(
@@ -389,6 +389,19 @@ test("[runtime] upstream public-surface package exports preserve prior surfaces 
     assert.equal(packageJson.exports[exportKey], exportTarget);
     assert.equal(existsSync(exportTarget), true, `${exportTarget} should exist`);
   }
+
+  assert.equal(
+    packageJson.exports[
+      "./runtime/public/human-confirmed-action-preparation-dto"
+    ],
+    "./runtime/public/human-confirmed-action-preparation-dto.ts"
+  );
+  assert.equal(
+    packageJson.exports[
+      "./runtime/public/human-confirmed-action-preparation-bundle"
+    ],
+    "./runtime/public/human-confirmed-action-preparation-bundle.ts"
+  );
 });
 
 test("[runtime] upstream public-surface package exports avoid private paths and publication metadata", () => {

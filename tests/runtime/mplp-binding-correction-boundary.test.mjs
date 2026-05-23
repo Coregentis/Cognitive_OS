@@ -13,6 +13,8 @@ const personalMvpRuntimeBackboneRecordPath =
   "governance/audits/CGOS-PERSONAL-MVP-RUNTIME-BACKBONE-VERTICAL-SLICE-01.md";
 const personalMvpRuntimeBackboneBundleRecordPath =
   "governance/audits/CGOS-PERSONAL-MVP-RUNTIME-BACKBONE-PUBLIC-PROJECTION-BUNDLE-01.md";
+const humanConfirmedActionPreparationRecordPath =
+  "governance/audits/CGOS-HUMAN-CONFIRMED-ACTION-PREPARATION-CONTRACT-01.md";
 
 const allowedLifecycleFamilies = new Set([
   "Context",
@@ -101,9 +103,9 @@ const positiveAuthorityPatterns = [
   /\bprovider_dispatch\s*:\s*true\b/u,
   /\bchannel_dispatch\s*:\s*true\b/u,
   /\btool_invocation\s*:\s*true\b/u,
-  /\bpayment\b/iu,
-  /\bpublishing\b/iu,
-  /\bcustomer outreach\b/iu,
+  /\bpayment\s*:\s*true\b/iu,
+  /\bpublishing\s*:\s*true\b/iu,
+  /\bcustomer[_ ]outreach\s*:\s*true\b/iu,
 ];
 
 const allowedNoAuthorityFlags = [
@@ -119,6 +121,9 @@ const allowedNoAuthorityFlags = [
   "no_automatic_writeback_authority",
   "no_public_publishing",
   "no_package_publish",
+  "authorizes_publishing",
+  "authorizes_payment",
+  "authorizes_customer_outreach",
 ];
 
 function readSource(filePath) {
@@ -188,6 +193,20 @@ function extractPersonalMvpRuntimeBackboneBundleBindingMap() {
   return JSON.parse(match[1]);
 }
 
+function extractHumanConfirmedActionPreparationBindingMap() {
+  const source = readSource(humanConfirmedActionPreparationRecordPath);
+  const match = source.match(
+    /<!-- CGOS_HUMAN_CONFIRMED_ACTION_PREPARATION_BINDING_MAP_START -->\s*```json\s*([\s\S]*?)\s*```\s*<!-- CGOS_HUMAN_CONFIRMED_ACTION_PREPARATION_BINDING_MAP_END -->/u
+  );
+
+  assert.ok(
+    match,
+    "human-confirmed action preparation binding map block should exist"
+  );
+
+  return JSON.parse(match[1]);
+}
+
 function listFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -241,6 +260,8 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
     extractPersonalMvpRuntimeBackboneBindingMap();
   const personalMvpRuntimeBackboneBundleBindingMap =
     extractPersonalMvpRuntimeBackboneBundleBindingMap();
+  const humanConfirmedActionPreparationBindingMap =
+    extractHumanConfirmedActionPreparationBindingMap();
 
   const runtimePublicExports = Object.keys(packageJson.exports).filter(
     (exportKey) => exportKey.startsWith("./runtime/public/")
@@ -251,6 +272,7 @@ test("[runtime] every package-exported public surface has a binding mapping", ()
     ...memoryContinuityReviewBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBundleBindingMap.public_surface_bindings,
+    ...humanConfirmedActionPreparationBindingMap.public_surface_bindings,
   ];
   const mappedExports = allBindingEntries.map((entry) => entry.package_export);
 
@@ -280,12 +302,15 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
     extractPersonalMvpRuntimeBackboneBindingMap();
   const personalMvpRuntimeBackboneBundleBindingMap =
     extractPersonalMvpRuntimeBackboneBundleBindingMap();
+  const humanConfirmedActionPreparationBindingMap =
+    extractHumanConfirmedActionPreparationBindingMap();
   const allBindingEntries = [
     ...bindingMap.public_surface_bindings,
     ...operatorWorkPacketBindingMap.public_surface_bindings,
     ...memoryContinuityReviewBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBundleBindingMap.public_surface_bindings,
+    ...humanConfirmedActionPreparationBindingMap.public_surface_bindings,
   ];
 
   assert.deepEqual(
@@ -306,6 +331,10 @@ test("[runtime] binding mappings use only allowed MPLP lifecycle families", () =
   );
   assert.deepEqual(
     new Set(personalMvpRuntimeBackboneBundleBindingMap.allowed_lifecycle_families),
+    allowedMplpModules
+  );
+  assert.deepEqual(
+    new Set(humanConfirmedActionPreparationBindingMap.allowed_lifecycle_families),
     allowedMplpModules
   );
 
@@ -341,12 +370,15 @@ test("[runtime] binding entries avoid product terms and positive assurance claim
     extractPersonalMvpRuntimeBackboneBindingMap();
   const personalMvpRuntimeBackboneBundleBindingMap =
     extractPersonalMvpRuntimeBackboneBundleBindingMap();
+  const humanConfirmedActionPreparationBindingMap =
+    extractHumanConfirmedActionPreparationBindingMap();
   const mappingEntriesText = JSON.stringify([
     ...bindingMap.public_surface_bindings,
     ...operatorWorkPacketBindingMap.public_surface_bindings,
     ...memoryContinuityReviewBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBindingMap.public_surface_bindings,
     ...personalMvpRuntimeBackboneBundleBindingMap.public_surface_bindings,
+    ...humanConfirmedActionPreparationBindingMap.public_surface_bindings,
   ]);
   const fullMapText = JSON.stringify([
     bindingMap,
@@ -354,6 +386,7 @@ test("[runtime] binding entries avoid product terms and positive assurance claim
     memoryContinuityReviewBindingMap,
     personalMvpRuntimeBackboneBindingMap,
     personalMvpRuntimeBackboneBundleBindingMap,
+    humanConfirmedActionPreparationBindingMap,
   ]);
 
   for (const pattern of forbiddenProductPatterns) {

@@ -53,6 +53,10 @@ const approvedExports = {
     "./runtime/public/operator-work-packet-handoff-dto.ts",
   "./runtime/public/operator-work-packet-handoff-bundle":
     "./runtime/public/operator-work-packet-handoff-bundle.ts",
+  "./runtime/public/human-confirmed-action-preparation-dto":
+    "./runtime/public/human-confirmed-action-preparation-dto.ts",
+  "./runtime/public/human-confirmed-action-preparation-bundle":
+    "./runtime/public/human-confirmed-action-preparation-bundle.ts",
 };
 
 const firstWaveDtoSelfReferenceSubpaths = [

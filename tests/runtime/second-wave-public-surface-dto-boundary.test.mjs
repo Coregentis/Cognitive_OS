@@ -265,6 +265,10 @@ const approvedExports = {
     "./runtime/public/operator-work-packet-handoff-dto.ts",
   "./runtime/public/operator-work-packet-handoff-bundle":
     "./runtime/public/operator-work-packet-handoff-bundle.ts",
+  "./runtime/public/human-confirmed-action-preparation-dto":
+    "./runtime/public/human-confirmed-action-preparation-dto.ts",
+  "./runtime/public/human-confirmed-action-preparation-bundle":
+    "./runtime/public/human-confirmed-action-preparation-bundle.ts",
 };
 
 const secondWaveExportFragments = [
@@ -383,7 +387,7 @@ test("[runtime] package exports include approved second-wave DTOs exactly", () =
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 24);
+  assert.equal(Object.keys(packageJson.exports).length, 26);
 
   for (const secondWaveFragment of secondWaveExportFragments) {
     const exportKey = `./runtime/public/${secondWaveFragment}`;

@@ -53,6 +53,10 @@ const approvedExports = {
     "./runtime/public/operator-work-packet-handoff-dto.ts",
   "./runtime/public/operator-work-packet-handoff-bundle":
     "./runtime/public/operator-work-packet-handoff-bundle.ts",
+  "./runtime/public/human-confirmed-action-preparation-dto":
+    "./runtime/public/human-confirmed-action-preparation-dto.ts",
+  "./runtime/public/human-confirmed-action-preparation-bundle":
+    "./runtime/public/human-confirmed-action-preparation-bundle.ts",
 };
 
 const secondWaveDtoSelfReferenceSubpaths = [
@@ -99,7 +103,7 @@ test("[runtime] second-wave package export map is exact and private", () => {
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 24);
+  assert.equal(Object.keys(packageJson.exports).length, 26);
 });
 
 test("[runtime] second-wave package export map preserves existing six exports", () => {

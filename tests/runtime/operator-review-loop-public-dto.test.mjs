@@ -251,6 +251,10 @@ test("[runtime] package boundary exposes only approved public DTO surfaces", () 
       "./runtime/public/operator-work-packet-handoff-dto.ts",
     "./runtime/public/operator-work-packet-handoff-bundle":
       "./runtime/public/operator-work-packet-handoff-bundle.ts",
+    "./runtime/public/human-confirmed-action-preparation-dto":
+      "./runtime/public/human-confirmed-action-preparation-dto.ts",
+    "./runtime/public/human-confirmed-action-preparation-bundle":
+      "./runtime/public/human-confirmed-action-preparation-bundle.ts",
   };
 
   assert.equal(packageJson.private, true);

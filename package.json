@@ -27,7 +27,9 @@
     "./runtime/public/state-roundtrip-behavior-result-snapshot-dto": "./runtime/public/state-roundtrip-behavior-result-snapshot-dto.ts",
     "./runtime/public/learning-correction-behavior-result-snapshot-dto": "./runtime/public/learning-correction-behavior-result-snapshot-dto.ts",
     "./runtime/public/operator-work-packet-handoff-dto": "./runtime/public/operator-work-packet-handoff-dto.ts",
-    "./runtime/public/operator-work-packet-handoff-bundle": "./runtime/public/operator-work-packet-handoff-bundle.ts"
+    "./runtime/public/operator-work-packet-handoff-bundle": "./runtime/public/operator-work-packet-handoff-bundle.ts",
+    "./runtime/public/human-confirmed-action-preparation-dto": "./runtime/public/human-confirmed-action-preparation-dto.ts",
+    "./runtime/public/human-confirmed-action-preparation-bundle": "./runtime/public/human-confirmed-action-preparation-bundle.ts"
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0"

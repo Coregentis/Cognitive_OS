@@ -4,6 +4,8 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a neutral public Human-Confirmed Action Preparation contract and bundle
+  for non-executing prepared actions requiring explicit human confirmation
 - added a file-backed Cognitive_OS runtime architecture implementation
   explainer covering MPLP module posture, Kernel Duties, runtime-private
   services, public projections, and SoloCrew consumption boundaries
