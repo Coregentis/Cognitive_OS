@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added public projection bundle for the Personal MVP runtime backbone vertical
+  slice, enabling downstream apps to consume runtime-backed summaries without
+  runtime-private service exposure
 - added Personal MVP runtime backbone vertical slice for AEL activity, VSL
   continuity, PSG memory summary, Learning feedback, and direction-change
   confirmation projections, preserving non-execution boundaries

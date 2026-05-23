@@ -41,6 +41,8 @@ const approvedPackageExports = {
     "./runtime/public/memory-continuity-review-dto.ts",
   "./runtime/public/personal-mvp-runtime-backbone-dto":
     "./runtime/public/personal-mvp-runtime-backbone-dto.ts",
+  "./runtime/public/personal-mvp-runtime-backbone-bundle":
+    "./runtime/public/personal-mvp-runtime-backbone-bundle.ts",
   "./runtime/public/learning-correction-evidence-dto":
     "./runtime/public/learning-correction-evidence-dto.ts",
   "./runtime/public/runtime-action-request-summary-dto":

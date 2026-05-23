@@ -192,6 +192,8 @@ const approvedExports = {
     "./runtime/public/memory-continuity-review-dto.ts",
   "./runtime/public/personal-mvp-runtime-backbone-dto":
     "./runtime/public/personal-mvp-runtime-backbone-dto.ts",
+  "./runtime/public/personal-mvp-runtime-backbone-bundle":
+    "./runtime/public/personal-mvp-runtime-backbone-bundle.ts",
   "./runtime/public/learning-correction-evidence-dto":
     "./runtime/public/learning-correction-evidence-dto.ts",
   "./runtime/public/runtime-action-request-summary-dto":
@@ -335,7 +337,7 @@ test("[runtime] package exports include approved third-wave DTOs exactly", () =>
     Object.keys(packageJson.exports).sort(),
     Object.keys(approvedExports).sort()
   );
-  assert.equal(Object.keys(packageJson.exports).length, 23);
+  assert.equal(Object.keys(packageJson.exports).length, 24);
 
   for (const dtoFile of thirdWaveDtoFiles) {
     const exportKey = `./runtime/public/${dtoFile.fragment}`;
