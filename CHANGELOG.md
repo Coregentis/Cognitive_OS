@@ -4,6 +4,9 @@ All notable repository-level changes for `Cognitive_OS` should be recorded in th
 
 ## Unreleased
 
+- added a file-backed Cognitive_OS runtime architecture implementation
+  explainer covering MPLP module posture, Kernel Duties, runtime-private
+  services, public projections, and SoloCrew consumption boundaries
 - added public projection bundle for the Personal MVP runtime backbone vertical
   slice, enabling downstream apps to consume runtime-backed summaries without
   runtime-private service exposure
