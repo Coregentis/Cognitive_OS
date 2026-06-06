@@ -6,6 +6,26 @@ This repository is part of the Coregentis MPLP / Cognitive OS / SoloCrew / Valid
 
 Cognitive OS owns runtime substrate, execution semantics, public/private DTO boundaries, evidence pipeline, and protocol bindings. Public DTOs may expose projection-safe lifecycle summaries; runtime-private internals must not leak into SoloCrew, public DTOs, or MPLP protocol claims. Cognitive OS may bind to MPLP semantics, but it must not redefine MPLP authority, create MPLP normative obligations, or introduce SoloCrew/Tacit product semantics into neutral runtime contracts.
 
+## Coregentis Workspace Authority
+
+The Coregentis canonical workspace root is
+`/Users/jasonwang/Documents/AI_Dev/Coregentis`.
+
+This repository is the Cognitive OS runtime downstream. It must not be treated
+as MPLP protocol truth, package truth, release truth, or package publication
+root. MPLP-Protocol-Dev is protocol/package/release Dev truth:
+`/Users/jasonwang/Documents/AI_Dev/Coregentis/MPLP-Protocol-Dev`.
+
+V1.0_release is frozen as migration/evidence source. Do not treat
+V1.0_release as global MPLP SOT.
+V1.0_release is frozen as migration/evidence source; do not treat V1.0_release as global MPLP SOT.
+
+Package/source recovery belongs to MPLP-Protocol-Dev. Cross-repo sync requires
+an explicit migration, backport, or projection goal.
+
+Future Dev-side goals remain `DEV-HARNESS-BACKPORT-01` and
+`PACKAGE-DEV-TRUTH-SOURCE-RECOVERY-PLAN-01`; this repo grants no publish, no upload, no tag, no seal, and no merge authorization.
+
 ## Repo Truth First
 
 Before implementation, inspect repository truth:
